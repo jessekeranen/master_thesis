@@ -1,0 +1,402 @@
+\documentclass{article}
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{apacite}
+\usepackage{float}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{adjustbox}
+\usepackage{multirow}
+\usepackage[T1]{fontenc} % for smaller printing smaller than sign correctly in plots
+\usepackage[labelfont=bf]{caption} % for captions
+\usepackage[toc]{appendix} % toc to show in table of contents
+\usepackage{tabularx} % expanding tables
+\usepackage{amsmath} % Align equations
+\usepackage{booktabs} % toprule etc..
+\setstretch{1.5}
+\pagecolor{white}
+
+\title{Cross-sectional predictability of stock returns in Nordic stock markets using machine learning methods}
+\author{Jesse Keränen}
+\date{\today}
+
+%add time period to all plot and tables once final
+
+\begin{document}
+\maketitle
+
+\thispagestyle{empty}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+
+%In 1808 world was in many ways different compared to what it is today. In 1808 Napoleon was the Emperor of the French Empire and Maximilian I was the King of Kingdom of Bavaria. In 1808 Finnish war broke between Kingdom of Sweden and the Russian Empire which would ultimately lead to establishment of autonomous Grand Duchy of Finland. It would still take more than 100 years for Finland to gain its independence. Same year began the Dano-Swedish war between Sweden and Denmark-Norway. Something historically far less remarkable, but essential for this study happened in 1808 as well. First stock exchange in a Nordic country was opened in Copenhagen. Slowly after that rest of the Nordic countries would open their own stock exchanges as well. Upon facilitated change of ownership of assets, investors were left with a question how to price these assets.
+
+%Major breakthrough in this topic happened when capital asset pricing model was developed in the sixties (sharpe, treynor etc...). In the eighties persofrmance of capital asset pricing model was questioned and scholars came up with so called stock market factors (Earnings-to-price = Basu(1977), Earnings-to-price = Basu(1977), Profitability = e.g., Basu, 1983). During these time machine learning gained large interest and artificial neural networks were popularized. Next big step in asset pricing happened when Eugene Fama and Kenneth French combined these factors to three factor asset pricing model (fama french 1993). Two years after that machine learning method called random forest was introduced (Ho in 1995). Although three factor model was remarkable improvement compared to capital asset pricing model it was not able to explain variation in stock returns completely. In recent years lot of research has applied machine learning methods to capture abnormal returns in stock markets. 
+
+%Nordic market introduction
+Objective of this study is to apply set of machine learning methods to well established asset pricing factors to capture abnormal stock return patterns. This study will focus on four Nordic stock markets namely Denmark, Finland, Norway and Sweden. These four markets are relatively homogenous in many aspects. They are geographically close, politically stable and economically interconnected. Denmark, Finland and Sweden all belong to European union. Additionally, stock exchanges of all these three countries are operated by Nasdaq. Therefore, investors could view them as a single market. Some of the features that are characteristic for Nordic markets make them fertile ground for stock market anomaly studies. As mentioned Nordic countries are geographically closely located in northern Europe and therefore relatively distant from large European and especially American markets. European market integration is emphazised by Fama and French \citeyear{FAMA2012457}. 
+
+So called periphery effect has been studied by the scholars a lot. %references)
+It refers to investor behaviour where during times of a crisis investors tend to liquidate their investments first from the markets more distant to them. This increases the volatility of periphery markets and can challenge the efficient market theory. Another common feature that Nordic markets share is a high level of foreign ownership. Share of foreign investments in Nordic stock markets can reach more than 50\% \footnotemark. Given the remote location of Nordic stock markets and their high share of foreign ownership it is likely that Nordic countries could be subject to periphery effect. Which again can result abnormal returns.
+
+%all developed, but small -> liquidity
+
+Structure of this paper goes as follows. In second chapter introduction to related literature is provided. In this chapter performance of different methods and persistence of different anomalies in different regions is discussed. Third chapter introduces the methodology and data. Fourth chapter presents the empirical study and final chapter provides as conclusion.
+
+\footnotetext{Butt and Hogholm \citeyear{ButtHogholm2020} calculate share of foreign ownership from IMF Coordinated Direct Investment Survey CDIS data. Foreign ownership share of Butt and Hogholm is 52\% for Denmark, 42\% for Finland, 35\% for Norway and 56\% for Sweden. %check the source
+}
+
+\section{Literature}
+Being the largest and most prominent stock market in the world US stock market has been subject to majority of asset pricing studies. Despite the dominance of US markets in capturing the the attraction of the academics lot of anomaly asset pricing literature has been conducted in international setting as well. Characteristic for international asset pricing literature is that instead of focusing on single countries they aggregate stock market data to a certain regional level such as Europe or Asia-Pacific. Following chapter provides an overview for pioneering asset pricing anomaly literature. Focus will mainly be on literature on US and European markets. US stock markets are chosen because of their significance on international stock markets and because most anomalies have been discovered there and therefore majority of the initial studies of these anomalies have been conducted there. European studies provide interesting perspective since in many of them Nordic countries are included. 
+
+Chapter introduces the most important anomalies in these markets and how they have been exploited with different methods. This works as starting point to define set of factors that will be used in this study. It can be argued that this kind of process when the set of variables are chosen based on their performance in previous studies is one sort of forward looking information if we try to mimic investors information set. On the other hand Jacobs and Müller \citeyear{JACOBS2020213} only find reliable post-publication decline in long/short returns in US which emphasizes the practical potential of this study.
+
+\subsection{US stock market anomalies}
+
+Many of the recent cross-sectional stock return studies use framework of Lewellen \citeyear{lewellen2015} as base model. He runs 10-year rolling Fama-MacBeth regressions using lagged firm characteristics to predict out of the sample stock returns. He studies cross-sections of US stock return between 1964 and 2013 using different model settings up to 15 company characteristics. He finds strong positive correlation between expected return derived from rolling Fama-MacBeth regressions and realised returns. Additionally Lewellen shows that spread between realised return of portfolio formed from stock with lowest expected returns and portfolio with highest expected return is up to 2.36\%. In his study logarithmic market value of equity, logarithmic book-to-market value, momentum and accruals show the strongest statistical power in explaining monthly returns using lagged variables.
+
+Gu, Jelly and Xiu \citeyear{guetal} contribute to the literature by applying machine learning methods to exploit stock market anomalies. By deploying sophisticated models that do not suffer from over parameterization as heavily as OLS Gu et al. are able to include 94 stock characteristics and their interactions as well as eight aggregated time series variables to their models. Gu et al. use large variety of statistical methods including linear regression, generalized linear models with penalization, dimension reduction via principal components regression and partial least squares, gradient boosted regression trees, random forest and different settings of neural networks. Out of these gradient boosted regression trees and neural networks \footnotemark explain the monthly out of sample stock return the best reaching out of sample $R^{2}$ 0.33 and 0.44 correspondingly where as three factor OLS model introduced by Lewellen \citeyear{lewellen2015} only reaches out of sample $R^{2}$ of -3.46. 
+
+\footnotetext{Gu et al. \citeyear{guetal} use five different settings of neural networks differing by number of hidden layers. Neural network with three hidden layers reaches the highest $R^{2}_{oos}$ and is reported here.}
+
+Similar to Lewellen \citeyear{lewellen2015} Gu et al. construct portfolios based on predicted return of different models. Monthly spread in realized return between portfolio constructed from decile of companies with lowest expected return and decile of stocks with highest expected return \footnotemark is 0.94, 1.62 and 2.12 for models based on OLS, random forest and three layer neural network correspondingly. Gu et al. also show that all methods they examine show somewhat similar patterns on variable importance on return predictability. Most important factors are price trends such as momentum followed by stock liquidity, stock volatility, and valuation ratios.
+% all stocks, confirm again
+% Deeper neural networks seem to be too complex
+
+\footnotetext{Portfolio returns are average value weighted returns.}
+
+\subsection{European stock market anomalies}
+
+As mentioned US market environment is different in my ways compared to Nordic markets. Fortunately lot of stock market studies have been conducted in Europe and since Nordic markets are usually just a subset of European markets it can be beneficial to have a look on European studies. Tobek and Hronec \citeyear{TOBEK2021100588} study machine learning based anomaly strategies in international setting. Their study includes 153 different equity anomalies and they only include anomalies to their data after documented discovery of corresponding anomaly. This way they can mimic the information set investor would have had and avoid forward looking information. Tobek and Hronec examine five different models including weighted least squares, penalized weighted least squares, gradient boosting regression trees, random forest and neural networks. Their data set spans from 1990 to 2018. Similar to Gu et al. \citeyear{guetal} in US, Tobek and Hronec find that strategy using neural networks provides highest returns on quintile long-short portfolios. Mean return for neural network long-short portfolio in Europe was 0.7. Interestingly penalized weighted least square method provided mean return of 0.651 which is higher than return of random forest based portfolio's return of 0.396. Tobek and Hronec find that Industry momentum, lagged momentum, liquidity shocks, 52 week high, book-to-market value and return on equity are the most important variables for neural networks model.\footnotemark
+
+\footnotetext{Tobek and Hronec \citeyear{TOBEK2021100588} discover possibilities training models either only using historical data from US, using historical data from local markets or using international historical data. Only results for models trained using local data are reported here because that is closest to the setting of this study. Additionally, Tobek and Hronec state that difference between model trained on US data and local data are small.}
+
+Exploiting stock market anomalies using machine learning methods is also studied by Drobetz and Otto \citeyear{Drobetz}. Their data set contains all companies listed in at least one of the 19 Eurozone countries on December 2020 and spans form 1990 to 2020 \footnotemark. Drobetz and Otto examine performance of ordinary least squares, penalized least squares, principal components regressions, partial least squares, random forests, gradient boosted regression trees and neural networks on predicting monthly stock level return exploiting a set of 22 predictions, their two-way interactions and second- and third-order polynomials. Findings of Drobetz and Otto are similar to Gu et al. \citeyear{guetal}. They show that with large number of explanatory variables simple linear regression is not able to explain out of the sample stock returns. 
+
+\footnotetext{Finland is the only country included in the study of Drobetz and Otto \citeyear{Drobetz} that is also included in this study, since it is the only country belonging to Eurozone.}
+
+Findings of Drobetz and Otto \citeyear{Drobetz} are also similar to Tobek and Hronec \citeyear{TOBEK2021100588} in a sense that least squares methods where dimensionality is restricted can actually perform better than tree based methods. Like in majority of other literature, Drobetz and Otto find out that neural networks provide superior framework for stock return prediction model measured in both explanatory power and profitability. Neural network method reaches out of the sample $R^{2}$ value of 1.23 and long-short portfolio formed based on expected returns derived from neural networks model provide average value weighted monthly return of 1.94\%. Similar to Gu et al. \citeyear{guetal} Drobetz and Otto find that same variables show the most importance across the different models, most notably earnings-to-price ratio and 12 month momentum.
+%Deeper neural networks seem to be too complex
+
+Fieberg et al \citeyear{Fieberg} study stock market anomalies in 16 European stock markets using machine learning methods over almost the same period as Drobetz and Otto \citeyear{Drobetz} \footnotemark. Nevertheless they choose a slightly different approach where instead of including vast set of anomalies, they only consider six prominent equity factors. Their conclusion endorses findings of Drobetz and Otto \citeyear{Drobetz} and Tobek and Hronec \citeyear{TOBEK2021100588} as they shown that more complex machine learning models beat linear approach in terms of both economic and statistical performance.
+
+\footnotetext{Dataset of Fieberg et al \citeyear{Fieberg} contains Denmark, Finland, Norway and Sweden}
+
+\subsection{Stock market anomalies in Nordic markets}
+
+This chapter provides an overview of observed stock market anomalies in different Nordic stock markets. Many studies in this chapter have slightly different objective than this study. Studies show the existence of the anomalies by constructing a portfolio heavily weighted on certain factor. Nevertheless, they do not describe the magnitude of the relationship between the factor and the stock returns. This study has slightly more ambitious objective and tries to derive return expectations from predefined stock market factors. This literature review serves as starting point for choosing most promising stock market factors that have already been studied.
+%small amount of stocks
+
+Magnitude of value and momentum anomalies in Nordic stock markets are examined in the paper by Grobys and Huhta-Halkola \citeyear{grobys}. They combine information from companies listed in main lists of Danish, Finnish, Norwegian and Swedish stock exchanges between 1991 and 2017. Grobys and Huhta-Halkola measure value with book-to-market value and momentum with past 12-month total shareholder equity%return??? % 
+. Grobys and Huhta-Halkola show that momentum effect exists in Nordics markets and profitability of momentum strategy is not related to size factor. Value factor yields also significant excess return, but according to Grobys and Huhta-Halkola it could be partly driven by the size factor, since value premium reduces when accounted for the size. Among all stocks monthly average equally weighted long-short return is 1.73\% and 1.25\% for momentum and value strategies correspondingly. Both of the excess returns are statistically highly significant. Grobys and Huhta-Halkola also test combination strategies using signals from both momentum and strategy which yield even stronger results.
+
+Value premium has shown consistency in Finnish stock markets. Davydov, Tikkanen and Äijö \citeyear{Davydov2017MagicFV} examine profitability of different value investing strategies between 1991 and 2013. Davydov et. al. investigate set of value indicators which included earnings to price, book to price, cash flow to price, dividends to price and earnings before income and taxes to enterprise value ratios. Additionally they test performance of investing strategy developed by Greenblatt (cite here) where portfolios are formed based on combined ranking of company's return on invested capital and earnings before income and taxes to enterprise value ratio. They show that returns of all of the value portfolios not only beat the market return, but can also not be explained by the four factor model of Carhart \citeyear{https://doi.org/10.1111/j.1540-6261.1997.tb03808.x}.  
+%(Finnish Stock Exchange in the period 1991–2013. In total, the number of companies varies from 39 to 136)
+%check the second article from patari and leivo
+
+Similar to Grobys and Huhta-Halkola \citeyear{grobys} Leivo and Pätäri \citeyear{cite-key} combine value anomaly with momentum anomaly in Finnish stock market for data set between 1993 and 2008. They show that two step portfolio sort that first allocates stocks to three portfolios based on their value indicators and subsequently based on momentum indicator can capture extraordinary stock returns. Leivo and Pätäri show that including momentum further increases returns of already recognised value sorting. Strategy performs even better when authors allow for long position in high value high momentum portfolio and short position on low value low momentum portfolio. Excess returns resulting from the two-fold portfolio construction can not be explained by CAP-model or two factor model including also size factor. It is not a surprise that value and momentum premium show existence in Nordic markets. Value and momentum anomalies are among the most well documented factors showing persistence in multiple cross-sectional studies (e.g, Gu, Jelly and Xiu \citeyear{guetal}, Lewellen \citeyear{lewellen2015}, Drobetz and Otto \citeyear{Drobetz}, Tobek and Hronec \citeyear{TOBEK2021100588} ).
+% Helsinki Stock Exchange (HEX; later OMX Helsinki) during the period 1993–2008. E/P, EBITDA/EV, CF/P, dividend yield (D/P), B/P and S/P and combinations.
+%re-phrase the text
+
+Nordic stock markets have several characteristic features. One is that all Nordic stock markets are considered to be developed, but also small. Especially market capitalization of companies listed in Nordic stock exchanges are on average much smaller than in US. Therefore, it is reasonable to ask whether liquidity of the stock could be driving factor of the stock returns. Impact of illiquidity risk to stock returns in Nordic market setting has been studied by Butt and Hogholm \citeyear{ButtHogholm2020}. Butt and Hogholm test variety of different illiquidity measures and find that dollar zero returns is the most profitable illiquidity anomaly measure across all four Nordic market. Dollar zero return measurement is calculated by dividing number of days stocks return in US dollars is zero by total number of trading days. Butt and Hogholm construct five quintile portfolios based on liquidity of the stocks with data spanning from 1988 to 2013. They show that in all Nordic markets there exists large illiquidity premium as annual difference in equal weighted return of most illiquid portfolio and least illiquid portfolio is more than 18\% for Finland, Norway and Sweden. For Denmark premium is slightly smaller 8.8\%.
+
+Jokipii and Vähämaa \citeyear{jokipii2006free} investigate free cash flow anomaly in Finnish stock markets between 1992 and 2002. They construct portfolios from stocks listed in Finnish stock exchange based on predefined thresholds for free cash flow ratios. These ratios include market value to free cashflow and total debt to free cashflow ratios. High free cashflow portfolio yields higher returns than market on average and the excess returns can not be completely explained by weightings in Fama and French \citeyear{FAMA19933} risk factors.
+%Finnish companies during the period 1992-2002. net cash flow from operating activities minus capital expenditures. The net cash flow from operating activities, in turn, is defined as the sum of net income, all non-cash charges and credits (e.g.,  depreciation,  amortization  of  intangibles,  and  deferred  taxes),  extra ordinary items, and net change in working capital
+
+\section{Data}
+Main datasource for this study is Thomson Datastream. Company fundamental data is collected from Worldscope. Dataset spans from 1990 January to 2022 December which is shorter than in many previous studies. Reason why time period is limited to 1990 is that amount of publicly listed companies in Nordic markets was rather low in the 1980's and finding reliable data for period before 1990 is difficult. Dataset contains all stocks listed in primary markets of corresponding countries including also companies that went bankrupt or were de-listed for any other reason. Therefore dataset is not subject to survivorship bias. Panel A of table \ref{table:markets} in Appendix shows the constituent lists used in data collection. As highlighted by Ince and Porter \citeyear{Ince2006} data in Datastream can be noisy and uncleaned data could lead to a false statistical inference. Therefore several static and dynamic screens are applied to the data. Screens include filtering non-equity securities, securities that are not listed in respective country and securities that are quoted in currency other than respective country's currency. All applied static and dynamic screens are comprehensively explained in appendix. 
+
+\begin{table}[h] 
+\caption{\textbf{Country summary statistics}\\ Table provides summary statistics for pooled Nordic market and separate country specific Nordic markets. Minimum number of companies tells the amount of companies included to the data set in a month that the value was lowest for respective country. Maximum number of companies tells the amount of companies included to the data set in a month that the value was highest for respective country. Mean number of companies is the time series average of monthly number of companies for each country. Total number of companies is the number of unique companies in whole data set. Time series averages for monthly mean, median and total market values are also presented. Total market value is sum of market values of respective country in each month. All marked values are converted to USD. Only companies in the final dataset are included in calculation of the figures.}
+ \label{table:CountrySummary}
+\centering
+\newcolumntype{Y}{>{\raggedleft\arraybackslash}X}
+\begin{tabularx}{\textwidth}{@{\extracolsep{4pt}} X Y Y Y Y Y Y Y} 
+\toprule
+ & \multicolumn{4}{c}{Number of companies} & \multicolumn{3}{c}{Market value} \\
+\cline{2-5} \cline{6-8} 
+	 		& Min 	& Max 	& Mean  	& Total	& Mean 		& Median 	& Total \\
+\midrule
+Denmark	 	& 60 		& 124 	& 96 		& 216	& 1726.66 	& 99.95	& 170315.4  \\
+Finland	 	& 32 		& 120 	& 96 		& 186 	& 2117.73 	& 250.64	& 174166.7  \\
+Norway		& 43 		& 149 	& 100 	& 304	& 1301.29 	& 172.69  & 136871.4 \\
+Sweden		& 39 		& 506 	& 266 	& 784	& 1414.79 	& 133.72	& 342283.2  \\
+\midrule
+Nordic		& 193 	& 873 	& 558 	& 1490	& 1362.78 	& 131.55 	& 760958.3  \\
+\bottomrule
+\end{tabularx}
+\end{table} 
+
+The number of stocks in the dataset is 873 where as the monthly number of stocks in the dataset is 558 on average. Figure \ref{plot:number_of_companies} in Appendix shows the development of the company count that passed the statistical screens over time. Table \ref{table:CountrySummary} on the other hand includes only companies included in the final dataset which requires that there was no missing information for the company in respective month \footnotemark. By comparing the figure \ref{plot:number_of_companies} and the table \ref{table:CountrySummary} it can be seen that number of companies in the dataset is mainly limited by the availability of the company characteristics data, especially in the beginning of the time period. Sweden is clearly the biggest of the four markets both in regards of the number of companies and total market value of the companies. Size characteristics of rest of the countries are quite homogenous.
+
+\footnotetext{For certain variables missing information is treated as zero.}
+% Update this list once final
+
+\begin{table}[ht] 
+\caption{\textbf{Descriptive statistics}\\ Table provides time series average of cross-sectional means and standard deviations of all variables used in this study. Values are reported separately for pooled Nordic market and four Nordic markets Denmark, Finland, Norway and Sweden. RET is monthly return calculated from total return index.}
+ \label{table:descriptive}
+\centering
+\begin{tabularx}{\textwidth}{@{\extracolsep{4pt}} X r r r r r r r r r r} 
+\toprule
+ & \multicolumn{2}{c}{Nordic} & \multicolumn{2}{c}{Denmark} & \multicolumn{2}{c}{Finland} & \multicolumn{2}{c}{Norway}&\multicolumn{2}{c}{Sweden} \\
+\cline{2-3}\cline{4-5}\cline{6-7}\cline{8-9}\cline{10-11}
+Variable 		& Mean 	& Std. & Mean & Std. & Mean & Std. & Mean & Std. & Mean & Std. \\
+\midrule
+RET			& 0.0130 	& 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+Cash/Asset 	& 0.1587 	& 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+CapTurnOver 	& 1.0432 	& 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+INV 			& 0.6598 	& 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+BEME 		& -2.2394 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+CF/Price 		& 0.0410 	& 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+Leverage 		& 0.7644 	& 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+Sales/Price 	& 1.1321 	& 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+E/P 			& -0.0302 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+ROA 		& -0.0079 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+ROE 		& 0.2033 	& 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+MOM$_{7}$ 	& 0.0829 	& 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+MOM$_{12}$ 	& 0.1782 	& 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+MOM$_{24}$ 	& 0.3908 	& 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+MOM$_{2}$ 	& 0.1714 	& 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\ 
+\bottomrule
+\end{tabularx}
+\end{table} 
+
+Total X characteristics are derived from stock level data. All the models use same set of explanatory variables which includes cash flow-to-total assets ratio, capital turnover, investment, book-to-market ratio, cashflow-to-price ratio, leverage, sales-to-price ratio, earnings-to-price ratio, return on assets, return on equity and 2, 7, 12 and 24 month momentum. Detailed descriptions how each of these variables is calculated is provided in the table \ref{table:variableDefs} in appendix. Majority of these variables are calculated from income statement or balance sheet information and therefore updated only once a year. To account for possible reporting delay associated with accounting data, accounting data from year $t$ is considered to be available end of June $t+1$. Table \ref{table:descriptive} provides descriptive statistics of company characteristics. Descriptive statistics are reported for pooled nordic markets as well as individual markets.
+
+\section{Methodology}
+This study will evaluate tested methods from two perspectives. Both of them depend on expected returns provided by the methods. How different methods derive the expected returns is explained in the following subsections. First more economical perspective is how profitable predictions of different models would have turned out to be. Profitability is estimated via portfolio construction following Lewellen \citeyear{lewellen2015}. Each month based on the expected return produced by the model all stocks are allocated to quintile portfolios. Object of the interest is the spread between lowest and highest expected return portfolios. Both value and equal weighted returns will be reported for each portfolio. Long-short returns will be calculated from the returns of portfolio with highest and lowest expected returns. These returns will be regressed agains Fama-French \citeyear{FAMA19933} three factor model factors to test if model was able to produce returns that can not be explained with loadings of Fama and French risk factors.
+
+Second more statistical measure is how precise prediction methods was able to produce. Prediction accuracy will be evaluated using out-of-smaple $R^{2}_{oos} $ from (source). 
+
+\begin{equation}
+\label{eq:r2}
+R^{2}_{oos} = 1 - \frac{\sum^T_{t=1} \sum^N_{i=1} (r_{i, t} - \hat r_{i, t})^2}{ \sum^T_{t=1} \sum^N_{i=1} r^2_{i, t}}
+\end{equation}
+
+Factors importance
+
+\subsection{Linear regression}
+Benchmark model of this study is Fama-MacBeth \citeyear{FamaMacBeth1973} regression. First step of the method is to run rolling cross-sectional regressions with lagged variables. Second step of the method calculates means of the factor loadings obtained from the cross-sectional regressions. Finally expected stock return can be obtained by multiplying the mean factors loading with latest available stock characteristics. Below formulas show one model specification for Fama-French \citeyear{FAMA19933} three factors model.
+
+\begin{equation}
+r_{i, t} = \beta_0 + \beta_{1,t} \ Mkt_{i, t-1} + \beta_{2, t} + \ Size_{i, t-1} + \beta_{3, t} \ Value_{i, t-1} + \epsilon_{i}
+\end{equation}
+
+\begin{equation}
+\overline \beta_j = \frac{1}{T} \sum^{T}_{t=1}\beta_{j, t}
+\end{equation}
+
+\begin{equation}
+E(r_{i, t}) = \overline \beta_0 + \overline \beta_{1, t} \ Mkt_{i, t-1} + \overline \beta_{2, t} + \ Size_{i, t-1} + \overline \beta_{3, t} \ Value_{i, t-1}
+\end{equation}
+
+One benefit that linear regression models have is that they do not require hyperparameter tuning. Therefore data  does not have to be split to three sub-samples for separate validation of hyperparameters and testing. To obtain the expected return mean of 120 historical regression coefficients is calculated. Due to their high computing cost machine learning models are usually trained only once a year and then used for the rest of the year. Each month recent information is just inserted to the model. Computing requirements for linear model is far lesser than for non-linear models. Nevertheless to ensure comparability between different models also the linear model is trained only once per year. That means that no more recent stock returns than $t-1$ are used to train the model to predict stock return $t$, but the gap between predicted return and last return used to train the model can grow up to 12 months. Since we use lagged variables, this means that for prediction of stock return $t$ we alway use stock characteristics from $t-1$, but some factors are only updated yearly. To mimic information set investor would have had available in historical periods we have to account for the delay in reporting balance sheet information. Therefore timeline of Fama and French \citeyear{FAMA19933} is followed and models are trained each year at end of June. 
+
+\subsection{Random forest}
+Decision trees are one example of nonparametric machine learning algorithms. Idea of the decision trees is to split data into the most homogenous groups. Starting point of the regression tree is called a root node. At each iteration of regression tree algorithm finds the optimal threshold to split the data to the nodes to minimize objective function. Then iteratively these nodes can be further split and the tree grows. This process is repeated until predefined tree size, set by the user, is reached or objective function can not be improved anymore. Regression tree nodes that are not further split are called leaves. Final prediction of the regression tree leaf is the average of the dependant variable values of training set observations inside it. Gu et al. \citeyear{guetal} formulate prediction of a regression tree with $K$ leaves as 
+
+\begin{equation}
+f(x_{i, t}; \theta, K, L) = \sum_{k=1}^K \theta_k 1 _{\{x_{i, t} \in C_K(L)\}}
+\end{equation}
+
+Where $C_k(L)$ represents one of the $K$ splits the tree consists of. $L$ is the indicator of the depth of the leaf. $\theta_k$ indicates average return within leaf $k$ and $1 _{\{x_{i, t} \in C_K(L)\}}$ indicates whether observation $x_{i, t}$ belongs to leaf $k$. Since observation can only belong to one leaf, partition $C_K(L)$ is the product of the above partitions.
+
+\begin{figure}
+\centering
+\caption{\textbf{Illustrative regression tree}\\ Tree is trained from the actual dataset for 30th of July 2004 and then pruned to show only few most important leaves. Figure serves only illustrative purposes and random forest models used in the study do not necessarily contain identical trees. }
+\input{../regr_tree.tex}
+\label{plot:regre_tree}
+\end{figure}
+
+Advantage of the regression trees is that they are are rather simple and intuitive, but still they are able to model even complex interactions among predictors and non-linear relationships. One common problem with regression trees is that they easily overfit the data and would require heavy regularization. Random forest models aims to avoid this problem by deriving the predictions from ensemble of regression trees.
+
+\subsection{Neural networks}
+
+\appendix
+\section{Data}
+\renewcommand{\thefigure}{A.\arabic{figure}}
+\setcounter{figure}{0}
+\renewcommand{\thetable}{A.\arabic{table}}
+\setcounter{table}{0}
+
+\begin{table}[H] 
+\caption{\textbf{Constituent lists and keywords}\\ Table provides the constituent lists used in data collection.}
+ \label{table:constituteLists}
+\centering
+\begin{tabularx}{\textwidth}{X X X X}
+\toprule
+Denmark & Finland & Norway & Sweden \\
+\midrule
+FDEN 		&  FFIN		& FNOR		& FSWD\\
+WSCOPEDK & WSCOPEFN & WSCOPENW& WSCOPESD\\
+DEADDK 	&   DEADFN 	& DEADNW 	& DEADSD\\
+& & & FAKTSWD\\
+ \bottomrule
+ \end{tabularx}
+ \end{table} 
+
+ \begin{table}[h]
+\caption{\textbf{Static screens}\\ It also provides the country specific keywords that are used to deleted entries from the dataset. Panel B provides keywords that were used to delete entries from each market separately. Keyword deletion follows Ince and Porter \protect\citeyear{Ince2006} and Hanauer and Windmüller \protect\citeyear{HANAUER2023106712}. Same logic is applied to remove both country specific and generic keywords. Keyword is searched from Datastream attributes NAME, ENAME and ECNAME. In case if at least one of these attributes contains the keyword security is deleted from the dataset. To avoid deleting proper entries, security is only deleted if keyword occurs at the beginning of the name, at the end of the name or as separate word in the name.}
+\label{table:staticscreens}
+\begin{tabularx}{\textwidth}{X X X X l}
+\toprule
+\multicolumn{5}{l}{\textit{Panel A: Static screens.}} \\
+\midrule
+ & Denmark & Finland & Norway & Sweden\\
+\midrule
+MAJOR & Y & Y & Y & Y\\
+TYPE & EQ & EQ & EQ & EQ\\
+ISINID & P & P & P & P\\
+GEOGN & DENMARK & FINLAND & NORWAY & SWEDEN\\
+GEOLN & DENMARK & FINLAND & NORWAY & SWEDEN\\
+PCUR & DK & FI, MK & NK & SK\\
+GGSIN & DK & FI & NO &SE\\
+\toprule
+\multicolumn{5}{l}{\textit{Panel A: Country specific keywords.}} \\
+\midrule
+ & Denmark & Finland & Norway & Sweden\\
+ \midrule
+NAME & \multirow[m]{3}{*}{ \textbackslash \textbackslash)CSE \textbackslash \textbackslash} & \multirow[m]{3}{*}{USE} & & \multirow[m]{3}{13em}{CONVERTED INTO, USE, CONVERTED-, CONVERTED - SEE}\\
+ENAME & & \\
+ECNAME & &\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+\begin{table}[H] 
+\caption{\textbf{Country specific keywords}\\ Table shows the general keywords that were used to delete entries from all markets. Keyword deletion follows Ince and Porter \protect\citeyear{Ince2006} and Hanauer and Windmüller \protect\citeyear{HANAUER2023106712}. Same logic is applied to remove both country specific and generic keywords. Keyword is searched from Datastream attributes NAME, ENAME and ECNAME. In case if at least one of these attributes contains the keyword security is deleted from the dataset. To avoid deleting proper entries, security is only deleted if keyword occurs at the beginning of the name, at the end of the name or as separate word in the name.}
+ \label{table:generalKeywords}
+\centering
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+Security class 	& Keywords \\
+\midrule
+Duplicates 		& 1000DUPL, DULP, DUP, DUPE, DUPL, DUPLI, DUPLICATE, XSQ, XETa  \\[1ex]
+Depository receipts	& ADR, GDR \\[1ex]
+Preferred stock 	&  PF, ’PF’, PFD, PREF, PREFERRED, PRF\\ [1ex]
+Warrants 			&  WARR, WARRANT, WARRANTS, WARRT, WTS, WTS2\\[1ex]
+Debt 			& \%, DB, DCB, DEB, DEBENTURE, DEBENTURES, DEBT\\[1ex]
+Unit trusts 		& .IT, .ITb, TST, INVESTMENTTRUST, RLSTIT, TRUST, TRUSTUNIT, TRUSTUNITS, TST, TSTUNIT, TST UNITS, UNIT, UNITTRUST, UNITS, UNT, UNTTST, UT\\[1ex]
+ETFs 			& AMUNDI, ETF, INAV, ISHARES, JUNGE, LYXOR, X-TR\\[1ex]
+Expired securities 	& EXPD, EXPIRED, EXPIRY, EXPY\\[1ex]
+Miscellaneous 		& ADS, BOND, CAP.SHS, CONV, DEFER, DEP, DEPY, ELKS, FD, FUND, GW.FD, HI.YIELD, HIGHINCOME, IDX, INC.								\&GROWTH, INC.\&GW, INDEX, LP, MITS, MITT, MPS, NIKKEI, OPCVM, ORTF, PERQS, 												PFC, PFCL, PINES, PRTF, PTNS, PTSHP, QUIBS, QUIDS, RATE, RCPTS, REALEST, RECEIPTS, REIT, RESPT, 								RETUR, RIGHTS, RST, RTN.INC, RTS, SBVTG, SCORE, SPDR, STRYPES, TOPRS, UTS, VCT, VTG.SAS, 									XXXXX, YIELD,YLD, PF.SHS.\\
+ \bottomrule
+ \end{tabularx}
+ \end{table} 
+
+\begin{table}[H] 
+\caption{\textbf{Variable definitions} \\Tables provides definitions and initial authors for all anomalies used in the study. Construction of variables follows Green et. al \protect\citeyear{Green2017} and Hanauer and Kalsbach \protect\citeyear{HANAUER2022}.}
+\label{table:variableDefs}
+\centering
+\begin{tabularx}{\textwidth}{l X X}
+\toprule
+Variable & Author & Definition\\
+\midrule
+Cash-to-Assets 		& \cite{PALAZZO2012162} 	& Cash-to-Asset ratio is calculated by dividing  cash and short-term investments by total assets.\\
+Capital Turnover 		& & \\
+Investment 			& & \\
+Book-to-Market Equity 	& \cite{Rosenberg1985} 		&  Book-to-Market value is calculated by dividing company's book value of equity by company's market 										 	capitaliztion end of previous year. Book value of equity is calculated by summing common 												equity and deferred taxes of the company. \\
+Cash Flow-to-Price 		& \cite{LAKONISHOK1994} 	& Cash flow to price ratio is calculated by dividing company's cash flow from operating activities 												by asset's market capitaliztion end of previous year. \\
+Leverage 				& & \\
+Sales-to-Price 			& & Sales-to-price ratio is calculated by dividing total sales by asset's market capitaliztion end of previous year.\\
+Earnings-to-Price 		& & Earnings-to-price ratio is calculated by dividing net income before extra Items and preferred dividends by asset's market capitaliztion end of previous year.\\
+Return-on-Assets 		& & Return-on-assets is calculated as net income before extra Items and preferred dividends divided by one year lagged total assets.\\
+Return-on-Equity 		& & Return-on-equity is calculated as net income before extra Items and preferred dividends divided by one year lagged book value of equity. See book-to-market equity for definition of book value of equity. \\
+Momentum$_{7}$ 		& & Cumulative return in US dollars between $t-7$ and $t-12$ months.\\
+Momentum$_{12}$ 		& & Cumulative return in US dollars between $t-2$ and $t-12$ months.\\
+Momentum$_{36}$ 		& & Cumulative return in US dollars between $t-12$ and $t-36$ months.\\
+Momentum$_{2}$ 		& & Prior month return in US dollars.\\ 
+\bottomrule
+\end{tabularx}
+\end{table} 
+
+\begin{figure}[H]
+\centering
+\caption{\textbf{Number of companies}\\ Figure shows the delopment of total number of securities considered in the dataset from 1990 to 2022 for each Nordic country. Figures counts all securities that passed the static screens. Final amount of companies in each time point can be lower since security will be excluded from the dataset if it is missing certain information.}
+\input{../number_of_companies.tex}
+\label{plot:number_of_companies}
+\end{figure}
+
+\section{Benchmark factors}
+\renewcommand{\thefigure}{B.\arabic{figure}}
+\setcounter{figure}{0}
+\renewcommand{\thetable}{B.\arabic{table}}
+\setcounter{table}{0}
+
+Benchmark factor construction follows $2 \times 3$ portfolio sort approach of Fama and French \citeyear{FAMA19933, FAMA20151} and Carhart \citeyear{Carhart1997}. Fama and French \citeyear{FAMA19933} use NYSE breakpoints for size and book-to-market value sort. Since on compared to US markets Nordic markets have less companies with high market value. Using NYSE breakpoints could lead to highly un-diversified portfolios especially among the high market value portfolios. On the other hand breakpoints should not be driven by the small stocks that are numerous, but only account for small part of the total market capitalization. Therefore approach of Fama and French \citeyear{FAMA2012457} is applied. 
+
+In the end of each June stocks are first distributed to two size portfolios. Companies with biggest market value that account for $90\%$ total market value are classified as big stocks. All the rest of the stocks are considered to be small stocks. Next stocks are allocated to three value, investment, profitability and momentum portfolios. For all of above variables 30th and 70th percentiles are used to calculate breakpoints. Breakpoints are calculated using only big companies from the size allocation, but the breakpoints are used to allocate all stocks to a portfolio.
+
+\begin{equation} \label{eq:FF6factors}
+\begin{split}
+SMB_{B/M} = & \ \frac{1}{3} (Small.High + Small.Neutral + Small.Low) \\
+			& - \frac{1}{3} (Big.High + Big.Neutral + Big.Low) \\[5pt]
+SMB_{OP} = & \ \frac{1}{3} (Small.Robust + Small.Neutral_{OP} + Small.Weak)\\
+			& - \frac{1}{3} (Big.Robust + Big.Neutral_{OP} + Big.Weak)\\[5pt]
+SMB_{INV} = & \ \frac{1}{3} (Small.Conservative + Small.Neutral_{INV} + Small.Aggressive)\\
+			& - \frac{1}{3} (Big.Conservative + Big.Neutral_{INV} + Big.Aggressive)\\[5pt]
+SMB_{MOM} = & \ \frac{1}{3} ((Small.Winner + Small.Neutral_{MOM} + Small.Loser)\\
+		     	& - \frac{1}{3} (Big.Winner + Big.Neutral_{MOM} + Big.Loser)\\[5pt]
+SMB = & \ \frac{1}{4} (SMB_{B/M} + SMB_{OP} + SMB_{INV} + SMB_{MOM})\\[20pt]
+HML = & \ \frac{1}{2} (Small.High + Big.High) - \frac{1}{2} (Small.Low + Big.Low)\\[5pt]
+RMW = & \ \frac{1}{2} (Small.Robust + Big.Robust) - \frac{1}{2} (Small.Weak + Big.Weak)\\[5pt]
+CMA = & \ \frac{1}{2} (Small.Conservative + Big.Conservative)\\
+		& - \frac{1}{2} (Small.Aggressive + Big.Aggressive)
+\end{split}
+\end{equation}
+
+Book-to-market value is used as indicator of value characteristic of a company. Book-to-market value is calculated as ratio between sum of common equity and deferred taxes and market capitalization on December $t-1$. Profitability is defined as net income before extra items/preferred dividends divided by the book equity of the company. Investment variable is calculated as annual change in total assets. Momentum is defined as cumulated return from $t-12$ to $t-2$. Returns are calculated using total return index that is converted to US dollars for comparability between different countries. Market value used in size allocation as well as to weight portfolio returns is also converted to US dollars. 
+
+\begin{figure}[h]
+\centering
+\caption{\textbf{Benchmark factor performance}\\ Plot presents the cumulative return of the benchmark factors. RMRF is average value weighted excess return of pooled Nordic market. Portfolio returns are calculated based on $2 \times 3$ sorts on size and one other factor. HML is the difference in average of value weighted return of two high value portfolios and average of value weighted return of two low value portfolios. RMW, CMA and MOM are calculated in similar manner, but portfolio sort are done based on investment, profitability momentum factors. SMB is the average of the value weighted returns of the 12 portfolios of small stocks minus the average of the value weighted returns of the 12 portfolios of big stocks. Returns are calculated in US dollars.}
+\input{../factor_performance.tex}
+\label{plot:factor_performance}
+\end{figure}
+
+Equation \ref{eq:FF6factors} shows formula for each factor. Acronym for each variable is derived from how they are calculated. Value factor is called high minus low (HML), profitability factors is called robust minus weak (RMW), investment factor is called conservative minus aggressive (CMA). Only momentum factor is exception to this rule and more intuitive naming is used. Portfolio allocation results six portfolios for value, investment, profitability and momentum factors and 24 two-fold size portfolios. After portfolio construction portfolio returns are calculated as difference on value weighted average returns on portfolios formed based on respective variable. E.g. value factor return is difference between average of value weighted returns of two high book-to-market portfolios and average of value weighted returns of two low book-to-market portfolios. Market factor is the average value weighted excess return of the whole market. Risk free rate is obtained from Kenneth French's website.
+
+\begin{table}[H]
+\caption{\textbf{Benchmark factor summary statistics} \\ Table presents the mean returns and standard deviations of the benchmark factors together with two-sided t-statistics and corresponding p-values. For each factor minimum and maximum monthly return is reported.  RMRF is the average value weighted excess return of the pooled Nordic market. Portfolio returns are calculated based on $2 \times 3$ sorts on size and one other factor. HML is the difference in average of value weighted return of two high value portfolios and average of value weighted return of two low value portfolios. RMW, CMA and MOM are calculated in similar manner, but portfolio sort are done based on investment, profitability momentum factors. SMB is the average of the value weighted returns of the 12 portfolios of small stocks minus the average of the value weighted returns of the 12 portfolios of big stocks. Returns are calculated in US dollars.}
+\label{table:variableFFfactors}
+\centering
+\newcolumntype{Y}{>{\raggedleft\arraybackslash}X}
+\begin{tabularx}{\textwidth}{@{\extracolsep{4pt}} X Y Y Y Y Y Y} 
+\toprule
+& Mean & Std. & t-statistic & p-value & Min & Max \\
+\midrule
+HML & 0.0025530691 & 0.002362449 & 1.0806876 & 0.280573873 & -0.29077327 & 0.25016426 \\
+RMW & 0.0012002051 & 0.001705025 & 0.7039224 & 0.481945179 & -0.14823575 & 0.15968439 \\
+CMA & 0.0032043818 & 0.001698169 & 1.8869634 & 0.059985604 & -0.09845618 & 0.21082013 \\
+MOM & 0.0066819497 & 0.001922011 & 3.4765400 & 0.000571297 & -0.18508929 & 0.16512045 \\
+SMB & 0.0006700926 & 0.001309899 & 0.5115605 & 0.609278449 & -0.08659786 & 0.09250967 \\
+RMRF & 0.0108176004 & 0.004085322 & 2.6479186 & 0.008462256 & -0.27520039 & 0.58227592 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\caption{\textbf{Benchmark factor correlation matrix} \\ Table shows the correlations among the benchmark factors. RMRF is the average value weighted excess return of the pooled Nordic market. Portfolio returns are calculated based on $2 \times 3$ sorts on size and one other factor. HML is the difference in average of value weighted return of two high value portfolios and average of value weighted return of two low value portfolios. RMW, CMA and MOM are calculated in similar manner, but portfolio sort are done based on investment, profitability momentum factors. SMB is the average of the value weighted returns of the 12 portfolios of small stocks minus the average of the value weighted returns of the 12 portfolios of big stocks. Returns are calculated in US dollars.}
+\label{table:FFfactorCorrelations}
+\centering
+\newcolumntype{Y}{>{\raggedleft\arraybackslash}X}
+\begin{tabularx}{\textwidth}{@{\extracolsep{4pt}} X Y Y Y Y Y Y} 
+\toprule
+& HML & RMW & CMA & MOM & SMB & RMRF \\
+\midruleHML & 1 & -0.44351088 & 0.33769120 & 0.1749346 & 0.32205722 & -0.30961309\\RMW & -0.4435109 & 1 & -0.61064981 & 0.1613313 & -0.14620584 & 0.07114474\\CMA & 0.3376912 & -0.61064981 & 1 & -0.1234248 & 0.01297349 & -0.10619217\\MOM & 0.1749346 & 0.16133127 & -0.12342477 & 1 & 0.13232050 & -0.22371160\\SMB & 0.3220572 & -0.14620584 & 0.01297349 & 0.1323205 & 1 & -0.21937326\\RMRF & -0.3096131 & 0.07114474 & -0.10619217 & -0.2237116 & -0.21937326 & 1\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\pagebreak
+\bibliographystyle{apacite}
+\bibliography{References}
+
+\end{document}

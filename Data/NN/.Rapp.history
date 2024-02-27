@@ -1,0 +1,2 @@
+load("/Users/jessekeranen/Desktop/Kurssit/TUM/Thesis/Data/NN/ROA.Rdata")
+load("/Users/jessekeranen/Desktop/Kurssit/TUM/Thesis/Data/NN/CA.Rdata")

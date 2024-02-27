@@ -1,0 +1,13 @@
+\contentsline {section}{\numberline {1}Introduction}{3}{section.1}%
+\contentsline {section}{\numberline {2}Literature}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}US stock market anomalies}{4}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}European stock market anomalies}{5}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Stock market anomalies in Nordic markets}{6}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Data}{7}{section.3}%
+\contentsline {section}{\numberline {4}Methodology}{9}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Linear regression}{10}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Random forest}{10}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Neural networks}{12}{subsection.4.3}%
+\contentsline {section}{\numberline {A}Data}{12}{appendix.A}%
+\contentsline {section}{\numberline {B}Benchmark factors}{15}{appendix.B}%
+\contentsline {section}{References}{19}{section*.13}%

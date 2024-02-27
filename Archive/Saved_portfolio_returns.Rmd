@@ -1,0 +1,398 @@
+---
+title: "Untitled"
+author: "Jesse Keränen"
+date: "2024-02-25"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(data.table)
+library(ggplot2)
+library(zoo)
+library(writexl)
+library(gridExtra)
+library(tikzDevice)
+library(forecast)
+```
+
+```{r}
+load(file = "Data/data.Rdata")
+independend_variables <- c("CA", "CTO", "BEME", "CFP", "INV", "DEBT", "SP", "EP",
+                           "ROA", "ROE", "Q", "MOM7", "MOM12", "MOM36", "MOM2",
+                           "MOM.IND", "L.SD", "L.HIGH52.RATIO", "L.BETA",
+                           "L.IDVOL", "L.LOG.USD.MV", "L.TO", "L.OBV")
+```
+
+```{r}
+data2 <- copy(data[, .(Date, pf.size, year, Company, USD.RET, EXC.USD.RET,
+                       L.USD.MV, FM.EXP.RET, RF.EXP.RET, NN.EXP.RET)])
+setorder(data2)
+quantiles <- seq(0.1, 0.9, by = 0.1)
+
+factor <- function(dt, variable, name, labels, quantiles) {
+  # browser()
+  dt[, temp := cut(.SD[, get(variable)], 
+                   breaks = c(-Inf, quantile(.SD[pf.size == "Big", get(variable)],
+                        quantiles, na.rm = T), Inf), labels = labels), by = Date]
+  temp2 <- dt[is.na(temp)]
+  setnames(dt, "temp", name)
+  return(dt)
+}
+data2 <- factor(data2[Date > as.POSIXct("1994-7-31", tz = "UTC") &
+                      Date < as.POSIXct("2022-12-30", tz = "UTC")],
+                "FM.EXP.RET", "FM.POSITION", c("FM.Short", "FM.2", "FM.3", "FM.4",
+                 "FM.5", "FM.6", "FM.7", "FM.8", "FM.9", "FM.Long"), quantiles)
+data2 <- factor(data2, "RF.EXP.RET", "RF.POSITION", c("RF.Short", "RF.2", "RF.3",
+            "RF.4", "RF.5", "RF.6", "RF.7", "RF.8", "RF.9", "RF.Long"), quantiles)
+data2 <- factor(data2, "NN.EXP.RET", "NN.POSITION", c("NN.Short", "NN.2", "NN.3",
+            "NN.4", "NN.5", "NN.6", "NN.7", "NN.8", "NN.9", "NN.Long"), quantiles)
+
+portfolioreturns <- function(dt, portfolio, return){
+  #browser()
+  portfolio_returns <- dt[, .(EW.RET = mean(EXC.USD.RET, na.rm = T), 
+                      VW.RET = weighted.mean(EXC.USD.RET, L.USD.MV, na.rm = T),
+                      EW.EXP.RET = mean(get(return), na.rm = T),
+                      VW.EXP.RET = weighted.mean(get(return), L.USD.MV, na.rm = T)),
+                      by = c("Date", portfolio)]
+  portfolio_returns <- melt(portfolio_returns, id.vars = c("Date", portfolio))
+  return(dcast(portfolio_returns, paste("... ~ ", portfolio), value.var = "value"))
+}
+portfolio_returns1 <- portfolioreturns(data2, "FM.POSITION", "FM.EXP.RET")
+portfolio_returns2 <- portfolioreturns(data2, "RF.POSITION", "RF.EXP.RET")
+portfolio_returns3 <- portfolioreturns(data2, "NN.POSITION", "NN.EXP.RET")
+portfolio_returns <- merge(portfolio_returns1, portfolio_returns2,
+                           by = c("Date", "variable"))
+portfolio_returns <- merge(portfolio_returns, portfolio_returns3,
+                           by = c("Date", "variable"))
+
+portfolio_returns[, `:=` (RF = RF.Long - RF.Short, FM = FM.Long - FM.Short,
+                          NN = NN.Long - NN.Short), by = c("Date", "variable")]
+portfolio_returns_long <- melt(portfolio_returns, id.vars = c("Date", "variable"),
+                               variable.name = "Portfolio", value.name = "Return")
+portfolio_returns_long <- portfolio_returns_long[, cum_prod := cumprod(Return + 1),
+                                                 by = c("Portfolio", "variable")]
+portfolio_returns_long[, `:=` (Method = substr(Portfolio, 1, 2),
+                    Position = as.factor(substr(Portfolio, 4, length(Portfolio))))]
+
+market_return <- data[Date >= min(portfolio_returns$Date), .(VW.RET = 
+                      weighted.mean(USD.RET, L.USD.MV), RF = mean(RF)), by = Date]
+setorder(market_return, Date)
+market_return[, MKT.RET := VW.RET - RF][, cum_prod := cumprod(MKT.RET + 1)]
+
+tikz(file = "Latex/R_graphs/cumul_vw_LS_return.tex", width = 6, height = 4)
+plot1 <- ggplot() + geom_line(data = portfolio_returns_long[Portfolio %in% 
+        c("FM", "RF", "NN") & variable == "VW.RET"], aes(x = Date, y = cum_prod, color = Method)) + scale_y_log10() + geom_line(data = market_return, aes(x = Date, y = cum_prod)) + theme(axis.title = element_blank(), legend.position = "bottom", text = element_text(size = 9))
+print(plot1)
+dev.off()
+
+tikz(file = "Latex/R_graphs/cumul_ew_LS_return.tex", width = 6, height = 4)
+plot2 <- ggplot() + geom_line(data = portfolio_returns_long[Portfolio %in% c("FM", "RF", "NN") & variable == "EW.RET"], aes(x = Date, y = cum_prod, color = Method)) +
+  scale_y_log10() + geom_line(data = market_return, aes(x = Date, y = cum_prod)) +
+  theme(axis.title = element_blank(), legend.position = "bottom", 
+        text = element_text(size = 9))
+print(plot2)
+dev.off()
+
+tikz(file = "Latex/R_graphs/cumul_vw_portf_return.tex", width = 6, height = 4)
+plot3 <- ggplot() + geom_line(data = portfolio_returns_long[Position %in% c("Long", "Short") & variable == "VW.RET"], aes(Date, cum_prod, color = Method, linetype = Position)) + scale_y_log10() + geom_line(data = market_return, aes(Date, cum_prod)) +
+  theme(axis.title = element_blank(), legend.position = "bottom", text =
+          element_text(size = 9))
+print(plot3)
+dev.off()
+
+tikz(file = "Latex/R_graphs/cumul_ew_portf_return.tex", width = 6, height = 4)
+plot4 <- ggplot() + geom_line(data = portfolio_returns_long[Position %in% c("Long", "Short") & variable == "EW.RET"], aes(Date, cum_prod, color = Method, linetype = Position)) + scale_y_log10() + geom_line(data = market_return, aes(Date, cum_prod)) +
+  theme(axis.title = element_blank(), legend.position = "bottom", text =
+          element_text(size = 9))
+print(plot4)
+dev.off()
+plot1
+plot2
+plot3
+plot4
+```
+
+```{r}
+exp_portfolio_returns_long <- portfolio_returns_long[variable %in% c("EW.EXP.RET",
+                                                                     "VW.EXP.RET")]
+exp_portfolio_returns_long <- exp_portfolio_returns_long[, .(EXP.RET = mean(Return)),
+                                                    by = c("variable", "Portfolio")]
+exp_portfolio_returns_long[, variable := gsub(".EXP", "", variable)]
+portfolio_returns_long2 <- portfolio_returns_long[variable %in% c("EW.RET", "VW.RET")]
+```
+
+```{r}
+sharpe <- portfolio_returns_long2[, .(SR = mean(Return) / sd(Return)),
+                                  by = c("variable", "Portfolio")]
+
+# Check the portfolio statistics
+min_max <- portfolio_returns_long2[, .(Min = min(Return), Max = max(Return)),
+                                   by = c("variable", "Portfolio")]
+```
+
+```{r}
+portfolio_statistics <- portfolio_returns_long2[, t.test(Return, na.rm = T),
+                                                by = c("variable", "Portfolio")]
+portfolio_statistics[, Count := seq(.N), by = c("variable","Portfolio")][, Count := ifelse(Count == 1, "Lower Bound", "Upper Bound")]
+
+portfolio_statistics <- dcast(portfolio_statistics, ... ~ Count,
+                              value.var = "conf.int")
+portfolio_statistics <- merge(portfolio_statistics, min_max,
+                              by = c("variable", "Portfolio"))
+portfolio_statistics <- merge(portfolio_statistics, exp_portfolio_returns_long,
+                              by = c("variable", "Portfolio"))
+portfolio_statistics <- merge(portfolio_statistics, sharpe, 
+                              by = c("variable", "Portfolio"))
+round <- colnames(portfolio_statistics[, -c("variable", "Portfolio", "parameter",
+                                        "alternative", "method", "data.name")])
+portfolio_statistics[, (round) := round(.SD, 4), .SDcols = round]
+```
+
+```{r}
+oos_r2 <- function(dt, variable) {
+  # browser()
+  temp <- dt[, .(Date, EXC.USD.RET, MEAN.RET, Company, var = get(variable))]
+  temp[, Date := ifelse(month(Date) >= 7, year(Date), year(Date) - 1)]
+  temp <- temp[!is.na(var) & Date > "1994", .(method = variable,
+  R2OOS = 1 - (sum((EXC.USD.RET - var)^2) / (sum(EXC.USD.RET^2))),
+  TRAD.R2OOS = 1 - (sum((EXC.USD.RET - var)^2) /
+  (sum((EXC.USD.RET - MEAN.RET)^2)))), by = Date]
+  temp <- melt(temp, measure.vars = c("R2OOS", "TRAD.R2OOS"), 
+               variable.name = "R2.Method")
+  return(temp)
+}
+
+scale_oosr2 <- function(dt, exp_ret) {
+  # browser()
+  dt <- dt[, mean(value), by = c("method", "R2.Method")]
+  # dt <- dt[, V1 := dt[method == exp_ret, V1] - V1][method != exp_ret]
+  dt <- dt[, V1 := .SD[method == exp_ret, V1] - V1, R2.Method][method != exp_ret]
+  dt[, V1 := V1 / sum(V1), by = R2.Method]
+  return(dt)
+}
+
+load_exp_ret <- function(method, variable) {
+  # browser()
+  path <- paste("Data/", method, "/", variable , ".Rdata", sep = "")
+  load(file = path)
+  return(r2)
+}
+```
+
+```{r}
+data[, MEAN.RET := shift(rollapplyr(EXC.USD.RET, .SD[, .N], mean, partial = T,
+                                    na.rm = T), fill = 0), by = Company]
+```
+
+```{r}
+rf_exp_rets <- rbindlist(lapply(independend_variables, function(x) {
+  return(load_exp_ret("RF", x))
+}))
+
+rf_exp_rets <- dcast(rf_exp_rets, Date + Company + EXC.USD.RET ~ Variable,
+                     value.var = "RF.EXP.RET")
+rf_exp_rets <- merge(rf_exp_rets, data[, .(Date, Company, MEAN.RET)],
+                     by = c("Date", "Company"))
+RF_VI_ts <- rbindlist(lapply(independend_variables, function(x) {
+  return(oos_r2(rf_exp_rets, x))
+}))
+RF_VI_ts <- rbind(RF_VI_ts, oos_r2(data, "RF.EXP.RET"))
+RF_r2s_scaled <- scale_oosr2(RF_VI_ts, "RF.EXP.RET")
+RF_r2s_scaled[, Rank := rank(.SD$V1), by = R2.Method]
+RF_r2_ts <- oos_r2(data, "RF.EXP.RET")
+RF_r2 <- data[!is.na(RF.EXP.RET), 
+        .(R2OOS = 1 - (sum((EXC.USD.RET - RF.EXP.RET)^2) / (sum(EXC.USD.RET^2))),
+         TRAD.R2OOS = 1 - (sum((EXC.USD.RET - RF.EXP.RET)^2) / 
+                            (sum((EXC.USD.RET - MEAN.RET)^2))))]
+```
+
+```{r}
+fm_exp_rets <- rbindlist(lapply(independend_variables, function(x) {
+  return(load_exp_ret("FM", x))
+}))
+fm_exp_rets <- dcast(fm_exp_rets, Date + Company + EXC.USD.RET ~ Variable,
+                     value.var = "FM.EXP.RET")
+fm_exp_rets <- merge(fm_exp_rets, data[, .(Date, Company, MEAN.RET)], 
+                     by = c("Date", "Company"))
+FM_VI_ts <- rbindlist(lapply(independend_variables, function(x) {
+  return(oos_r2(fm_exp_rets, x))
+}))
+FM_VI_ts <- rbind(FM_VI_ts, oos_r2(data, "FM.EXP.RET"))
+FM_r2s_scaled <- scale_oosr2(FM_VI_ts, "FM.EXP.RET")
+FM_r2s_scaled[, Rank := rank(.SD$V1), by = R2.Method]
+FM_r2_ts <- oos_r2(data, "FM.EXP.RET")
+FM_r2 <- data[!is.na(FM.EXP.RET), 
+        .(R2OOS = 1 - (sum((EXC.USD.RET - FM.EXP.RET)^2) / (sum(EXC.USD.RET^2))),
+          TRAD.R2OOS = 1 - (sum((EXC.USD.RET - FM.EXP.RET)^2) /
+                              (sum((EXC.USD.RET - MEAN.RET)^2))))]
+```
+
+```{r}
+nn_exp_rets <- rbindlist(lapply(independend_variables, function(x) {
+  return(load_exp_ret("NN", x))
+}))
+nn_exp_rets <- dcast(nn_exp_rets, Date + Company + EXC.USD.RET ~ Variable,
+                     value.var = "NN.EXP.RET")
+nn_exp_rets <- merge(nn_exp_rets, data[, .(Date, Company, MEAN.RET)],
+                     by = c("Date", "Company"))
+NN_VI_ts <- rbindlist(lapply(independend_variables, function(x) {
+  return(oos_r2(nn_exp_rets, x))
+}))
+NN_VI_ts <- rbind(NN_VI_ts, oos_r2(data, "NN.EXP.RET"))
+NN_r2s_scaled <- scale_oosr2(NN_VI_ts, "NN.EXP.RET")
+NN_r2s_scaled[, Rank := rank(.SD$V1), by = R2.Method]
+NN_r2_ts <- oos_r2(data, "NN.EXP.RET")
+NN_r2 <- data[!is.na(NN.EXP.RET), 
+        .(R2OOS = 1 - (sum((EXC.USD.RET - NN.EXP.RET)^2) / (sum(EXC.USD.RET^2))),
+          TRAD.R2OOS = 1 - (sum((EXC.USD.RET - NN.EXP.RET)^2) /
+                              (sum((EXC.USD.RET - MEAN.RET)^2))))]
+options(scipen = 999999)
+```
+
+```{r}
+r2_ts <- merge(FM_r2_ts[, .(Date, R2.Method, FM = value)],
+               RF_r2_ts[, .(Date, R2.Method, RF = value)],
+               by = c("Date", "R2.Method"))
+r2_ts <- merge(r2_ts, NN_r2_ts[, .(Date, R2.Method, NN = value)], 
+               by = c("Date", "R2.Method"))
+r2_ts <- melt(r2_ts, measure.vars = c("FM", "RF", "NN"), value.name = "R2",
+              variable.name = "Method")
+r2_ts[, temp := paste(Method, R2.Method, sep = " ")]
+
+tikz(file = "Latex/R_graphs/R2_ts.tex", width = 6, height = 5)
+plot5 <- ggplot(r2_ts, aes(Date, R2)) + geom_line() + facet_wrap(~temp, ncol = 2) +
+  theme(axis.title = element_blank(), text = element_text(size = 9))
+print(plot5)
+dev.off()
+plot5
+
+FM_r2_plot <- ggplot(FM_r2s_scaled[R2.Method == "R2OOS"], aes(y = reorder(method, V1),
+                    x = V1)) + geom_bar(stat='identity', fill = "#13bfc4") +
+  theme(axis.title = element_blank(), text = element_text(size = 9))
+
+trad_FM_r2_plot <- ggplot(FM_r2s_scaled[R2.Method == "TRAD.R2OOS"], aes(y = reorder(method, V1), x = V1)) + geom_bar(stat='identity', fill = "#13bfc4") + theme(axis.title = element_blank(), text = element_text(size = 9))
+
+RF_r2_plot <- ggplot(RF_r2s_scaled[R2.Method == "R2OOS"], aes(y = reorder(method, V1), x = V1)) + geom_bar(stat='identity', fill = "#13bfc4") + theme(axis.title = element_blank(), text = element_text(size = 9))
+
+trad_RF_r2_plot <- ggplot(RF_r2s_scaled[R2.Method == "TRAD.R2OOS"], aes(y = reorder(method, V1), x = V1)) + geom_bar(stat='identity', fill = "#13bfc4") + theme(axis.title = element_blank(), text = element_text(size = 9))
+
+NN_r2_plot <- ggplot(NN_r2s_scaled[R2.Method == "R2OOS"], aes(y = reorder(method, V1), x = V1)) + geom_bar(stat='identity', fill = "#13bfc4") + theme(axis.title = element_blank(), text = element_text(size = 9))
+
+trad_NN_r2_plot <- ggplot(NN_r2s_scaled[R2.Method == "TRAD.R2OOS"], aes(y = reorder(method, V1), x = V1)) + geom_bar(stat='identity', fill = "#13bfc4") + theme(axis.title = element_blank(), text = element_text(size = 9))
+
+grid.arrange(FM_r2_plot, trad_FM_r2_plot, RF_r2_plot, trad_RF_r2_plot, NN_r2_plot,
+             trad_NN_r2_plot, ncol = 2)
+
+tikz(file = "Latex/R_graphs/relative_VI.tex", width = 6)
+plot6 <- grid.arrange(FM_r2_plot + facet_wrap(facets = as.factor("FM R2")) + ggtitle(NULL) + theme(axis.title = element_blank()), trad_FM_r2_plot + facet_wrap(facets = as.factor("FM Trad. R2")) + ggtitle(NULL) + theme(axis.title = element_blank()), RF_r2_plot + facet_wrap(facets = as.factor("RF R2")) + ggtitle(NULL) +  theme(axis.title = element_blank()), trad_RF_r2_plot + facet_wrap(facets = as.factor("RF Trad. R2")) + ggtitle(NULL) +  theme(axis.title = element_blank()), NN_r2_plot + facet_wrap(facets = as.factor("NN R2")) + ggtitle(NULL) + theme(axis.title = element_blank()), trad_NN_r2_plot + facet_wrap(facets = as.factor("NN Trad. R2")) + ggtitle(NULL) + theme(axis.title = element_blank()), nrow = 3)
+print(plot6)
+dev.off()
+
+temp4 <- merge(RF_r2s_scaled[R2.Method == "R2OOS", .(method, RF = Rank)],
+               FM_r2s_scaled[R2.Method == "R2OOS", .(method, FM = Rank)],
+               by = "method")
+temp4 <- merge(temp4, NN_r2s_scaled[R2.Method == "R2OOS", .(method, NN = Rank)],
+               by = "method")
+temp5 <- melt(temp4, id.vars = "method")
+temp5$variable <- with(temp5, base::factor(variable, levels = c("FM", "RF", "NN")))
+
+tikz(file = "Latex/R_graphs/combined_VI.tex", width = 6, height = 4)
+plot7 <- ggplot(temp5, aes(variable, method)) + geom_tile(aes(fill = value), show.legend = F) +
+  scale_fill_distiller(palette = "Blues", direction = 1) + scale_x_discrete(expand = c(0, 0)) + scale_y_discrete(expand = c(0, 0)) + theme(axis.title = element_blank())
+print(plot7)
+dev.off()
+plot7
+```
+
+```{r}
+drawdown <- function(dt) {
+  # browser()
+  cum_profit <- dt[, .(Date, CUM.RET = cumprod(RET + 1)), by = c("variable", "Method")]
+  drawdown <- cum_profit[, .(DRAWDOWN = (CUM.RET - cummax(CUM.RET))/ cummax(CUM.RET)), by = c("variable", "Method")]
+  return(drawdown[, .(MDD = min(DRAWDOWN)), by = c("variable", "Method")])
+}
+high_low <- portfolio_returns[variable %in% c("EW.RET", "VW.RET"), 
+                              .(Date, variable, RF, FM, NN)]
+high_low_long <- melt(high_low, id.vars = c("Date", "variable"),
+                      variable.name = "Method", value.name = "RET")
+max_drawdown <- drawdown(high_low_long)
+
+min_one_month <- high_low_long[, .(MIN.1MONTH = min(RET)),
+                               by = c("variable", "Method")]
+```
+
+```{r}
+load("Data/factors.Rdata")
+factors_wide <- dcast(factors, Date ~ ..., value.var = "USD.RET")
+factors_wide <- merge(high_low_long, factors_wide, by = "Date")
+FF_stats <- factors_wide[, {reg <- summary(lm(RET ~ RMRF + SMB + HML + RMW + CMA + MOM,
+                                              data = .SD, na.action = na.omit))
+  list(ALPHA = reg$coefficients["(Intercept)", "Estimate"],
+  T.STAT = reg$coefficients["(Intercept)", "t value"],
+  R.SQUARED = reg$r.squared)}, by = c("variable", "Method")]
+```
+
+```{r}
+turnover_long <- copy(data2)
+turnover_long <- melt(turnover_long[, -c("pf.size", "year", "EXC.USD.RET",
+                                    "FM.EXP.RET", "NN.EXP.RET", "RF.EXP.RET")],
+                      id.vars = c("Date", "Company", "USD.RET", "L.USD.MV"),
+                      value.name = "Portfolio", variable.name = "Method")
+# turnover_long[, c("Method", "Portfolio") := tstrsplit(value, "\\.")]
+turnover_long <- turnover_long[Portfolio %in% c("FM.Long", "RF.Long", "NN.Long")]
+turnover_long[, `:=` (V.WEIGHT = L.USD.MV / sum(L.USD.MV), E.WEIGHT = 1/.N),
+              by = c("Date", "Portfolio")]
+turnover_long <- melt(turnover_long, measure.vars = c("V.WEIGHT", "E.WEIGHT"),
+                      value.name = "WEIGHT", variable.name = "TYPE")
+turnover_long[, PORT.RET := weighted.mean(USD.RET, WEIGHT, na.rm = T),
+              by = c("Date", "Portfolio", "TYPE")]
+turnover_long[, SCALED.RET := (USD.RET + 1)/(PORT.RET + 1)]
+turnover_long[, SCALED.WEIGHT := WEIGHT * SCALED.RET]
+# Create data.table with all possible date/id combinations
+combinations <- turnover_long[, CJ(Date = Date, Company = Company, unique=TRUE)]
+turnover_long <- merge(combinations, turnover_long, all.x = T, by = c("Date", "Company"))
+turnover_long[is.na(WEIGHT), WEIGHT := 0]
+turnover_long[, BOP := shift(SCALED.WEIGHT, 1), by = c("Company", "Portfolio", "TYPE")]
+turnover_long[, BOP := ifelse(is.na(BOP), 0, BOP)]
+turnover_long[, CHANGE := WEIGHT - BOP]
+turnover_long <- turnover_long[!is.na(Portfolio), .(0.5 * sum(abs(CHANGE))),
+                               by = c("Date", "Portfolio", "TYPE")]
+turnover_long[, temp := paste(Portfolio, TYPE, sep = " ")]
+
+tikz(file = "Latex/R_graphs/turnover.tex", width = 6, height = 5)
+plot8 <- ggplot(turnover_long, aes(x = Date, y = V1)) + geom_bar(stat="identity") +
+  labs(y = "Turnover") + facet_wrap(~temp, scales = "free", ncol = 2) +
+  theme(axis.title = element_blank(), text = element_text(size = 9))
+print(plot8)
+dev.off()
+
+ggplot(turnover_long, aes(x = Date, y = V1)) + geom_bar(stat="identity") +
+  labs(y = "Turnover") + facet_wrap(~temp, scales = "free", ncol = 2) +
+  theme(axis.title = element_blank(), text = element_text(size = 9))
+
+turnover <- turnover_long[, .(TO = mean(V1)), by = c("Portfolio", "TYPE")]
+```
+
+```{r}
+data3 <- melt(data2[, .(Date, Company, EXC.USD.RET, RF.EXP.RET, FM.EXP.RET, NN.EXP.RET)],
+              id.vars = c("Date", "Company", "EXC.USD.RET"), variable.name = "Method",
+              value.name = "EXP.RET")
+data3[, print(list(.BY, summary(lm(data = .SD, formula = EXC.USD.RET ~ EXP.RET))),
+              digits = 1), by = Method]
+data3[, .(Mean = round(mean(EXP.RET), 4), SD = round(sd(EXP.RET), 4)), by = Method]
+```
+
+```{r}
+diebold_mariano <- data[, .(Date, Company, FM = EXC.USD.RET - FM.EXP.RET,
+                            RF = EXC.USD.RET - RF.EXP.RET,
+                            NN = EXC.USD.RET - NN.EXP.RET)]
+diebold_mariano <- combn(diebold_mariano[!is.na(NN), 3:5], 2, function(x) {
+  gb <- dm.test(as.matrix(x[, 1]), as.matrix(x[, 2]))
+  return(list(round(gb[[1]], 4), round(gb[[5]], 4), colnames(x)))
+})
+```
+

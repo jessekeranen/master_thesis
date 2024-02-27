@@ -1,0 +1,120 @@
+---
+title: "Fama MacBeth"
+author: "Jesse Keränen"
+date: "12/21/2023"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+rm(list = ls())
+
+library(data.table)
+library(ggplot2)
+```
+
+# Preliminary steps
+
+Process is started by loading the data file generated in Data_collection file. In case data file consists old expected returns, they will be removed. Set of explanatory variables is defined and regresion formula is formed from then. Additionally, data is sorted to chronological order.
+```{r}
+load(file = "Data/data.Rdata")
+data[, FM.EXP.RET := NULL]
+#set.seed(1) # Initialize a pseudorandom numbers
+
+independend_variables <- c("CA", "CTO", "INV", "BEME", "CFP", "DEBT", "SP", "EP",
+                           "ROA", "ROE", "Q", "MOM7", "MOM12", "MOM36", "MOM2",
+                           "MOM.IND", "L.SD", "L.HIGH52.RATIO", "L.BETA",
+                           "L.IDVOL", "L.LOG.USD.MV", "L.TO", "L.OBV")
+
+# Regression formula
+formula <-as.formula(paste("EXC.USD.RET", "~", paste(independend_variables, collapse = " + "))) 
+dates <- sort(data[, unique(Date)])
+```
+
+# Expected returns
+
+Next step is to run separate cross-sectional regression for each month. In "cross_sectional" function first these regressions are run for each data. Results of these regressions are stored in a list format together with the corresponding date to a data.table called "regression_results". To have results in readable and usable format another lambda function is used. This lambda function takes one row at (based on a date) the time from the "regression_results" data.table. Inside of the function the list stored to the second column of the "regression_results" is turned to a data.table and corresponding date is added as a new column to the created data.table. Finally data.tables lambda function has returned are appended to one data.table. Ready data.table contains regression coefficients, standard deviations of coefficients and their t-values and p-values for each date and variable. 
+```{r}
+cross_sectional <- function(data, date, formula) {
+  # browser()
+  regression_results <- data[Date >= date, .(summary(lm(formula, 
+                              data = .SD, na.action = na.omit))[4]), by = Date]
+  regression_results <- rbindlist(lapply(regression_results[, unique(Date)], function(x){
+      temp <- as.data.table(regression_results[Date == x, V1], keep.rownames = "variable")
+      temp[, Date := x]
+      return(temp)
+    }))
+  return(regression_results)
+}
+FM_regressions <- cross_sectional(data, dates[1], formula)
+```
+
+For final coefficients we need to calculate rolling means of the coefficients obtained from separate regressions. Lewellen uses average of 120 months. I want to follow method of Lewellen, but since our dataset is smaller we would lose almost third of the observations if we blindly would use rolling means of 120 months. Instead we use compromise and start from rolling window of 1 and increase the window until we reach 120 months. Then we will continue with window of 120 months. This will result highly volatile coefficients at the beginning, but I still find it better than wasting big portion of the dataset.
+
+Finally rolling means are shifted one step for each variable. This is done because we need to exclude for each month most recent regression from the means. E.g. for date "2000-01-31" to derive the expected return we can take directly the characteristics, because they were already lagged earlier. Our logic for calculation of the mean regression coefficients for "2000-01-31" will consider regression using "2000-01-31" and up to 120 previous regressions. But when investor would make prediction of return "2000-01-31" return for corresponding time is not yet available and therefore it must be excluded.  
+```{r}
+rolling_means <- function(rolling_window, data) {
+  setorder(data, Date)
+  data[, rolling_mean := frollmean(Estimate, n = c(seq.int(rolling_window),
+                 rep(rolling_window, length(.SD[, Estimate]) - rolling_window)),
+                 na.rm = TRUE, align = "right", adaptive = T), by = variable]
+  data[, rolling_mean := shift(rolling_mean), by = variable]
+  data[, `:=` (month = month(Date), year = year(Date))]
+  return(data)
+}
+FM_regressions <- rolling_means(120, FM_regressions)
+
+ggplot(FM_regressions[variable %in% c("MOM12", "Q", "L.IDVOL", ".LBETA")],
+       aes(Date, rolling_mean, color=variable)) + geom_line()
+```
+
+Once the rolling means are calculated we can derive the expected returns by multiplying the mean regression coefficients by the most recent available stock characteristics. To make the linear approach better comparable with the non-linear models weights of the variables are only updated once a year in July. 
+```{r}
+exp_returns <- function(data, FM_regressions, variables) {
+  # Get rid of redundant variables and add intercept 
+  help_dt <- data[, ..variables][, `(intercept)` := 1]
+  help_dt <- melt(help_dt, id.vars = c("Date", "Company"))
+  help_dt[, `:=` (month = month(Date), year = year(Date))]
+  
+  # Create help column to merge weights to correct period 
+  help_dt[, hcol := ifelse(month >= 7, year, year - 1)]
+  help_dt <- merge(help_dt, FM_regressions[month == 7, -c("Date")],
+                   by.x = c("hcol", "variable"), by.y = c("year", "variable"))
+  help_dt[, product := value * rolling_mean, by = c("Company", "Date", "variable")]
+  help_dt <- help_dt[, .(FM.EXP.RET = sum(product)), by = c("Company", "Date")]
+  
+  data <- merge(data, help_dt, by = c("Company", "Date"), all.x = T)
+  return(data)
+}
+data <- exp_returns(data, FM_regressions, c("Date", "Company", independend_variables))
+
+# data[!is.na(FM.EXP.RET), summary(lm(RET ~ FM.EXP.RET))]
+```
+
+Finally the data will be saved for later usage.
+```{r}
+save(data, file = "Data/data.Rdata")
+```
+
+# Variable importance
+
+Variable importance for Fama-MacBeth approach is calculated replacing one variable at a time by 0 and then repeating above steps. Once the predicted returns are obtained for the reduced model, they are saved one by one to the RData files in Data folder for later usage.
+```{r, warning=FALSE}
+invisible(lapply(independend_variables, function(x) {
+  print(x) # Print current variable
+  r2 <- copy(data[, -c("FM.EXP.RET")]) # Copy data to temporary file
+  r2[, (x) := 0] # Replace variable by 0
+  
+  # calculate exp returns by calling above descriped functions
+  FM_regressions <- cross_sectional(r2, dates[1], formula)
+  FM_regressions <- rolling_means(120, FM_regressions)
+  r2 <- exp_returns(r2, FM_regressions, c("Date", "Company", independend_variables))
+  
+  # Get rid of redundant variables and save the data
+  r2 <- r2[, .(Date, Company, EXC.USD.RET, FM.EXP.RET)][, Variable := x]
+  file_name <- paste("Data/FM/", x, ".Rdata", sep = "")
+  save(r2, file = file_name)
+}))
+```
+
+

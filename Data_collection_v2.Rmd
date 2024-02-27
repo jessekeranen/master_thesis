@@ -1,0 +1,528 @@
+---
+title: "Thesis data collection script"
+author: "Jesse Keränen"
+date: "10/10/2023"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+rm(list = ls())
+```
+
+This is script used to clean up the data from Datastream. Data was downloaded from Datastream in multiple small excel files. With this script these files are merged and missing observations are cleaned. Finally ready data set is saved so that it can be loaded and used at later point.
+
+Load the needed libraries.
+```{r}
+library(readxl)
+library(data.table)
+library(ggplot2)
+library(stringr)
+library(openxlsx)
+library(tikzDevice)
+library(zoo)
+library(writexl)
+library(lubridate)
+```
+
+# Risk free rate
+
+To calculate excess returns we need a risk free interest rate. Since our returns are calculated from return index converted to USD US risk free rate is used. Risk free rate is obtained from database of Kenneth French: https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html 
+```{r, warning=FALSE}
+RF <- as.data.table(read.csv("Data/F-F_Research_Data_Factors.csv"))
+RF[, `:=` (year = as.numeric(substr(Date, 1, 4)), 
+           month = as.numeric(substr(Date, 5, 6)), RF = as.numeric(RF) / 100)]
+```
+
+# FX rates
+
+Dataset contains companies from multiple countries with different currencies. To be able to pool the data return's and market values have to be comparable between companies from different countries. Daily fx rates are aldo obtained from Reuters Datastream.
+```{r}
+fx_rates <- data.table(read_excel("Data/w02/FX_rates.xlsx", .name_repair = "minimal"))
+colnames(fx_rates) <- as.character(fx_rates[1, ])
+fx_rates <- fx_rates[-1, ]
+fx_rates[, `:=` (Code = NULL, Date = as.POSIXct(Date, tz = "UTC"))]
+
+fx_rates <- melt(fx_rates, id.vars = "Date", value.name = "FX", variable.name = "PCUR")
+fx_rates <- fx_rates[, `:=` (PCUR = as.character(PCUR), FX = as.numeric(FX))]
+```
+
+# Static data
+
+## Static screens
+
+Load the static stock level data for each country and apply first static screens. First stocks for which Country Of Listing is different than the name of the corresponding country are removed. Then stocks for which Geographical Classification of Company is different than the name of the corresponding country are also removed. ISIN Issuer code of a company is required to two letter code for corresponding country. Finally stocks that are traded in different currency than corresponding country's currency are removed.
+```{r}
+static_s <- unique(data.table(read_excel("Data/w02/DS_static_omxs.xlsx")))
+static_h <- unique(data.table(read_excel("Data/w02/DS_static_omxh.xlsx")))
+static_o <- unique(data.table(read_excel("Data/w02/DS_static_omxo.xlsx")))
+static_c <- unique(data.table(read_excel("Data/w02/DS_static_omxc.xlsx")))
+
+# Name of the corresponding country is added
+static_s[, Country := "Sweden"]
+static_h[, Country := "Finland"]
+static_o[, Country := "Norway"]
+static_c[, Country := "Denmark"]
+
+static_screens <- function(dt, variable, filter) {
+  return(dt[get(variable) %in% filter, ])
+}
+# Remove stocks for which Country Of Listing is different than the name of the corresponding country.
+static_s <- static_screens(static_s, "GEOLN", c("SWEDEN"))
+static_h <- static_screens(static_h, "GEOLN", c("FINLAND"))
+static_o <- static_screens(static_o, "GEOLN", c("NORWAY"))
+static_c <- static_screens(static_c, "GEOLN", c("DENMARK"))
+
+# Remove stocks for which Geographical Classification of Company is different than the name of the corresponding country.
+static_s <- static_screens(static_s, "GEOGN", c("SWEDEN"))
+static_h <- static_screens(static_h, "GEOGN", c("FINLAND"))
+static_o <- static_screens(static_o, "GEOGN", c("NORWAY"))
+static_c <- static_screens(static_c, "GEOGN", c("DENMARK"))
+
+# Remove stocks for which Country if ISIN Issuer doesn't match the two letter code for corresponding country.
+static_s <- static_screens(static_s, "GGISN", c("SE"))
+static_h <- static_screens(static_h, "GGISN", c("FI"))
+static_o <- static_screens(static_o, "GGISN", c("NO"))
+static_c <- static_screens(static_c, "GGISN", c("DK"))
+
+# Remove stocks that are traded in different currency than corresponding country's currency.
+static_s <- static_screens(static_s, "PCUR", c("SK"))
+static_h <- static_screens(static_h, "PCUR", c("M", "E"))
+static_o <- static_screens(static_o, "PCUR", c("NK"))
+static_c <- static_screens(static_c, "PCUR", c("DK"))
+```
+
+## Country specific keyword deletion
+
+Previous literature has discovered set of keywords that help us to clean false entries from the dataset. There are keywords that are common for all countries and keywords thatare specific for certain country. Keyword is searched from Datasream fields NAME, ENAME and ECNAME. If key word is observed, corresponding entry is removed from the dataset. Regex is used avoid deleting correct entries that happen to to have the keyword in their name by change. Keyword is required to exist in the beginning of the name, end of the name or as a separate word in the name.
+```{r}
+omxs_key_words <- paste("(^|\\s+)", c("CONVERTED INTO", "USE", "CONVERTED-",
+                    "CONVERTED - SEE"), "($|\\s+)", sep = "", collapse = "|")
+omxh_key_words <- paste("(^|\\s+)", c("USE"), "($|\\s+)", 
+                        sep = "", collapse = "|")
+omxc_key_words <- paste("(^|\\s+)", c("\\)CSE\\)"), "($|\\s+)",
+                        sep = "", collapse = "|")
+
+key_word_removal <- function(dt, variable, key_word) {
+  return(dt[!(get(variable) %like% key_word), ])
+}
+# Remove stocks that have keywords specific for Sweden in their NAME, ENAME or ECNAME
+static_s <- key_word_removal(static_s, "NAME", omxs_key_words)
+static_s <- key_word_removal(static_s, "ENAME", omxs_key_words)
+static_s <- key_word_removal(static_s, "ECNAME", omxs_key_words)
+
+# Remove stocks that have keywords specific for Finland in their NAME, ENAME or ECNAME
+static_h <- key_word_removal(static_h, "NAME", omxh_key_words)
+static_h <- key_word_removal(static_h, "ENAME", omxh_key_words)
+static_h <- key_word_removal(static_h, "ECNAME", omxh_key_words)
+
+# Remove stocks that have keywords specific for Denmark in their NAME, ENAME or ECNAME
+static_c <- key_word_removal(static_c, "NAME", omxc_key_words)
+static_c <- key_word_removal(static_c, "ENAME", omxc_key_words)
+static_c <- key_word_removal(static_c, "ECNAME", omxc_key_words)
+```
+
+## Common keyword deletion
+
+After country specific filters have been applied datasets are merged to one. In the merged dataset stocks that are not classified as equity, are not primary security within company or are not primary quote within security are still removed. Additionally common keywords are searched to delete remaining false entries. Logic for common keyword deletion is same as for country specific keywords. 
+```{r}
+# Append the contry specific data.tables
+static <- rbindlist(list(static_s, static_h, static_o, static_c))
+
+# Remove stocks that are not classified as equity, are not primary security within company or are not primary quote within security.
+static <- static_screens(static, "TYPE", "EQ")
+static <- static_screens(static, "MAJOR", "Y")
+static <- static_screens(static, "ISINID", "P")
+
+key_words <-  paste("(^|\\s+)", c("1000DUPL", "DULP", "DUP", "DUPE", "DUPL",
+"DUPLI", "DUPLICATE", "XSQ", "XETa", "ADR", "GDR", "PF", "’PF’", "PFD", "PREF", 
+"PREFERRED", "PRF", "WARR", "WARRANT", "WARRANTS", "WARRT", "WTS", "WTS2 %", 
+"DB", "DCB", "DEB", "DEBENTURE", "DEBENTURES", "DEBT", "\\.IT", "\\.ITb", "TST",
+"INVESTMENT TRUST", "RLST IT", "TRUST", "TRUST UNIT", "TRUST UNITS", "TST",
+"TST UNIT", "TST UNITS", "UNIT", "UNIT TRUST", "UNITS", "UNT", "UNT TST", 
+"UT AMUNDI", "ETF", "INAV", "ISHARES", "JUNGE", "LYXOR", "X-TR EXPD", "EXPIRED",
+"EXPIRY", "EXPY", "ADS", "BOND", "CAP.SHS", "CONV", "DEFER", "DEP", "DEPY", 
+"ELKS", "FD", "FUND", "GW.FD", "HI.YIELD", "HIGH INCOME", "IDX", "INC\\.&GROWTH",
+"INC\\.&GW", " INDEX", "LP", "MITS", "MITT", "MPS", "NIKKEI", "OPCVM", "ORTF", 
+"PERQS", "PFC", "PFCL", "PINES", "PRTF", "PTNS", "PTSHP", "QUIBS", "QUIDS", 
+"RATE", "RCPTS", "REAL EST", "RECEIPTS", "REIT", "RESPT", "RETUR", "RIGHTS", 
+"RST", "RTN\\.INC", "RTS", "SBVTG", "SCORE", "SPDR", "STRYPES", "TOPRS", "UTS",
+"VCT", "VTG\\.SAS", "XXXXX", "YIELD", "YLD", "PF\\.SHS\\."), "($|\\s+)", 
+sep = "", collapse = "|") # Removed MPIS, NOTE and PARTNER. Added PF.SHS.
+
+# Rest of the keyword cleaning. Removing e.g. preferred stock, warrants etc..
+static <- key_word_removal(static, "NAME", key_words)
+static <- key_word_removal(static, "ENAME", key_words)
+static <- key_word_removal(static, "ECNAME", key_words)
+```
+
+# Timeseries data
+
+Function to download monthly data. As parameters function takes path where file to be loaded is located, name of the variable that is being loaded. Function loads the data, transforms it to tidy format and gets rid of missing values. Function also sets both name of the company and the value of the corresponding variable (e.g. market value) to correct format. Finally function returns a data.table. Second function is used to apply dynamic screens to the dataset. Function takes the dataset as parameter. First it removes all entries where return in local currency is higher than 990%. Next company monthly combinations are removed in case $r_t$ or $r_{t-1}$ is bigger than $3$, but $(1 + r_t) \times (1 + r_{t-1}) < 0.5$. Datastream repeats last available value in case company is delisted. To clean this delisted companies, trailing zeros at the end of the dataset are removed.
+```{r, warning=FALSE}
+get_ts_data <- function(path, var) {
+  # browser()
+  dt <- data.table(read_excel(path, .name_repair = "minimal"))
+  dt <- dt[-1, ]
+  dt <- melt(dt, id.vars = "Code")
+  dt <- dt[!is.na(value)]
+  dt[, value := as.numeric(value)]
+  dt[, variable := gsub(paste("[(]", var,"[)]", sep = ""),"", variable)]
+  colnames(dt) <- c("Date", "Company", var)
+  return(dt)
+}
+
+dynamic_screens <- function(dt) {
+  dt <- dt[RET <= 9.9, ] # Remove returns bigger than 990%
+  # Abnormal short term reversal removal
+  dt <- dt[, .SD[!((RET > 3 | shift(RET) > 3) & (1 + RET) *
+                                       (1 + shift(RET)) < 0.5), ], by = Company]
+  setorder(dt, -Date)
+  dt[, temp := cumsum(RET), by = Company]
+  
+  dt <- dt[temp != 0][, temp := NULL]
+  return(dt)
+}
+```
+
+## Weekly data
+
+Weekly data is the highest frequency data used in this study. Data from Datastream is downloaded using Excel sheets. To keep size of these files reasonable, data is downloaded in smaller portions. Above introduced function is used to load data from Excel files to R. Only variable used in weekly frequency is the unadjusted price UP. Weekly data is merged with fx rates so that price can be converted to US dollars. Then returns are calculated both in local currency and US dollars.
+```{r, warning=FALSE}
+UP <- rbindlist(lapply(1:30, function(x) {
+  return(get_ts_data(paste("Data/w03/UP/UP", x, ".xlsx", sep = ""), "UP"))
+}))
+UP[, `:=` (year = year(Date), month = month(Date), week = strftime(Date,
+                                                    format = "%W", tz = "UTC"))]
+
+VO <- rbindlist(lapply(1:30, function(x) {
+  return(get_ts_data(paste("Data/w03/VO/VO", x, ".xlsx", sep = ""), "VO"))
+}))
+VO[, `:=` (year = year(Date), month = month(Date), week = strftime(Date,
+                                                    format = "%W", tz = "UTC"))]
+
+weekly_data <- merge(UP, VO[, -c("Date")], all.x = T, by = c("year", "month",
+                                                             "week", "Company"))
+
+# Set missing volumes to 0
+weekly_data[is.na(VO)] <- 0
+
+# Convert to USD for comparability
+weekly_data <- merge(weekly_data, static[, c("Type", "PCUR")], by.y = "Type",
+                     by.x = "Company")
+weekly_data <- merge(weekly_data, fx_rates, by = c("PCUR", "Date"))
+weekly_data[, USD.UP := UP / FX]
+
+weekly_data[, RET := UP / shift(UP) - 1, by = Company]
+weekly_data[, USD.RET := USD.UP / shift(USD.UP) - 1, by = Company]
+```
+
+Above introduced dynamics sreens are applied to weekly data. First variables are also calculated from the weekly data. First variable is ratio of company's price to its' 52 week high price. Second variable is standard deviation of returns of the stock. Both variables are calculated on rolling basis using data from last 52 weeks. In there is not 52 weeks data available for a company, values are calculated from data available and rolling window is increased in each following date until 52 weeks is reached.
+```{r}
+# Apply the dynamic screens
+weekly_data <- dynamic_screens(weekly_data)
+
+setorder(weekly_data, Date)
+# Calculate 52 week high
+weekly_data[, HIGH52 := rollapplyr(UP, 52, max, partial = T, na.rm = T),
+            by = Company]
+# Ratio of current price and 52 week high price
+weekly_data[, HIGH52.RATIO := UP / HIGH52]
+# Rolling standard deviation
+weekly_data[, SD := rollapplyr(RET, 52, sd, partial = T, na.rm = T),
+            by = Company]
+
+# On balance volume, trading volume is divided by 1000000 to make variable to same scale as other variables
+setorder(weekly_data, Date)
+weekly_data[, OBV := cumsum((VO / 1000000) * sign(RET)), by = "Company"]
+```
+
+Next variables derived from the weekly data require us to run timeseries regressions. First I start by calculating excess market return. Therefore weekly data is merged with risk free rate. Then market return is calculated as equal weighted mean of all stocks in the dataset. Excess market return is calculated by substracting risk free rate from market return. We later need to merge weekly data to monthly data. Therefore we form another data.table which includes only data for latest available date in each month for each company.
+
+To calculate stock level betas and idiosyncratic volatility we need to run rolling time series regressions. As explanatory variable we use the equal weighted excess market return. Idiosyncratic volatility is the standard deviation of the residuals of the timeseries regression. For each regression I use up to three years of weekly data, but at least 15 observations is required. Finally another data.table is again formed which includes only data for latest available date in each month for each company
+```{r}
+# Risk free rate is needed for excess market return
+weekly_data[, day := day(Date)]
+weekly_data <- merge(weekly_data, RF[, c("year", "month", "RF")],
+                     by = c("year", "month"))
+
+# Convert monthly risk free rate to weekly
+weekly_data[, RF := (1 + RF)^(1/21) - 1]
+weekly_data[, MKT.RET := mean(USD.RET, na.rm = T), by = Date]
+weekly_data[, RMRF := MKT.RET - RF]
+end_of_month_weekly_data <- weekly_data[weekly_data[, .I[which.max(day)],
+                                         by = c("year", "month", "Company")]$V1]
+
+dates <- unique(weekly_data[, Date])
+
+ts_regressions <- function(date, dt) {
+  # browser()
+  # Three years of monthly data
+  df <- dt[Date > ymd(date) - weeks(156) & Date <= date]
+  # Require at least 15 observations
+  df <- df[df[, .I[.N >= 15], by = Company]$V1, ] 
+  df <- df[, {reg <- lm(USD.RET ~ RMRF, na.action = na.omit)
+              list(reg$residuals, reg$coefficients[2])}, by = Company]
+  df <- df[, .(IDVOL = sd(V1), BETA = mean(V2), Date = date), by = Company]
+  return(df)
+}
+residuals_and_betas <- rbindlist(lapply(dates[16:length(dates)], function(x) {
+   return(ts_regressions(x, weekly_data))
+}))
+
+# Filter for last day of the month
+residuals_and_betas[, `:=` (day = day(Date), month = month(Date),
+                            year = year(Date))]
+end_of_month_RE_BETA <- residuals_and_betas[residuals_and_betas[, 
+                     .I[which.max(day)], by = c("year", "month", "Company")]$V1]
+
+save(end_of_month_RE_BETA, file = "Data/RE_BETA.Rdata")
+#load("Data/RE_BETA.Rdata")
+```
+
+## Monthly data
+
+Monthly data is loaded using the same function as weekly data. Then monthly data consisting of total return index RI and market value MV is merged with static data and fx rates. Both return index and market capitalization are converted to US dollars. Often when we calculate portfolio returns we need lagged market values, which is calculated at this point.
+```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE, error=FALSE}
+RI <- get_ts_data("Data/w02/RI.xlsx", "RI")
+MV <- get_ts_data("Data/w02/MV.xlsx", "MV")
+
+monthly_data <- merge(RI, MV, by = c("Date", "Company"))
+monthly_data <- merge(monthly_data, static, by.x = "Company", by.y = "Type")
+monthly_data <- merge(monthly_data, fx_rates, by = c("Date", "PCUR"))
+
+monthly_data[, (paste("USD", c("RI", "MV"), sep = ".")) := 
+               lapply(.SD, function(x) x / FX), .SDcols = c("RI", "MV")]
+monthly_data[, `:=` (L.MV = shift(MV), L.USD.MV = shift(USD.MV)), by = Company]
+```
+
+Derive first variables from monthly data. Also dynamic screens are applied to monthly data similar as to weekly data. To avoid forward looking information we only consider accounting figures from year $n$ to be available for the investor in July $n + 1$. For this we create help column "hcol" that is used to merge annual data to correct period in monthly dataset. Lot of explanatory variables are calculated, by dividing certain company characteristics by the market capitalization from last December. To make calculates easier in later point we merge December market value for each of the other months of the year using helpt data.table. Weekly data calculated earlier is also merged to the monthly dataset.
+```{r}
+# Monthly return local currency
+monthly_data[, RET := (RI / shift(RI)) - 1, by = Company] 
+# Monthly return USD
+monthly_data[, USD.RET := (USD.RI / shift(USD.RI)) - 1, by = Company] 
+
+# Apply dynamic screens to monthly data
+monthly_data <- dynamic_screens(monthly_data)
+
+monthly_data[, `:=` (year = year(Date), month = month(Date))]
+# Create help column for merging the yearly data
+monthly_data[, hcol := ifelse(month >= 7, year-1, year-2)] 
+
+# Calculation of some variables requires MV from Last December
+DEC.MV <- monthly_data[month(Date) == 12, .(Company, year=year(Date),
+                                            DEC.MV = MV, DEC.USD.MV = USD.MV)]
+DEC.MV[, year := year + 1]
+
+monthly_data <- merge(monthly_data, DEC.MV, by = c("year", "Company"), all.x = T)
+monthly_data <- merge(monthly_data, end_of_month_RE_BETA[, .(month, year,
+                     Company, IDVOL, BETA)], by = c("month", "year", "Company"),
+                     all.x = T)
+monthly_data <- merge(monthly_data, end_of_month_weekly_data[, .(month, year,
+                     Company, HIGH52.RATIO, SD, VO, OBV)], by = c("month", "year",
+                                                         "Company"), all.x = T)
+```
+
+After applying dynamic screens to the monthly data we know how many companies we have in each month of our dataset. Below development of the number of companies in each market is shown across the time period.
+```{r}
+number_of_companies <- monthly_data[, .(Count = uniqueN(Company)), 
+                                    by=c("Date", "Country")]
+
+tikz(file = "Latex/R_graphs/number_of_companies.tex", width = 6, height = 4)
+plot <- ggplot(number_of_companies, aes(Date, Count, color = Country)) + 
+  geom_line() + theme_light() + theme(axis.title.y = element_blank(),
+                    axis.title.x = element_blank(), legend.position = "bottom")
+print(plot)
+dev.off()
+
+plot
+```
+
+# Annual data
+
+Following function is used to prepare the annual data. Function works quite similar to timeseries data collection function. Main difference is that we don't require for each variable a value. E.g. it could be the case that information for deferred taxes (WC03263) is not available. Instead of treating the variable as missing, we set the deferred taxes to 0 for that company for that period. Later we set all missing values to zero, but at this point we only change missing values to zero for certain variables to avoid getting NAs e.g. for additions. I don't replace all NAs with zero at this point, because it gives us flexibilyt decide in later point how to deal with missing values.
+```{r}
+replace_zero <- c("WC03263", "WC03501", "NOSH")
+
+get_annual_data <- function(var) {
+  path <- paste("Data/w02/", var, ".xlsx", sep = "")
+  dt <- as.data.table(read_excel(path, .name_repair = "minimal"))
+  colnames(dt) <- as.character(dt[1, ])
+  dt <- tail(dt, -1)
+  dt <- melt(dt, id.vars = "Code")
+  dt[is.na(value), value := ifelse(var %in% replace_zero, 0, NA)]
+  dt <- dt[!is.na(value) & variable != "#ERROR"]
+  dt[, `:=` (value=as.numeric(value), variable=gsub(paste("[(]", var,"[)]", 
+                              sep = ""),"", variable), Code = as.numeric(Code))]
+  colnames(dt) <- c("Date", "Company", var)
+  return(dt)
+}
+
+variables <- c("WC02999", "WC01001", "WC03501", "WC02001", "WC01501",
+               "WC04860", "WC03263", "WC01551", "NOSH")
+
+annual_data <- as.list(lapply(variables, function(x) {
+  get_annual_data(x)
+}))
+# Merge the data.tables for each variable
+annual_data <- Reduce(function (...) { merge(..., all = TRUE) }, annual_data) 
+
+annual_data <- merge(annual_data, static[, .(Type, PCUR)], by.x = "Company",
+                     by.y = "Type")
+setorder(annual_data, Company, -Date)
+```
+
+Similar to monthly and weekly data I also calculate US dollar values for each of the characteristics used in this study. Nevertheless, if characteristic is used to calculate certain ratio, then the local currency values are alwasy used.
+```{r}
+fx_rates[, `:=` (Year = year(Date), Month = month(Date))]
+july_fx_rates <- fx_rates[, .SD[which.max(Date), ], 
+                          by = c("Year", "Month", "PCUR")][Month == 12, ]
+
+annual_data <- merge(annual_data, july_fx_rates[, -c("Month", "Date")], 
+                     by.x = c("Date", "PCUR"), by.y = c("Year", "PCUR"))
+
+annual_data[, (paste("USD", variables, sep = ".")) := 
+              lapply(.SD, function(x) x / FX), .SDcols = variables]
+
+annual_data[, `:=` (L.WC02999 = shift(WC02999), 
+                    L.USD.WC02999 = shift(USD.WC02999)), by = Company]
+```
+
+As typical for financial data we have big outliers in our data. Outliers can be either extraordinary characteristics of a company or they can be mistakes in the data. Either way we don't want our results to be driven by the outliers. Below function can be used to winsorize variables. It takes as argument dataset that contains variable to be winsorized, name of the variables that is to be winsorized and percentile that is used to calculate the threshold values. Function calculates for each month values that above $1-percentile$ or below $percentile$ and replaces these values with the threshold values.
+```{r, echo=FALSE, results='hide'}
+winsorize <- function(dt, x, percentile){
+  dt[, (x) := ifelse(get(x) > quantile(get(x), 1 - percentile, na.rm = T), 
+                     quantile(get(x), 1 - percentile, na.rm=T), get(x)), by = Date]
+  dt[, (x) := ifelse(get(x) < quantile(get(x), percentile, na.rm = T),
+                     quantile(get(x), percentile, na.rm=T), get(x)), by = Date]
+}
+
+invisible(lapply(variables, function(x) {
+  # winsorize(annual_data, x, 0.01)
+}))
+
+ggplot(melt(annual_data[Date == 2018, -c("L.WC02999", "L.USD.WC02999", 
+                            "PCUR", "FX")], id.vars = c("Date", "Company"))) + 
+  geom_histogram(aes(value), colour="black", fill = "red", alpha = 0.2) + 
+  facet_wrap(~variable, scales = "free") + scale_x_log10()
+```
+
+Finally ready monthly and annual datasets can be merged. Help column is used from monthly dataset and reason is explained above. Later when we predict stock prices we want use excess returns to predict the models. Therefore we merge monthly data with risk free rate as well.
+```{r}
+data <- merge(monthly_data, annual_data[, -c("PCUR", "FX")], 
+            by.x = c("Company", "hcol"), by.y = c("Company", "Date"), all.x = T)
+data <- merge(data, RF[, .(year, month, RF)], by = c("year", "month"))
+```
+
+## Variable calculations
+
+Instead of using raw accounting data, usually some kind of ratios are used in anomaly literature. In the next chunck stock characteristics used in this study are calculated. Variables include Cash-to-Assets ratio (CA), Capital turnover (CTO), monthly and annual Book-to-market value (BEME.M and BEME), Investment factor (INV), Cash flow-to-Price ratio (CFP), Leverage (DEBT), Sales-to-Price ratio (SP), Earnings-to-Price ratio (EP), Return-on-Assets (ROA), Return-on-Equity (ROE), Tobin's Q (Q), two month momentum (MOM2), seven to twelve month momentum (MOM7), twelve month momemtum (MOM12), twelve to thirtysix month momentum (MOM36) and logarithm of the market value of the company. Infinite values will be replaced by NA.
+```{r}
+setorder(data, Date)
+data[, EXC.USD.RET := USD.RET - RF]
+
+data[, CA := WC02001 / WC02999, by = Company]
+
+data[, CTO := WC01001 / shift(WC02999, 12), by = Company]
+
+data[, BE := WC03501 + WC03263, by = Company]
+data[, BEME := BE / (DEC.MV * 1000), by = Company]
+data[, BEME.M := BE / (L.MV * 1000), by = Company]
+
+data[, INV := (WC02999 - shift(WC02999, 12)) / shift(WC02999, 12), by = Company]
+
+data[, CFP := WC04860 / (DEC.MV * 1000), by = Company]
+
+data[, DEBT := (WC02999 - WC03501) / (DEC.MV * 1000), by = Company]
+
+data[, SP := WC01001 / (DEC.MV * 1000), by = Company]
+
+data[, EP := WC01551 / (DEC.MV * 1000), by = Company]
+
+data[, ROA := WC01551 / shift(WC02999, 12), by = Company]
+
+data[, ROE := WC01551 / shift(BE), by = Company]
+
+data[, Q := (WC02999 + DEC.MV - WC02001) / WC02999, by = Company]
+
+data[, MOM7 := shift(USD.RI, 7, type = "lag")/shift(USD.RI, 12, type = "lag") - 1,
+   by = Company]
+
+data[, MOM12 := shift(USD.RI, 2, type = "lag")/shift(USD.RI, 12, type = "lag") - 1,
+   by = Company]
+
+data[, MOM36 := shift(USD.RI, 12, type = "lag")/shift(USD.RI, 36, type = "lag") - 1,
+   by = Company]
+
+data[, MOM2 := shift(USD.RET, 1), by = Company]
+
+data[, LOG.USD.MV := log(USD.MV), by = Company]
+
+data[, TO := VO / NOSH, by = Company]
+```
+
+In addition to traditional momentum variables I will include also industry momentum to the set of explanatory variables. Industry of the company is defined by Datastream attribute INDG. First I calculate equal weighted mean return for each INDG/month combination. Then I calculate on rolling basis 12 month cumulative return for the industry and finally merge them back to the monthly dataset.
+```{r}
+industry_data <- setorder(data[, .(MEAN.IND = 1 + mean(USD.RET)),
+                               by = c("Date", "INDG")], Date)
+industry_data[, MOM.IND := rollapply(MEAN.IND, 12, prod, fill = NA,
+                                     align = "right"), by = INDG]
+# Shift to exlude the last month
+industry_data[, MOM.IND := shift(MOM.IND), by = INDG] 
+
+data <- merge(data, industry_data, by = c("Date", "INDG"), all.x = T)
+
+
+var <- c("BEME", "INV", "EP", "CA", "CTO", "CFP", "DEBT", "SP", "ROA",
+         "ROE", "Q", "MOM7", "MOM12", "MOM36", "MOM2","LOG.USD.MV", 
+         "SD", "HIGH52.RATIO", "BETA", "IDVOL", "TO", "OBV")
+
+data[, (var) := lapply(.SD, function(x) {replace(x, is.infinite(x), NA)}),
+     .SDcols = var]
+```
+
+Idea of this study is to mimic actual investment decision setting. Therefore we use lagged variables in the regressions because this information would have been available for an investor in a given time. To make running regressions simpler we add for each variable used in the regression lagged version (monthly variables). 
+```{r}
+setorder(data, Date)
+data[, `:=` (L.CA = shift(CA), L.CTO = shift(CTO), L.INV = shift(INV), 
+             L.BEME = shift(BEME), L.CFP = shift(CFP), L.DEBT = shift(DEBT),
+             L.SP = shift(SP), L.EP = shift(EP), L.ROA = shift(ROA), 
+             L.ROE = shift(ROE), L.Q = shift(Q), L.LOG.USD.MV = shift(LOG.USD.MV),
+             L.SD = shift(SD), L.HIGH52.RATIO = shift(HIGH52.RATIO),  
+             L.BETA = shift(BETA), L.IDVOL = shift(IDVOL), 
+             L.TO = shift(TO), L.OBV = shift(OBV)), by = Company]
+```
+
+Before removing micro cap stocks from the dataset, data is saved for later usage.
+```{r}
+save(data, file = "Data/data_w_microcap.Rdata")
+```
+
+To avoid results to be driven by the small companies, microcap stocks will be removed from the dataset. Microcap stocks are defined as smallest stocks that account for three percent of month's total capitalization. Additionally market capitalization of stocks is winsorized between 1% and 99%. In case companys market capitalization in specific month is bigger than 99% (or smaller than 1%) of the companies then the market capitalization is replaced by the 99% threshold (1% threshold).
+```{r}
+data[, L.USD.MV := ifelse(L.USD.MV > quantile(L.USD.MV, 0.99, na.rm=T), 
+                     quantile(L.USD.MV, 0.99, na.rm=T), L.USD.MV), by = Date]
+
+quantiles <- c(0, 0.9, 0.97, 1)
+labels <- c("Big", "Small", "Micro")
+
+setorder(data, Date, -L.USD.MV)
+data[, aggregated_weight := cumsum(L.USD.MV)/sum(L.USD.MV), by = Date]
+data[, pf.size := cut(aggregated_weight, breaks = quantiles, labels = labels)]
+data <- data[pf.size != "Micro"]
+
+invisible(lapply(var, function(x) {
+  winsorize(data, x, 0.01)
+}))
+
+# Replace na's with 0
+data[is.na(data)] <- 0
+```
+
+
+Final data.table is saved to the data folder for later usage.
+```{r}
+save(data, file = "Data/data.Rdata")
+```
+

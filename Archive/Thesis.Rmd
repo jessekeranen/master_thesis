@@ -1,0 +1,426 @@
+---
+title: "Thesis"
+author: "Jesse Keränen"
+date: "11/4/2023"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+rm(list = ls())
+
+library(data.table)
+library(ggplot2)
+library(zoo)
+library(writexl)
+library(magrittr)
+library(psych)
+library(tikzDevice)
+library(lubridate)
+library(ranger)
+library(neuralnet)
+library(keras)
+library(tensorflow)
+```
+
+Loading the data that was cleaned and made tidy in file "Data_collection.Rmd".
+```{r}
+load(file = "Data/data.Rdata")
+#set.seed(1) # Initialize a pseudorandom numbers
+```
+
+Next step is to run separate cross-sectional regression for each month. In "cross_sectional" function first these regressions are run for each data. Results of these regressions are stored in a list format together with the corresponding date to a data.table called "regression_results". To have results in readable and usable format another lambda function is used. This lambda function takes one row at (based on a date) the time from the "regression_results" data.table. Inside of the function the list stored to the second column of the "regression_results" is turned to a data.table and corresponding date is added as a new column to the created data.table. Finally data.tables lambda function has returned are appended to one data.table. Ready data.table contains regression coefficients, standard deviations of coefficients and their t-values and p-values for each date and variable. 
+```{r}
+independend_variables <- c("CA", "CTO","INV", "BEME", "CFP", "DEBT", "SP", "EP",
+                           "ROA", "ROE", "Q", "MOM7", "MOM12", "MOM36", "MOM2",
+                           "MOM.IND", "L.SD", "L.HIGH52.RATIO", "L.BETA",
+                           "L.IDVOL", "L.LOG.USD.MV", "L.TO", "L.OBV")
+# independend_variables <- c("MOM12", "Q", "IDVOL", "BEME")
+
+cross_sectional <- function(data, date, formula) {
+  # browser()
+  write_xlsx(data[Date == as.POSIXct(date, tz = "UTC")], "test.xlsx")
+  regression_results <- data[Date >= date, .(summary(lm(formula, 
+                              data = .SD, na.action = na.omit))[4]), by = Date]
+  regression_results <- rbindlist(lapply(regression_results[, unique(Date)], function(x){
+      temp <- as.data.table(regression_results[Date == x, V1], keep.rownames = "variable")
+      temp[, Date := x]
+      return(temp)
+    }))
+  return(regression_results)
+}
+formula <-as.formula(paste("EXC.USD.RET", "~", paste(independend_variables, collapse = " + "))) # Regression formula
+
+dates <- sort(data[, unique(Date)])
+FM_regressions <- cross_sectional(data, dates[1], formula)
+
+# write_xlsx(data[Date == dates[250]], "test.xlsx")
+```
+
+For final coefficients we need to calculate rolling means of the coefficients obtained from separate regressions. Lewellen uses average of 120 months. I want to follow method of Lewellen, but since our dataset is smaller we would lose almost half of the observations if we blindly would use rolling means of 120 months. Instead we use compromise and start from rolling window of 1 and increase the window until we reach 120 months. Then we will continue with window of 120 months. This will result highly volatile coefficients at the beginning, but I still find it better than wasting big portion of the dataset.
+
+Finally rolling means are shifted one step for each variable. This is done because we need to exclude for each month most recent regression from the means. E.g. for date "2000-01-31" to derive the expected return we can take directly the characteristics, because they were already lagged earlier. Our logic for calculation of the mean regression coefficients for "2000-01-31" will consider regression using "2000-01-31" and up to 120 previous regressions. But when investor would make prediction of return "2000-01-31" return for corresponding time is not yet available and therefore it must be excluded.  
+```{r}
+rolling_window <- 120
+setorder(FM_regressions, Date)
+FM_regressions[, rolling_mean := frollmean(Estimate, n = c(seq.int(rolling_window), rep(rolling_window, 
+              length(.SD[, Estimate]) - rolling_window)), na.rm = TRUE, align = "right", adaptive = T),
+              by = variable]
+FM_regressions[, rolling_mean := shift(rolling_mean), by = variable]
+
+ggplot(FM_regressions[variable %in% c("MOM12", "Q", "L.IDVOL", ".LBETA")],
+       aes(Date, rolling_mean, color=variable)) + geom_line()
+```
+
+Once the rolling means are calculated we can derive the expected returns by multiplying the mean regression coefficients by the most recent available stock characteristics.
+```{r}
+variables <- c("Date", "Company", independend_variables)
+
+help_dt <- data[, ..variables]
+help_dt[, `(intercept)` := 1]
+help_dt <- melt(help_dt, id.vars = c("Date", "Company"))
+help_dt <- merge(help_dt, FM_regressions, by = c("Date", "variable"))
+help_dt[, product := value * rolling_mean, by = c("Company", "Date", "variable")]
+help_dt <- help_dt[, .(FM.EXP.RET = sum(product)), by=c("Company", "Date")]
+
+data <- merge(data, help_dt, by = c("Company", "Date"))
+
+data[!is.na(FM.EXP.RET), summary(lm(RET ~ FM.EXP.RET))]
+```
+
+```{r, fig.dim = c(8, 8), message=FALSE, echo=FALSE, include=FALSE, results='hide'}
+library(rpart)
+
+# Example Random Forest tree, just for illustration purposes
+example_tree <- rpart(formula, method = "anova", data = na.omit(data[Date == as.POSIXct("2004-07-30", tz="UTC")]))
+example_tree <- prune.rpart(example_tree, cp = 0.02)
+
+
+tikz(file = "regr_tree.tex", width = 4, height = 4)
+plot(example_tree, uniform = T)
+text(example_tree, use.n = TRUE, cex = .7, xpd=T)
+dev.off()
+```
+
+
+```{r}
+trainings <- data[Date > dates[50] & lubridate::month(Date) == 7, unique(Date)]
+trainings <- c(trainings, max(data$Date)) # Add last date
+trainings <- sort(trainings)
+```
+
+
+```{r, warning=FALSE}
+rf_grid <- expand.grid(dates = trainings, ntree = 300, mtry = c(2, 3, 5, 7),
+                          max.depth = seq(2, 6), sample.fraction = 0.5, MSE = 0)
+
+rf_grid <- setorder(as.data.table(rf_grid), dates)
+grid_size <- length(rf_grid$dates) / uniqueN(rf_grid$dates)
+
+# data[, RF.EXP.RET := runif(length(FM.EXP.RET))]
+data[, RF.EXP.RET := 0]
+
+random_forest <- function(dt, grid, date_index, formula, independend_variables) {
+  print(trainings[date_index])
+  mse_lowest <- .Machine$integer.max
+  # for (j in 1:grid_size) {
+  for (j in 1:1) {
+    # browser()
+    index <- (date_index - 1) * grid_size + j
+    rf <- ranger(formula, data = dt[Date < trainings[date_index]],
+                 num.tree = grid$ntree[index], mtry = grid$mtry[index],
+                 max.depth = grid$max.depth[index], 
+                 sample.fraction = grid$sample.fraction[index])
+    # Should be changed to mean
+    grid$MSE[index] <- dt[Date >= trainings[date_index] & Date < 
+                            trainings[date_index + 1], mean((EXC.USD.RET -
+                      predict(rf, .SD[, ..independend_variables])$predictions)^2,
+                      na.rm = T)]
+    print(index)
+  }
+  # browser()
+  hyper_opt <- grid[dates == trainings[date_index], .SD[which.min(MSE)]]
+  rf_opt <- ranger(formula, data = dt[Date < trainings[date_index + 1]],
+                    num.tree = hyper_opt$ntree, mtry = hyper_opt$mtry,
+                    max.depth = hyper_opt$max.depth, 
+                    sample.fraction = hyper_opt$sample.fraction)
+  dt[Date >= trainings[date_index + 1] & Date < trainings[date_index + 2],
+         RF.EXP.RET := predict(rf_opt, .SD[, ..independend_variables])$predictions]
+  return(list(dt, grid))
+}
+
+for (i in 1:(length(trainings) - 2)) {
+  lista <- random_forest(data, rf_grid, i, formula, independend_variables)
+  data <- lista[[1]]
+  rf_grid <- lista[[2]]
+}
+
+summary(data[RF.EXP.RET != 0, lm(EXC.USD.RET ~ RF.EXP.RET)])
+
+
+optimal_grid <- rf_grid[, .SD[which.min(MSE), .(mtry, max.depth, MSE)],
+                           by = dates]
+optimal_grid <- melt(optimal_grid, id.vars = "dates")
+
+ggplot(optimal_grid, aes(dates, value)) + geom_line() + 
+  facet_wrap(~variable, scales = "free") +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, NA))
+```
+
+
+```{r, fig.dim = c(8, 8), message=FALSE, echo=FALSE, include=FALSE}
+model = neuralnet(EXC.USD.RET ~ MOM12 + L.IDVOL + L.LOG.USD.MV + CA,
+                  data=data,
+                  hidden=c(4,2),
+                  linear.output = FALSE)
+
+tikz(file = "NN.tex", width = 6, height = 4)
+invisible(plot(model, rep = "best", information = F, cex=.7))
+dev.off()
+```
+
+
+```{r}
+NN_grid <- expand.grid(dates = trainings, MSE = 0)
+
+NN_grid <- setorder(as.data.table(NN_grid), dates)
+NN_grid_size <- length(NN_grid$dates) / uniqueN(NN_grid$dates)
+
+data[, NN.EXP.RET := runif(nrow(data))]
+
+
+neural_network <- function(dt, grid, date_index, formula, independend_variables) {
+  # browser()
+  mse_lowest <- .Machine$integer.max
+  
+  callback_1 <- callback_early_stopping(monitor = 'val_loss', patience = 5)
+  #callback_2 <- callback_reduce_lr_on_plateau(monitor = 'val_loss', factor = 0.2,
+  #                            patience = 2)
+  model_1 <- keras_model_sequential()
+  model_2 <- keras_model_sequential()
+  model_3 <- keras_model_sequential()
+  model_4 <- keras_model_sequential()
+  model_5 <- keras_model_sequential()
+  
+  model_1 %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 32, activation = 'relu') %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 16, activation = 'relu') %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 1, activation = "linear")
+  model_2 %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 32, activation = 'relu') %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 16, activation = 'relu') %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 1, activation = "linear")
+  model_3 %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 32, activation = 'relu') %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 16, activation = 'relu') %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 1, activation = "linear")
+  model_4 %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 32, activation = 'relu') %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 16, activation = 'relu') %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 1, activation = "linear")
+  model_5 %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 32, activation = 'relu') %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 16, activation = 'relu') %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 1, activation = "linear")
+  
+  model_1 %>% compile(loss = 'mse', optimizer = optimizer_adam(learning_rate = 1e-3), metrics = 'mae') 
+  model_2 %>% compile(loss = 'mse', optimizer = optimizer_adam(learning_rate = 1e-3), metrics = 'mae')
+  model_3 %>% compile(loss = 'mse', optimizer = optimizer_adam(learning_rate = 1e-3), metrics = 'mae')
+  model_4 %>% compile(loss = 'mse', optimizer = optimizer_adam(learning_rate = 1e-3), metrics = 'mae')
+  model_5 %>% compile(loss = 'mse', optimizer = optimizer_adam(learning_rate = 1e-3), metrics = 'mae')
+  
+  data <- dt[Date < trainings[date_index]]
+  sample <- sample(c(TRUE, FALSE), nrow(data), replace = TRUE, prob = c(0.8, 0.2))
+  
+  x_train <- as.matrix(data[sample, lapply(.SD, scale),
+                             .SDcols = independend_variables])
+  y_train <- as.matrix(data[sample, EXC.USD.RET])
+  
+  x_validation <- as.matrix(data[!sample, lapply(.SD, scale),
+                             .SDcols = independend_variables])
+  y_validation <- as.matrix(data[!sample, EXC.USD.RET])
+
+  
+  # for (j in 1:grid_size) {
+  for (j in 1:1) {
+    # browser()
+    index <- (date_index - 1) * NN_grid_size + j
+    model_1 %>% fit(x_train, y_train, epochs = 50, batch_size = 256, 
+                  callbacks = list(callback_1), 
+                  validation_data = list(x_validation, y_validation))
+    model_2 %>% fit(x_train, y_train, epochs = 50, batch_size = 256, 
+                  callbacks = list(callback_1), 
+                  validation_data = list(x_validation, y_validation))
+    model_3 %>% fit(x_train, y_train, epochs = 50, batch_size = 256, 
+                  callbacks = list(callback_1), 
+                  validation_data = list(x_validation, y_validation))
+    model_4 %>% fit(x_train, y_train, epochs = 50, batch_size = 256, 
+                  callbacks = list(callback_1), 
+                  validation_data = list(x_validation, y_validation))
+    model_5 %>% fit(x_train, y_train, epochs = 50, batch_size = 256, 
+                  callbacks = list(callback_1), 
+                  validation_data = list(x_validation, y_validation))
+    
+    mse_1 <- model_1 %>% evaluate(x_validation, y_validation)
+    mse_2 <- model_2 %>% evaluate(x_validation, y_validation)
+    mse_3 <- model_3 %>% evaluate(x_validation, y_validation)
+    mse_4 <- model_4 %>% evaluate(x_validation, y_validation)
+    mse_5 <- model_5 %>% evaluate(x_validation, y_validation)
+
+    grid$MSE[index] <- (mse_1[1] + mse_2[1] + mse_3[1] + mse_4[1] + mse_5[1])/3
+    dt[Date >= trainings[date_index] & Date < trainings[date_index + 1], `:=`
+        (NN1.EXP.RET = model_1 %>% predict(as.matrix(.SD[, lapply(.SD, scale),
+                             .SDcols = independend_variables])),
+        NN2.EXP.RET = model_2 %>% predict(as.matrix(.SD[, lapply(.SD, scale),
+                             .SDcols = independend_variables])),
+        NN3.EXP.RET = model_3 %>% predict(as.matrix(.SD[, lapply(.SD, scale),
+                             .SDcols = independend_variables])),
+        NN4.EXP.RET = model_4 %>% predict(as.matrix(.SD[, lapply(.SD, scale),
+                             .SDcols = independend_variables])),
+        NN5.EXP.RET = model_5 %>% predict(as.matrix(.SD[, lapply(.SD, scale),
+                             .SDcols = independend_variables])))]
+    print(index)
+  }
+  return(list(dt, grid))
+}
+
+for (i in seq(1, length(trainings) - 2)) {
+  lista <- neural_network(data, NN_grid, i, formula, independend_variables)
+  data <- lista[[1]]
+  NN_grid <- lista[[2]]
+}
+
+data[, NN.EXP.RET := (NN1.EXP.RET + NN2.EXP.RET +  NN3.EXP.RET + NN4.EXP.RET + 
+                        NN5.EXP.RET) / 5, by = c("Date", "Company")]
+summary(data[NN.EXP.RET != 0, lm(EXC.USD.RET ~ NN.EXP.RET)])
+
+#NN_optimal_grid <- NN_grid[, .SD[which.min(MSE), .(mtry, max.depth, MSE)], by = dates]
+NN_optimal_grid <- melt(NN_grid, id.vars = "dates")
+
+data[!is.na(NN.EXP.RET), cor(NN.EXP.RET, EXC.USD.RET)]
+
+ggplot(NN_optimal_grid, aes(dates, value)) + geom_line() + 
+  scale_y_log10()
+```
+
+
+
+
+```{r}
+data2 <- copy(data[, .(Date, pf.size, year, Company, USD.RET, L.USD.MV,
+                       FM.EXP.RET, RF.EXP.RET, NN.EXP.RET)])
+setorder(data2)
+quantiles <- seq(0.1, 0.9, by = 0.1)
+
+factor <- function(dt, variable, name, labels, quantiles) {
+  # browser()
+  dt[, temp := cut(.SD[, get(variable)], breaks = c(-Inf, quantile(.SD[pf.size == "Big", get(variable)],
+                    quantiles, na.rm = T), Inf), labels = labels), by = Date]
+  temp2 <- dt[is.na(temp)]
+  setnames(dt, "temp", name)
+  return(dt)
+}
+data2 <- factor(data2[year > 1995 & Date < as.POSIXct("2022-12-30", tz = "UTC")],
+                "FM.EXP.RET", "FM.POSITION",
+                c("FM.Short", "FM.2", "FM.3", "FM.4", "FM.4", "FM.5", "FM.6",
+                  "FM.7", "FM.8", "FM.Long"), quantiles)
+data2 <- factor(data2[year > 1995 & year < 2022],
+                "RF.EXP.RET", "RF.POSITION",
+                c("RF.Short", "RF.2", "RF.3", "RF.4", "RF.5", "RF.6", "RF.7",
+                  "RF.8", "RF.9", "RF.Long"), quantiles)
+data2 <- factor(data2[year > 1995 & year < 2022],
+                "NN.EXP.RET", "NN.POSITION",
+                c("NN.Short", "NN.2", "NN.3", "NN.4", "NN.5", "NN.6", "NN.7",
+                  "NN.8", "NN.9", "NN.Long"), quantiles)
+
+temp <- data2[pf.size == "Big", .(quantile(RF.EXP.RET, quantiles)), by = c("Date")]
+temp1 <- temp[, uniqueN(V1), by = Date]
+
+portfolioreturns <- function(dt, portfolio){
+  #browser()
+  # portfolio_returns <- dt[, .(RET = weighted.mean(USD.RET, L.USD.MV, na.rm = T)), by = c("Date", portfolio)]
+  portfolio_returns <- dt[, .(RET = mean(USD.RET, na.rm = T)), by = c("Date", portfolio)]
+  return(dcast(portfolio_returns, paste("... ~ ", portfolio), value.var = "RET"))
+}
+
+portfolio_returns1 <- portfolioreturns(data2, "FM.POSITION")
+portfolio_returns2 <- portfolioreturns(data2, "RF.POSITION")
+portfolio_returns3 <- portfolioreturns(data2, "NN.POSITION")
+portfolio_returns <- merge(portfolio_returns1, portfolio_returns2, by = "Date")
+# portfolio_returns <- merge(portfolio_returns1, portfolio_returns3, by = "Date")
+portfolio_returns <- merge(portfolio_returns, portfolio_returns3, by = "Date")
+portfolio_returns[, `:=` (RF = RF.Long - RF.Short, FM = FM.Long - FM.Short, 
+                          NN = NN.Long - NN.Short), by = Date]
+
+# portfolio_returns[, `:=` (FM = FM.Long - FM.Short, NN = NN.Long - NN.Short), by = Date]
+
+
+portfolio_returns_long <- melt(portfolio_returns, id.vars = "Date")
+portfolio_returns_long <- portfolio_returns_long[, cum_prod := cumprod(value + 1), by = variable]
+portfolio_returns_long[, `:=` (Method = substr(variable, 1, 2), 
+                               Position = substr(variable, 4, length(variable)))]
+        
+ggplot(portfolio_returns_long[variable %in% c("FM", "RF", "NN")], aes(Date, cum_prod, 
+        color = variable)) +  geom_line() + scale_y_log10() + theme(legend.position = "bottom")
+
+ggplot(portfolio_returns_long[Position %in% c("Long", "Short")], aes(Date, cum_prod, color = Method, 
+        linetype = Position)) +  geom_line() + scale_y_log10() +
+        theme(legend.position = "bottom")
+```
+
+
+```{r}
+# Check the portfolio statistics
+min_max <- portfolio_returns_long[, .(Min = min(value), Max = max(value)), by = variable]
+portfolio_statistics <- portfolio_returns_long[, t.test(value, na.rm = T), by = variable]
+portfolio_statistics[, Count := seq(.N), by = variable][, Count := ifelse(Count == 1,
+                                                                          "Lower Bound", "Upper Bound")]
+portfolio_statistics <- dcast(portfolio_statistics, ... ~ Count, value.var = "conf.int")
+portfolio_statistics <- merge(portfolio_statistics, min_max, by = "variable")
+
+round <- colnames(portfolio_statistics[, -c("variable", "parameter", "alternative", "method", "data.name")])
+portfolio_statistics[, (round) := round(.SD, 4), .SDcols = round]
+```
+
+
+```{r}
+save(data2, file = "Data/EXP_RET.Rdata")
+save(data, file = "Data/EXP_RET_full.Rdata")
+```
+
+
+```{r}
+data3 <- copy(data2)
+data3 <- na.omit(data3)
+
+names <- c("FM.EXP.RET", "RF.EXP.RET")
+
+out_of_sample_r2 <- function(dt, variable) {
+  #browser()
+  variable
+  test <- dt[, get(variable)]
+  temp <- dt[, .(method = variable, R2OOS = 1 - sum((RET - get(variable))^2) / sum(RET^2))]
+  dt
+  return(temp)
+}
+R2OOS <- do.call(rbind, lapply(names, out_of_sample_r2, dt =  data3))
+```
+
+
+
+

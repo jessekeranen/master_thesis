@@ -1,0 +1,278 @@
+---
+title: "Neural network"
+author: "Jesse Keränen"
+date: "12/21/2023"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+rm(list = ls(all.names = TRUE))
+gc()
+
+library(data.table)
+library(ggplot2)
+library(neuralnet)
+library(tikzDevice)
+library(zoo)
+library(keras)
+library(tensorflow)
+tensorflow::set_random_seed(42)
+```
+
+```{r}
+load(file = "Data/data.Rdata")
+data[, NN.EXP.RET := NULL]
+```
+
+```{r}
+independend_variables <- c("CA", "CTO", "INV", "BEME", "CFP", "DEBT", "SP", "EP",
+                           "ROA", "ROE", "Q", "MOM7", "MOM12", "MOM36", "MOM2",
+                           "MOM.IND", "L.SD", "L.HIGH52.RATIO", "L.BETA",
+                           "L.IDVOL", "L.LOG.USD.MV", "L.TO", "L.OBV")
+
+#independend_variables <- c("CA", "CTO", "BEME", "DEBT", "SP", "EP",
+#                           "ROE", "Q", "MOM2", "MOM7", "MOM12", "MOM36",
+#                           "MOM.IND", "L.SD", "L.HIGH52.RATIO", "L.BETA",
+#                           "L.IDVOL", "L.LOG.USD.MV", "L.OBV", "L.TO")
+
+
+dates <- sort(data[, unique(Date)])
+
+trainings <- data[Date > dates[50] & lubridate::month(Date) == 7, unique(Date)]
+trainings <- c(trainings, max(data$Date)) # Add last date
+trainings <- sort(trainings)
+```
+
+```{r, fig.dim = c(8, 8), message=FALSE, echo=FALSE, include=FALSE}
+'model <- neuralnet(EXC.USD.RET ~ MOM12 + L.IDVOL + L.LOG.USD.MV + CA,
+                  data = data[Date == as.POSIXct("2010-09-30", tz = "UTC")],
+                  hidden = c(4,2),
+                  linear.output = T)
+
+tikz(file = "Latex/R_graphs/NN.tex", width = 6, height = 4)
+invisible(plot(model, rep = "best", information = F, cex=.7))
+dev.off()'
+```
+
+```{r}
+scheduler <- function(epoch, lr) {
+  if (epoch < 10) {
+    return(lr)    
+  }
+  else {
+    return(lr * 0.9)
+  }
+}
+```
+
+```{r}
+NN_grid <- expand.grid(dates = trainings, MSE = 0)
+
+NN_grid <- setorder(as.data.table(NN_grid), dates)
+NN_grid_size <- length(NN_grid$dates) / uniqueN(NN_grid$dates)
+
+data[, `:=` (NN.EXP.RET = NULL, NN1.EXP.RET = NULL, NN2.EXP.RET = NULL, NN3.EXP.RET = NULL,
+             NN4.EXP.RET = NULL, NN5.EXP.RET = NULL)]
+
+neural_network <- function(dt, grid, date_index, independend_variables) {
+  set.seed(42)
+  
+  callback_1 <- callback_early_stopping(monitor = 'val_loss', patience = 5)
+  #callback_2 <- callback_reduce_lr_on_plateau(monitor = 'val_loss', factor = 0.2,
+  #                            patience = 2)
+  callback_3 <- callback_learning_rate_scheduler(scheduler)
+  
+  #csv_logger_1 <- callback_csv_logger("model_1_logs.csv", append = T)
+  #csv_logger_2 <- callback_csv_logger("model_2_logs.csv", append = T)
+  #csv_logger_3 <- callback_csv_logger("model_3_logs.csv", append = T)
+  #csv_logger_4 <- callback_csv_logger("model_4_logs.csv", append = T)
+  #csv_logger_5 <- callback_csv_logger("model_5_logs.csv", append = T)
+  
+  model_1 <- keras_model_sequential()
+  model_2 <- keras_model_sequential()
+  model_3 <- keras_model_sequential()
+  model_4 <- keras_model_sequential()
+  model_5 <- keras_model_sequential()
+  
+  model_1 %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 16, activation = 'relu',
+                    kernel_initializer = initializer_random_normal(seed = 10),
+                    bias_initializer = initializer_constant(0.0)) %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 8, activation = 'relu',
+                    kernel_initializer = initializer_random_normal(seed = 20),
+                    bias_initializer = initializer_constant(0.0)) %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 1, activation = "linear",
+                    kernel_initializer = initializer_random_normal(seed = 1),
+                    bias_initializer = initializer_constant(0.0))
+  model_2 %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 16, activation = 'relu',
+                    kernel_initializer = initializer_random_normal(seed = 11),
+                    bias_initializer = initializer_constant(0.0)) %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 8, activation = 'relu',
+                    kernel_initializer = initializer_random_normal(seed = 21),
+                    bias_initializer = initializer_constant(0.0)) %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 1, activation = "linear",
+                    kernel_initializer = initializer_random_normal(seed = 2),
+                    bias_initializer = initializer_constant(0.0))
+  model_3 %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 16, activation = 'relu',
+                    kernel_initializer = initializer_random_normal(seed = 12),
+                    bias_initializer = initializer_constant(0.0)) %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 8, activation = 'relu',
+                    kernel_initializer = initializer_random_normal(seed = 22),
+                    bias_initializer = initializer_constant(0.0)) %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 1, activation = "linear",
+                    kernel_initializer = initializer_random_normal(seed = 3),
+                    bias_initializer = initializer_constant(0.0))
+  model_4 %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 16, activation = 'relu',
+                    kernel_initializer = initializer_random_normal(seed = 13),
+                    bias_initializer = initializer_constant(0.0)) %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 8, activation = 'relu',
+                    kernel_initializer = initializer_random_normal(seed = 23),
+                    bias_initializer = initializer_constant(0.0)) %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 1, activation = "linear",
+                    kernel_initializer = initializer_random_normal(seed = 4),
+                    bias_initializer = initializer_constant(0.0))
+  model_5 %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 16, activation = 'relu',
+                    kernel_initializer = initializer_random_normal(seed = 14),
+                    bias_initializer = initializer_constant(0.0)) %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 8, activation = 'relu',
+                    kernel_initializer = initializer_random_normal(seed = 24),
+                    bias_initializer = initializer_constant(0.0)) %>%
+        layer_batch_normalization() %>%
+        layer_dense(units = 1, activation = "linear",
+                    kernel_initializer = initializer_random_normal(seed = 5),
+                    bias_initializer = initializer_constant(0.0))
+  
+  model_1 %>% compile(loss = 'mse', optimizer = optimizer_adam(learning_rate = 1e-3),
+                      metrics = 'mae') 
+  model_2 %>% compile(loss = 'mse', optimizer = optimizer_adam(learning_rate = 1e-3),
+                      metrics = 'mae')
+  model_3 %>% compile(loss = 'mse', optimizer = optimizer_adam(learning_rate = 1e-3),
+                      metrics = 'mae')
+  model_4 %>% compile(loss = 'mse', optimizer = optimizer_adam(learning_rate = 1e-3),
+                      metrics = 'mae')
+  model_5 %>% compile(loss = 'mse', optimizer = optimizer_adam(learning_rate = 1e-3),
+                      metrics = 'mae')
+  
+  data <- dt[Date < trainings[date_index]]
+  data <- data[sample(1:nrow(data))]
+  sample <- sample(c(TRUE, FALSE), nrow(data), replace = TRUE, prob = c(0.8, 0.2))
+  
+  x_train <- as.matrix(data[sample, ..independend_variables])
+  y_train <- as.matrix(data[sample, EXC.USD.RET])
+  
+  x_validation <- as.matrix(data[!sample, ..independend_variables])
+  y_validation <- as.matrix(data[!sample, EXC.USD.RET])
+  
+
+    index <- (date_index - 1) * NN_grid_size
+    model_1 %>% fit(x_train, y_train, epochs = 100, batch_size = 502, 
+                  callbacks = list(callback_1, callback_3), 
+                  validation_data = list(x_validation, y_validation), 
+                  verbose = 0)
+    model_2 %>% fit(x_train, y_train, epochs = 100, batch_size = 502, 
+                  callbacks = list(callback_1, callback_3), 
+                  validation_data = list(x_validation, y_validation), 
+                  verbose = 0)
+    model_3 %>% fit(x_train, y_train, epochs = 100, batch_size = 502, 
+                  callbacks = list(callback_1, callback_3), 
+                  validation_data = list(x_validation, y_validation), 
+                  verbose = 0)
+    model_4 %>% fit(x_train, y_train, epochs = 100, batch_size = 502, 
+                  callbacks = list(callback_1, callback_3), 
+                  validation_data = list(x_validation, y_validation), 
+                  verbose = 0)
+    model_5 %>% fit(x_train, y_train, epochs = 100, batch_size = 502, 
+                  callbacks = list(callback_1, callback_3), 
+                  validation_data = list(x_validation, y_validation), 
+                  verbose = 0)
+
+    mse_1 <- model_1 %>% evaluate(x_validation, y_validation, verbose = 0)
+    mse_2 <- model_2 %>% evaluate(x_validation, y_validation, verbose = 0)
+    mse_3 <- model_3 %>% evaluate(x_validation, y_validation, verbose = 0)
+    mse_4 <- model_4 %>% evaluate(x_validation, y_validation, verbose = 0)
+    mse_5 <- model_5 %>% evaluate(x_validation, y_validation, verbose = 0)
+    
+    grid$MSE[index] <- (mse_1[1] + mse_2[1] + mse_3[1] + mse_4[1] + mse_5[1]) / 5
+    dt[Date >= trainings[date_index] & Date < trainings[date_index + 1], `:=`
+        (NN1.EXP.RET = model_1 %>% predict(as.matrix(.SD[, ..independend_variables])),
+        NN2.EXP.RET = model_2 %>% predict(as.matrix(.SD[, ..independend_variables])),
+        NN3.EXP.RET = model_3 %>% predict(as.matrix(.SD[, ..independend_variables])),
+        NN4.EXP.RET = model_4 %>% predict(as.matrix(.SD[, ..independend_variables])),
+        NN5.EXP.RET = model_5 %>% predict(as.matrix(.SD[, ..independend_variables])))]
+    print(index)
+    
+  return(list(dt, grid))
+}
+
+
+for (i in 1:(length(trainings) - 1)) {
+  lista <- neural_network(data, NN_grid, i, independend_variables)
+  data <- lista[[1]]
+  NN_grid <- lista[[2]]
+}
+
+data[, NN.EXP.RET := (NN1.EXP.RET + NN2.EXP.RET +  NN3.EXP.RET + NN4.EXP.RET + 
+                        NN5.EXP.RET) / 5, by = c("Date", "Company")]
+
+ggplot(data[, mean((NN.EXP.RET - EXC.USD.RET)^2), by = Date], aes(Date, V1)) + geom_line() + scale_y_log10()
+
+summary(data[NN.EXP.RET != 0, lm(EXC.USD.RET ~ NN.EXP.RET)])
+
+#NN_optimal_grid <- NN_grid[, .SD[which.min(MSE), .(mtry, max.depth, MSE)], by = dates]
+NN_optimal_grid <- melt(NN_grid, id.vars = "dates")
+
+data[!is.na(NN.EXP.RET), cor(NN.EXP.RET, EXC.USD.RET)]
+
+ggplot(NN_optimal_grid, aes(dates, value)) + geom_line() + 
+  scale_y_log10()
+```
+
+```{r}
+save(data, file = "Data/data.Rdata")
+```
+
+
+```{r}
+NN_grid2 <- expand.grid(dates = trainings, MSE = 0)
+NN_grid2 <- setorder(as.data.table(NN_grid2), dates)
+
+invisible(lapply(independend_variables, function(x) {
+  r2 <- copy(data)
+  r2[, (x) := 0]
+  r2[, `:=` (NN.EXP.RET = NULL, NN1.EXP.RET = NULL, NN2.EXP.RET = NULL,
+             NN3.EXP.RET = NULL, NN4.EXP.RET = NULL, NN5.EXP.RET = NULL)]
+  
+  #for (i in 1:(length(trainings) - 1)) {
+  for (i in 1:(length(trainings) - 1)) {
+    lista <- neural_network(r2, NN_grid2, i, independend_variables)
+    r2 <- lista[[1]]
+  }
+  print(x)
+  r2[, NN.EXP.RET := (NN1.EXP.RET + NN2.EXP.RET +  NN3.EXP.RET + NN4.EXP.RET + 
+                        NN5.EXP.RET) / 5, by = c("Date", "Company")]
+  r2 <- r2[, .(Date, Company, EXC.USD.RET, NN.EXP.RET)][, Variable := x]
+  file_name <- paste("Data/NN/", x, ".Rdata", sep = "")
+  save(r2, file = file_name)
+}))
+```
+
+

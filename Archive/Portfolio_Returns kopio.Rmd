@@ -1,0 +1,201 @@
+---
+title: "Portofolio returns"
+author: "Jesse Keränen"
+date: "12/21/2023"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(data.table)
+library(ggplot2)
+library(zoo)
+library(writexl)
+```
+
+```{r}
+load(file = "Data/data.Rdata")
+
+independend_variables <- c("CA", "CTO", "CFP", "INV", "BEME", "DEBT", "SP", "EP",
+                           "ROE", "ROA", "Q", "MOM2", "MOM7", "MOM12", "MOM36",
+                           "MOM.IND", "L.SD", "L.HIGH52.RATIO", "L.BETA",
+                           "L.IDVOL", "L.LOG.USD.MV", "L.OBV", "L.TO")
+```
+
+```{r}
+data2 <- copy(data[, .(Date, pf.size, year, Company, USD.RET, L.USD.MV,
+                       FM.EXP.RET, RF.EXP.RET, NN.EXP.RET)])
+setorder(data2)
+quantiles <- seq(0.1, 0.9, by = 0.1)
+
+factor <- function(dt, variable, name, labels, quantiles) {
+  # browser()
+  dt[, temp := cut(.SD[, get(variable)], breaks = c(-Inf, quantile(.SD[pf.size == "Big", get(variable)],
+                    quantiles, na.rm = T), Inf), labels = labels), by = Date]
+  temp2 <- dt[is.na(temp)]
+  setnames(dt, "temp", name)
+  return(dt)
+}
+data2 <- factor(data2[year > 1995 & Date < as.POSIXct("2022-12-30", tz = "UTC")],
+                "FM.EXP.RET", "FM.POSITION", c("FM.Short", "FM.2", "FM.3", "FM.4",
+                "FM.4", "FM.6", "FM.7", "FM.8", "FM.9", "FM.Long"), quantiles)
+data2 <- factor(data2, "RF.EXP.RET", "RF.POSITION", c("RF.Short", "RF.2", "RF.3",
+                "RF.4", "RF.5", "RF.6", "RF.7", "RF.8", "RF.9", "RF.Long"),
+                quantiles)
+data2 <- factor(data2, "NN.EXP.RET", "NN.POSITION", c("NN.Short", "NN.2", "NN.3",
+                "NN.4", "NN.5", "NN.6", "NN.7", "NN.8", "NN.9", "NN.Long"),
+                quantiles)
+
+temp <- data2[pf.size == "Big", .(quantile(NN.EXP.RET, quantiles)), by = c("Date")]
+temp1 <- temp[, uniqueN(V1), by = Date]
+
+portfolioreturns <- function(dt, portfolio, return){
+  #browser()
+  portfolio_returns <- dt[, .(EW.RET = mean(USD.RET, na.rm = T),
+                              VW.RET = weighted.mean(USD.RET, L.USD.MV, na.rm = T),
+                              EW.EXP.RET = mean(get(return), na.rm = T),
+                              VW.EXP.RET = weighted.mean(get(return), L.USD.MV, na.rm = T)),
+                          by = c("Date", portfolio)]
+   portfolio_returns <- melt(portfolio_returns, id.vars = c("Date", portfolio))
+   return(dcast(portfolio_returns, paste("... ~ ", portfolio), value.var = "value"))
+}
+portfolio_returns1 <- portfolioreturns(data2, "FM.POSITION", "FM.EXP.RET")
+portfolio_returns2 <- portfolioreturns(data2, "RF.POSITION", "RF.EXP.RET")
+portfolio_returns3 <- portfolioreturns(data2, "NN.POSITION", "NN.EXP.RET")
+
+portfolio_returns <- merge(portfolio_returns1, portfolio_returns2, by = c("Date", "variable"))
+portfolio_returns <- merge(portfolio_returns, portfolio_returns3, by = c("Date", "variable"))
+
+portfolio_returns[, `:=` (RF = RF.Long - RF.Short, FM = FM.Long - FM.Short, 
+                          NN = NN.Long - NN.Short), by = c("Date", "variable")]
+
+portfolio_returns_long <- melt(portfolio_returns, id.vars = c("Date", "variable"),
+                               variable.name = "Portfolio", value.name = "Return")
+portfolio_returns_long <- portfolio_returns_long[, cum_prod := cumprod(Return + 1),
+                                                 by = c("Portfolio", "variable")]
+portfolio_returns_long[, `:=` (Method = substr(Portfolio, 1, 2), 
+                               Position = as.factor(substr(Portfolio, 4, length(Portfolio))))]
+
+market_return <- data[Date >= min(portfolio_returns$Date),
+                      .(VW.RET = weighted.mean(USD.RET, L.USD.MV), RF = mean(RF)),
+                      by = Date]
+setorder(market_return, Date)
+market_return[, MKT.RET := VW.RET - RF][, cum_prod := cumprod(MKT.RET + 1)]
+        
+ggplot() + geom_line(data = portfolio_returns_long[Portfolio %in% c("FM", "RF", "NN")
+        & variable == "VW.RET"], aes(x = Date, y = cum_prod, color = Portfolio)) +
+  scale_y_log10() + theme(axis.title = element_blank(), legend.position = "bottom") +
+  geom_line(data = market_return, aes(x = Date, y = cum_prod))
+
+
+ggplot() + geom_line(data = portfolio_returns_long[Portfolio %in% c("FM", "RF", "NN")
+        & variable == "EW.RET"], aes(x = Date, y = cum_prod, color = Portfolio)) +
+  scale_y_log10() + theme(axis.title = element_blank(), legend.position = "bottom") +
+  geom_line(data = market_return, aes(x = Date, y = cum_prod))
+
+
+ggplot() + geom_line(data = portfolio_returns_long[Position %in% c("Long", "Short") &
+    variable == "VW.RET"], aes(Date, cum_prod, color = Method, linetype = Position)) +
+  scale_y_log10() + geom_line(data = market_return, aes(Date, cum_prod)) +
+  theme(axis.title = element_blank(), legend.position = "bottom")
+
+
+ggplot() + geom_line(data = portfolio_returns_long[Position %in% c("Long", "Short") &
+    variable == "EW.RET"], aes(Date, cum_prod, color = Method, linetype = Position)) +
+  scale_y_log10() + geom_line(data = market_return, aes(Date, cum_prod)) +
+  theme(axis.title = element_blank(), legend.position = "bottom")
+```
+
+```{r}
+exp_portfolio_returns_long <- portfolio_returns_long[variable %in% c("EW.EXP.RET", "VW.EXP.RET")]
+exp_portfolio_returns_long <- exp_portfolio_returns_long[, .(EXP.RET = mean(Return)),
+                                                         by = c("variable", "Portfolio")]
+exp_portfolio_returns_long[, variable := gsub(".EXP", "", variable)]
+```
+
+
+```{r}
+portfolio_returns_long2 <- portfolio_returns_long[variable %in% c("EW.RET", "VW.RET")]
+
+# Check the portfolio statistics
+min_max <- portfolio_returns_long2[, .(Min = min(Return), Max = max(Return)),
+                                  by = c("variable", "Portfolio")]
+portfolio_statistics <- portfolio_returns_long2[, t.test(Return, na.rm = T), 
+                                               by = c("variable", "Portfolio")]
+portfolio_statistics[, Count := seq(.N), by = c("variable",
+                            "Portfolio")][, Count := ifelse(Count == 1,
+                                                 "Lower Bound", "Upper Bound")]
+portfolio_statistics <- dcast(portfolio_statistics, ... ~ Count, value.var = "conf.int")
+portfolio_statistics <- merge(portfolio_statistics, min_max,
+                              by = c("variable", "Portfolio"))
+portfolio_statistics <- merge(portfolio_statistics, exp_portfolio_returns_long,
+                              by = c("variable", "Portfolio"))
+
+round <- colnames(portfolio_statistics[, -c("variable", "Portfolio", "parameter",
+                                            "alternative", "method", "data.name")])
+portfolio_statistics[, (round) := round(.SD, 4), .SDcols = round]
+portfolio_statistics
+```
+
+
+```{r}
+oos_r2 <- function(dt, variable) {
+  # browser()
+  temp <- dt[, .(Date, EXC.USD.RET, Company, get(variable))]
+  temp <- temp[!is.na(V4), .(method = variable,
+                R2OOS = 1 - (sum((EXC.USD.RET - V4)^2) / (sum(EXC.USD.RET^2))))]
+  return(temp)
+}
+
+load_exp_ret <- function(method, variable) {
+  # browser()
+  path <- paste("Data/", method, "/", variable , ".Rdata", sep = "")
+  load(file = path)
+  return(r2)
+}
+```
+
+
+```{r}
+rf_exp_rets <- rbindlist(lapply(independend_variables, function(x) { 
+  return(load_exp_ret("RF", x))
+}))
+rf_exp_rets <- dcast(rf_exp_rets, Date + Company + EXC.USD.RET ~ Variable, value.var = "RF.EXP.RET")
+
+
+RF_r2s <- rbindlist(lapply(independend_variables, function(x) {
+  return(oos_r2(rf_exp_rets, x))
+}))
+RF_r2s <- rbind(RF_r2s, oos_r2(data, "RF.EXP.RET"))
+```
+
+
+```{r}
+fm_exp_rets <- rbindlist(lapply(independend_variables, function(x) { 
+  return(load_exp_ret("FM", x))
+}))
+fm_exp_rets <- dcast(fm_exp_rets, Date + Company + EXC.USD.RET ~ Variable, value.var = "FM.EXP.RET")
+
+
+FM_r2s <- rbindlist(lapply(independend_variables, function(x) {
+  return(oos_r2(fm_exp_rets, x))
+}))
+FM_r2s <- rbind(FM_r2s, oos_r2(data, "FM.EXP.RET"))
+```
+
+
+```{r}
+nn_exp_rets <- rbindlist(lapply(independend_variables, function(x) { 
+  return(load_exp_ret("NN", x))
+}))
+nn_exp_rets <- dcast(nn_exp_rets, Date + Company + EXC.USD.RET ~ Variable, value.var = "NN.EXP.RET")
+
+
+NN_r2s <- rbindlist(lapply(independend_variables, function(x) {
+  return(oos_r2(nn_exp_rets, x))
+}))
+NN_r2s <- rbind(NN_r2s, oos_r2(data, "NN.EXP.RET"))
+
+options(scipen = 999999)
+```

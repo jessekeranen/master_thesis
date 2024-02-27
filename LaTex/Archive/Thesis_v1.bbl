@@ -1,0 +1,729 @@
+\begin{thebibliography}{}
+
+\bibitem [\protect \citeauthoryear {%
+Anwar%
+\ \BBA {} Hogholm%
+}{%
+Anwar%
+\ \BBA {} Hogholm%
+}{%
+{\protect \APACyear {2020}}%
+}]{%
+ButtHogholm2020}
+\APACinsertmetastar {%
+ButtHogholm2020}%
+\begin{APACrefauthors}%
+Anwar, B\BPBI H.%
+\BCBT {}\ \BBA {} Hogholm, K.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2020}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The impact of illiquidity risk for the Nordic markets}
+  {The impact of illiquidity risk for the nordic markets}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Spanish Journal of Finance and Accounting / Revista
+  Espa{\~n}ola de Financiaci{\'o}n y Contabilidad}{49}{1}{28-47}.
+\newblock
+\begin{APACrefURL} \url{https://doi.org/10.1080/02102412.2018.1555348}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{10.1080/02102412.2018.1555348} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Carhart%
+}{%
+Carhart%
+}{%
+{\protect \APACyear {1997}}%
+}]{%
+Carhart1997}
+\APACinsertmetastar {%
+Carhart1997}%
+\begin{APACrefauthors}%
+Carhart, M\BPBI M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1997}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {On Persistence in Mutual Fund Performance} {On
+  persistence in mutual fund performance}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Journal of Finance}{52}{1}{57--82}.
+\newblock
+\begin{APACrefURL} [{2023-11-24}]\url{http://www.jstor.org/stable/2329556}
+  \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Davydov%
+, Tikkanen%
+\BCBL {}\ \BBA {} {\"A}ij{\"o}%
+}{%
+Davydov%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2017}}%
+}]{%
+Davydov2017MagicFV}
+\APACinsertmetastar {%
+Davydov2017MagicFV}%
+\begin{APACrefauthors}%
+Davydov, D.%
+, Tikkanen, J.%
+\BCBL {}\ \BBA {} {\"A}ij{\"o}, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2017}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Magic Formula vs. Traditional Value Investment
+  Strategies in the Finnish Stock Market} {Magic formula vs. traditional value
+  investment strategies in the finnish stock market}.{\BBCQ}.
+\newblock
+\begin{APACrefURL} \url{https://api.semanticscholar.org/CorpusID:220593553}
+  \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Drobetz%
+\ \BBA {} Otto%
+}{%
+Drobetz%
+\ \BBA {} Otto%
+}{%
+{\protect \APACyear {2021}}%
+}]{%
+Drobetz}
+\APACinsertmetastar {%
+Drobetz}%
+\begin{APACrefauthors}%
+Drobetz, W.%
+\BCBT {}\ \BBA {} Otto, T.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2021}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Empirical asset pricing via machine learning: evidence
+  from the European stock market} {Empirical asset pricing via machine
+  learning: evidence from the european stock market}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Asset Management}{22}{7}{507--538}.
+\newblock
+\begin{APACrefURL} \url{https://doi.org/10.1057/s41260-021-00237-x}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{10.1057/s41260-021-00237-x} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Fama%
+\ \BBA {} French%
+}{%
+Fama%
+\ \BBA {} French%
+}{%
+{\protect \APACyear {1993}}%
+}]{%
+FAMA19933}
+\APACinsertmetastar {%
+FAMA19933}%
+\begin{APACrefauthors}%
+Fama, E\BPBI F.%
+\BCBT {}\ \BBA {} French, K\BPBI R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1993}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Common risk factors in the returns on stocks and bonds}
+  {Common risk factors in the returns on stocks and bonds}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Financial Economics}{33}{1}{3-56}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.sciencedirect.com/science/article/pii/0304405X93900235}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{https://doi.org/10.1016/0304-405X(93)90023-5}
+  \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Fama%
+\ \BBA {} French%
+}{%
+Fama%
+\ \BBA {} French%
+}{%
+{\protect \APACyear {2012}}%
+}]{%
+FAMA2012457}
+\APACinsertmetastar {%
+FAMA2012457}%
+\begin{APACrefauthors}%
+Fama, E\BPBI F.%
+\BCBT {}\ \BBA {} French, K\BPBI R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2012}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Size, value, and momentum in international stock
+  returns} {Size, value, and momentum in international stock returns}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Financial Economics}{105}{3}{457-472}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.sciencedirect.com/science/article/pii/S0304405X12000931}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{https://doi.org/10.1016/j.jfineco.2012.05.011}
+  \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Fama%
+\ \BBA {} French%
+}{%
+Fama%
+\ \BBA {} French%
+}{%
+{\protect \APACyear {2015}}%
+}]{%
+FAMA20151}
+\APACinsertmetastar {%
+FAMA20151}%
+\begin{APACrefauthors}%
+Fama, E\BPBI F.%
+\BCBT {}\ \BBA {} French, K\BPBI R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2015}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {A five-factor asset pricing model} {A five-factor asset
+  pricing model}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Financial Economics}{116}{1}{1-22}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.sciencedirect.com/science/article/pii/S0304405X14002323}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{https://doi.org/10.1016/j.jfineco.2014.10.010}
+  \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Fama%
+\ \BBA {} MacBeth%
+}{%
+Fama%
+\ \BBA {} MacBeth%
+}{%
+{\protect \APACyear {1973}}%
+}]{%
+FamaMacBeth1973}
+\APACinsertmetastar {%
+FamaMacBeth1973}%
+\begin{APACrefauthors}%
+Fama, E\BPBI F.%
+\BCBT {}\ \BBA {} MacBeth, J\BPBI D.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1973}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Risk, Return, and Equilibrium: Empirical Tests} {Risk,
+  return, and equilibrium: Empirical tests}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Political Economy}{81}{3}{607--636}.
+\newblock
+\begin{APACrefURL} [{2023-10-29}]\url{http://www.jstor.org/stable/1831028}
+  \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Fieberg%
+, Metko%
+, Poddig%
+\BCBL {}\ \BBA {} Loy%
+}{%
+Fieberg%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2023}}%
+}]{%
+Fieberg}
+\APACinsertmetastar {%
+Fieberg}%
+\begin{APACrefauthors}%
+Fieberg, C.%
+, Metko, D.%
+, Poddig, T.%
+\BCBL {}\ \BBA {} Loy, T.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2023}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Machine learning techniques for cross-sectional equity
+  returns'prediction} {Machine learning techniques for cross-sectional equity
+  returns'prediction}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{OR Spectrum}{45}{1}{289--323}.
+\newblock
+\begin{APACrefURL} \url{https://doi.org/10.1007/s00291-022-00693-w}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{10.1007/s00291-022-00693-w} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Green%
+, Hand%
+\BCBL {}\ \BBA {} Zhang%
+}{%
+Green%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2017}}%
+}]{%
+Green2017}
+\APACinsertmetastar {%
+Green2017}%
+\begin{APACrefauthors}%
+Green, J.%
+, Hand, J\BPBI R\BPBI M.%
+\BCBL {}\ \BBA {} Zhang, X\BPBI F.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2017}{03}{}.
+\newblock
+{\BBOQ}\APACrefatitle {{The Characteristics that Provide Independent
+  Information about Average U.S. Monthly Stock Returns}} {{The Characteristics
+  that Provide Independent Information about Average U.S. Monthly Stock
+  Returns}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Review of Financial Studies}{30}{12}{4389-4436}.
+\newblock
+\begin{APACrefURL} \url{https://doi.org/10.1093/rfs/hhx019} \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{10.1093/rfs/hhx019} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Grobys%
+\ \BBA {} Huhta-Halkola%
+}{%
+Grobys%
+\ \BBA {} Huhta-Halkola%
+}{%
+{\protect \APACyear {2019}}%
+}]{%
+grobys}
+\APACinsertmetastar {%
+grobys}%
+\begin{APACrefauthors}%
+Grobys, K.%
+\BCBT {}\ \BBA {} Huhta-Halkola, T.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2019}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Combining value and momentum: evidence from the Nordic
+  equity market} {Combining value and momentum: evidence from the nordic equity
+  market}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Applied Economics}{51}{26}{2872-2884}.
+\newblock
+\begin{APACrefURL} \url{https://doi.org/10.1080/00036846.2018.1558364}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{10.1080/00036846.2018.1558364} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Gu%
+, Kelly%
+\BCBL {}\ \BBA {} Xiu%
+}{%
+Gu%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2020}}%
+}]{%
+guetal}
+\APACinsertmetastar {%
+guetal}%
+\begin{APACrefauthors}%
+Gu, S.%
+, Kelly, B.%
+\BCBL {}\ \BBA {} Xiu, D.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2020}{02}{}.
+\newblock
+{\BBOQ}\APACrefatitle {{Empirical Asset Pricing via Machine Learning}}
+  {{Empirical Asset Pricing via Machine Learning}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Review of Financial Studies}{33}{5}{2223-2273}.
+\newblock
+\begin{APACrefURL} \url{https://doi.org/10.1093/rfs/hhaa009} \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{10.1093/rfs/hhaa009} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Hanauer%
+\ \BBA {} Kalsbach%
+}{%
+Hanauer%
+\ \BBA {} Kalsbach%
+}{%
+{\protect \APACyear {2023}}%
+}]{%
+HANAUER2022}
+\APACinsertmetastar {%
+HANAUER2022}%
+\begin{APACrefauthors}%
+Hanauer, M\BPBI X.%
+\BCBT {}\ \BBA {} Kalsbach, T.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2023}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Machine learning and the cross-section of emerging
+  market stock returns} {Machine learning and the cross-section of emerging
+  market stock returns}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Emerging Markets Review}{55}{}{101022}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.sciencedirect.com/science/article/pii/S1566014123000274}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{https://doi.org/10.1016/j.ememar.2023.101022}
+  \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Hanauer%
+\ \BBA {} Windmüller%
+}{%
+Hanauer%
+\ \BBA {} Windmüller%
+}{%
+{\protect \APACyear {2023}}%
+}]{%
+HANAUER2023106712}
+\APACinsertmetastar {%
+HANAUER2023106712}%
+\begin{APACrefauthors}%
+Hanauer, M\BPBI X.%
+\BCBT {}\ \BBA {} Windmüller, S.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2023}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Enhanced momentum strategies} {Enhanced momentum
+  strategies}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Banking \& Finance}{148}{}{106712}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.sciencedirect.com/science/article/pii/S0378426622002928}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{https://doi.org/10.1016/j.jbankfin.2022.106712}
+  \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Ince%
+\ \BBA {} Porter%
+}{%
+Ince%
+\ \BBA {} Porter%
+}{%
+{\protect \APACyear {2006}}%
+}]{%
+Ince2006}
+\APACinsertmetastar {%
+Ince2006}%
+\begin{APACrefauthors}%
+Ince, O\BPBI S.%
+\BCBT {}\ \BBA {} Porter, R\BPBI B.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2006}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {INDIVIDUAL EQUITY RETURN DATA FROM THOMSON DATASTREAM:
+  HANDLE WITH CARE!} {Individual equity return data from thomson datastream:
+  Handle with care!}{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Financial Research}{29}{4}{463-479}.
+\newblock
+\begin{APACrefURL}
+  \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1475-6803.2006.00189.x}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{https://doi.org/10.1111/j.1475-6803.2006.00189.x}
+  \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Jacobs%
+\ \BBA {} M{\"u}ller%
+}{%
+Jacobs%
+\ \BBA {} M{\"u}ller%
+}{%
+{\protect \APACyear {2020}}%
+}]{%
+JACOBS2020213}
+\APACinsertmetastar {%
+JACOBS2020213}%
+\begin{APACrefauthors}%
+Jacobs, H.%
+\BCBT {}\ \BBA {} M{\"u}ller, S.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2020}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Anomalies across the globe: Once public, no longer
+  existent?} {Anomalies across the globe: Once public, no longer
+  existent?}{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Financial Economics}{135}{1}{213-230}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.sciencedirect.com/science/article/pii/S0304405X19301618}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{https://doi.org/10.1016/j.jfineco.2019.06.004}
+  \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Jokipii%
+\ \BBA {} V{\"a}h{\"a}maa%
+}{%
+Jokipii%
+\ \BBA {} V{\"a}h{\"a}maa%
+}{%
+{\protect \APACyear {2006}}%
+}]{%
+jokipii2006free}
+\APACinsertmetastar {%
+jokipii2006free}%
+\begin{APACrefauthors}%
+Jokipii, A.%
+\BCBT {}\ \BBA {} V{\"a}h{\"a}maa, S.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2006}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The free cash flow anomaly revisited: Finnish evidence}
+  {The free cash flow anomaly revisited: Finnish evidence}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Business Finance \&
+  Accounting}{33}{7-8}{961--978}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+LAKONISHOK%
+, SHLEIFER%
+\BCBL {}\ \BBA {} VISHNY%
+}{%
+LAKONISHOK%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {1994}}%
+}]{%
+LAKONISHOK1994}
+\APACinsertmetastar {%
+LAKONISHOK1994}%
+\begin{APACrefauthors}%
+LAKONISHOK, J.%
+, SHLEIFER, A.%
+\BCBL {}\ \BBA {} VISHNY, R\BPBI W.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1994}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Contrarian Investment, Extrapolation, and Risk}
+  {Contrarian investment, extrapolation, and risk}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Journal of Finance}{49}{5}{1541-1578}.
+\newblock
+\begin{APACrefURL}
+  \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1540-6261.1994.tb04772.x}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{https://doi.org/10.1111/j.1540-6261.1994.tb04772.x}
+  \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Leivo%
+\ \BBA {} P{\"a}t{\"a}ri%
+}{%
+Leivo%
+\ \BBA {} P{\"a}t{\"a}ri%
+}{%
+{\protect \APACyear {2011}}%
+}]{%
+cite-key}
+\APACinsertmetastar {%
+cite-key}%
+\begin{APACrefauthors}%
+Leivo, T\BPBI H.%
+\BCBT {}\ \BBA {} P{\"a}t{\"a}ri, E\BPBI J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2011}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Enhancement of value portfolio performance using
+  momentum and the long-short strategy: The Finnish evidence} {Enhancement of
+  value portfolio performance using momentum and the long-short strategy: The
+  finnish evidence}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Asset Management}{11}{6}{401--416}.
+\newblock
+\begin{APACrefURL} \url{https://doi.org/10.1057/jam.2009.38} \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{10.1057/jam.2009.38} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Lewellen%
+}{%
+Lewellen%
+}{%
+{\protect \APACyear {2015}}%
+}]{%
+lewellen2015}
+\APACinsertmetastar {%
+lewellen2015}%
+\begin{APACrefauthors}%
+Lewellen, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2015}{June}{}.
+\newblock
+{\BBOQ}\APACrefatitle {{The Cross-section of Expected Stock Returns}} {{The
+  Cross-section of Expected Stock Returns}}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Critical Finance Review}{4}{1}{1-44}.
+\newblock
+\begin{APACrefURL} \url{https://ideas.repec.org/a/now/jnlcfr/104.00000024.html}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{10.1561/104.00000024} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Palazzo%
+}{%
+Palazzo%
+}{%
+{\protect \APACyear {2012}}%
+}]{%
+PALAZZO2012162}
+\APACinsertmetastar {%
+PALAZZO2012162}%
+\begin{APACrefauthors}%
+Palazzo, B.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2012}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Cash holdings, risk, and expected returns} {Cash
+  holdings, risk, and expected returns}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Financial Economics}{104}{1}{162-185}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.sciencedirect.com/science/article/pii/S0304405X11002856}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{https://doi.org/10.1016/j.jfineco.2011.12.009}
+  \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Rosenberg%
+, Reid%
+\BCBL {}\ \BBA {} Lanstein%
+}{%
+Rosenberg%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {1985}}%
+}]{%
+Rosenberg1985}
+\APACinsertmetastar {%
+Rosenberg1985}%
+\begin{APACrefauthors}%
+Rosenberg, B.%
+, Reid, K.%
+\BCBL {}\ \BBA {} Lanstein, R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1985}{Apr}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Persuasive evidence of market inefficiency} {Persuasive
+  evidence of market inefficiency}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Portfolio Management}{11}{}{9-16}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Tobek%
+\ \BBA {} Hronec%
+}{%
+Tobek%
+\ \BBA {} Hronec%
+}{%
+{\protect \APACyear {2021}}%
+}]{%
+TOBEK2021100588}
+\APACinsertmetastar {%
+TOBEK2021100588}%
+\begin{APACrefauthors}%
+Tobek, O.%
+\BCBT {}\ \BBA {} Hronec, M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2021}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Does it pay to follow anomalies research? Machine
+  learning approach with international evidence} {Does it pay to follow
+  anomalies research? machine learning approach with international
+  evidence}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Financial Markets}{56}{}{100588}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.sciencedirect.com/science/article/pii/S1386418120300574}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{https://doi.org/10.1016/j.finmar.2020.100588}
+  \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\end{thebibliography}
