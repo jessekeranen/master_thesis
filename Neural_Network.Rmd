@@ -72,8 +72,8 @@ NN_grid <- expand.grid(dates = trainings, MSE = 0)
 NN_grid <- setorder(as.data.table(NN_grid), dates)
 NN_grid_size <- length(NN_grid$dates) / uniqueN(NN_grid$dates)
 
-data[, `:=` (NN.EXP.RET = NULL, NN1.EXP.RET = NULL, NN2.EXP.RET = NULL, NN3.EXP.RET = NULL,
-             NN4.EXP.RET = NULL, NN5.EXP.RET = NULL)]
+data[, `:=` (NN.EXP.RET = NULL, NN1.EXP.RET = NULL, NN2.EXP.RET = NULL,
+             NN3.EXP.RET = NULL, NN4.EXP.RET = NULL, NN5.EXP.RET = NULL)]
 
 neural_network <- function(dt, grid, date_index, independend_variables) {
   set.seed(42)

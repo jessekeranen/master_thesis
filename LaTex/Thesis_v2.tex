@@ -1,5 +1,7 @@
 \documentclass{article}
 \usepackage{tikz}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{positioning}
 \usepackage{hyperref}
 \usepackage{apacite}
 \usepackage{float}
@@ -229,33 +231,108 @@ Table \ref{table:descriptive} provides descriptive statistics of company charact
 
 %introduce the explanatory variables
 
+%time periods
 
 \section{Methodology} \label{Methodology}
 
-This study will evaluate tested methods from two perspectives. Both of them depend on expected returns provided by the methods. How different methods derive the expected returns is explained in the following subsections. First more economical perspective is how profitable predictions of different models would have turned out to be. Profitability is estimated via portfolio construction following Lewellen \citeyear{lewellen2015}. Each month based on the expected return produced by the model all stocks are allocated to quintile portfolios. Object of the interest is the spread between lowest and highest expected return portfolios. Both value and equal weighted returns will be reported for each portfolio. Long-short returns will be calculated from the returns of portfolio with highest and lowest expected returns. These returns will be regressed agains Fama-French \citeyear{FAMA19933} three factor model factors to test if model was able to produce returns that can not be explained with loadings of Fama and French risk factors.
+This study will evaluate machine learning methods from two perspectives. First perspective that is evaluated is the profitability of the methods. Profitability is estimated via portfolio construction following Lewellen \citeyear{lewellen2015}. First expected returns are derived from each model. This process is introduced in more detail in following subsections. After obtaining the expected returns, each month all stocks are distributed to ten portfolios based on the magnitude of the expected return. Allocation is univariate and does not consider other variables than the expected return of the stock for the next month. Even though models are trained only once a year, expected returns are re-calculated every month as the most recent available data is inserted to the model. Therefore, also the portfolio allocation is repeated monthly. Each month all stocks are allocated to one of the ten expected return portfolio, but to avoid result to be mainly driven by small stocks approach from Hanauer and Kalsbach is applied \citeyear{HANAUER2022}  and the breakpoints for the allocation are calculated only from the large market value stocks. Large market value stocks are the biggest stocks that account for 97\% of the aggregated total market value of respective month.
 
-Second more statistical measure is how precise prediction methods was able to produce. Prediction accuracy will be evaluated using out-of-smaple $R^{2}_{oos} $ from (source). 
+In addition to the ten expected return portfolios, for each method zero investment portfolio is formed. Zero investment or long-short portfolio is simply the spread between return of the highest expected return portfolio and return of the lowest expected return portfolio. Both value and equal weighted returns will be reported for each portfolio. Performance of the machine learning portfolios is backtested and evaluated in multiple ways. For all expected return portfolios historical realized mean returns are reported together with Sharpe ratios. For long-short portfolios also maximum drawdown and maximum 1 month loss will be reported. Maximum 1 month loss is simply the largest negative monthly return of each portfolio. Maximum drawdown is define as
+
+\begin{equation}
+\label{eq:maxDD}
+MaxDD = \max\limits_{0\leq t_1\leq t_2\leq T} (Y_{t_1} - Y_{t_2})
+\end{equation}
+
+
+where $Y_t$ stands for cumulative return from the beginning of the period until date $t$. Turnover will be calculated only for long side of the long-short portfolios. In order to examine risk adjusted returns long-short portfolio returns will be regressed against Fama-French \citeyear{FAMA20151} six factor model factors \footnotemark. From this regression alphas, which can interpret as the excess return that the models are able to generate that cannot be explained by the loadings in the six risk factors. Also $t$-statistics for the alphas and $R^2$ values are reported. Regression formula for risk adjusted performance
+
+\begin{equation}
+\label{eq:FFRegFormula}
+\begin{split}
+\hat r_{i, t} = 	& \ \alpha+ \beta_{1} \ RMRF{t} + \beta_{2} + \ SMB_{t} + \beta_{3} \ HML_{t} + \\
+		&  \beta_{4} \ CMA_{t} +  \beta_{5} \ RMW_{t} + \beta_{6} \ MOM_{t} + \epsilon_{t}
+\end{split}
+\end{equation}
+
+where $RMRF$ is the excess market return, $SMB$ is the spread in the return between small market value stocks and large market value stocks, $HML$ is the spread in the return between high book-to-market value stocks and low book-to-market value stocks, $CMA$ is the spread in the return between conservatively investing stocks and aggressively investing stocks, $RMW$ is the spread in the return between stocks with robust profitability and stocks with weak profitability and $MOM$ is the between returns of stocks that had highest return in period $t-1$ and the stocks that had lowest return in period $t-1$. Factors are constructed from the same dataset as machine learning portfolios, except that the micro-cap stocks are not excluded. Construction of these factors is described in more detail in Appendix.
+
+\footnotetext{Fama and French \citeyear{FAMA20151} introduced the five factor model. Factors used to regress machine learning portfolio returns include five factor model factors and momentum factor from Carhart \citeyear{Carhart1997}.}
+
+Machine learning models are also evaluated based on their prediction accuracy. Prediction accuracy will be evaluated using out-of-sample $R^{2}_{oos}$ and Diebold-Mariano tests. Two out-of-sample $R^{2}$ figures are presented. Traditional out-of-sample $R^{2}$ uses historical mean  return as the benchmark estimation. Traditional out-of-sample $R^{2}$ is defined as
+
+\begin{equation}
+\label{eq:r2Trad}
+R^{2}_{oos} = 1 - \frac{\sum^T_{t=1} \sum^N_{i=1} (r_{i, t} - \hat r_{i, t})^2}{ \sum^T_{t=1} \sum^N_{i=1} (r_{i, t} - \overline{r}_{i, t} )^2}
+\end{equation}
+
+where $r_{i, t}$ is the realized return of stock $i$ in month $t$, $\hat r_{i, t}$ is the predicted return of the same stock for month $i$ and $\overline{r}_{i, t}$ is the historical mean return of the same stock excluding month $i$. Nevertheless, Gu et al. \citeyear{guetal} argue that the historical mean return is so noisy estimator that it underperforms compared to static estimation of zero and therefore artificially improves the out-of-sample $R^{2}$. Instead they propose alternative out-of-sample $R^{2}$ measure where the squared sum of returns in denominator is not demeaned. 
 
 \begin{equation}
 \label{eq:r2}
 R^{2}_{oos} = 1 - \frac{\sum^T_{t=1} \sum^N_{i=1} (r_{i, t} - \hat r_{i, t})^2}{ \sum^T_{t=1} \sum^N_{i=1} r^2_{i, t}}
 \end{equation}
 
-Factors importance
+Pair-wise Diebold-Mariano tests.
+
+\begin{equation}
+\label{eq:Diebold-Mariano}
+\begin{split}
+ d_{12, t} 			& = \ \frac{1}{N_{t}}  \sum^N_{i=1}((r_{i, t} - \hat r_{i, t, 1})^2 - (r_{i, t} - \hat r_{i, t, 2})^2) \\
+\overline{d}_{12} 	& = \ \frac{1}{T} \sum^T_{t=1} d_{12, t} \\
+DM_{12} 			& = \ \frac{\overline{d}_{12}}{\hat \sigma_{d_{12}}} \\
+\end{split}
+\end{equation}
+
+In the spirit of Lewellen \citeyear{lewellen2015} expected returns are also estimated by regressing realized returns with expected returns. 
+
+\begin{equation}
+\label{eq:realizedRegression}
+r_{i, t} = \alpha + \beta_1 \hat r_{i, t}
+\end{equation}
+
+
+\definecolor{Gray}{RGB}{160,160,160}
+\definecolor{LightGray}{RGB}{191,191,191}
+\begin{figure}[h]
+\centering
+\caption[SampleSplitting]{\textbf{SampleSplitting}\\ Illustration sample splitting used in training of the machine learning models. Machine learning models are trained once a year and after each training model is used for next 12 months to predict the stock returns. Each year training period is extended by 12 months. Training period is further split into training data and validation data randomly allocating 80\% of the data to training set and 20\% of the data to the validation set. Validation set is used to optimize hyperparameters. Minimum length of the training period is 50 months.}
+\begin{tikzpicture}
+\draw[->] (0, 0) -- (12.8, 0);
+\foreach \x in {0, 1.6,...,12.8}{
+    \draw (\x cm, 3pt) -- (\x cm, 0pt);
+} 
+\fill[LightGray] (0, 0.8) rectangle (8, 0.6);
+\fill[Gray] (8, 0.8) rectangle (9.6, 0.6);
+\fill[LightGray] (0, 0.45) rectangle (9.6, 0.25);
+\fill[Gray] (9.6, 0.45) rectangle (11.2, 0.25);
+
+\draw [thick, decorate, decoration = {brace, amplitude = 5pt}] (0, 0.8)  -- +(8, 0) 
+       node [black, midway, above = 4pt] {Training period};
+\draw [thick, decorate, decoration = {brace, amplitude = 5pt}] (8, 0.8)  -- +(1.6, 0) 
+       node [black, midway, above = 4pt] {Prediction period};
+       
+\node[anchor=north] at (8, 0) {$t$};
+\node[anchor=north] at (9.6,0) {$t+12$};
+\node[anchor=north] at (11.2, 0) {$t+24$};
+\end{tikzpicture}
+\label{plot:Turnover}
+\end{figure}
 
 \subsection{Linear regression}
 Benchmark model of this study is Fama-MacBeth \citeyear{FamaMacBeth1973} regression. First step of the method is to run rolling cross-sectional regressions with lagged variables. Second step of the method calculates means of the factor loadings obtained from the cross-sectional regressions. Finally expected stock return can be obtained by multiplying the mean factors loading with latest available stock characteristics. Below formulas show one model specification for Fama-French \citeyear{FAMA19933} three factors model.
 
+%review this
 \begin{equation}
-r_{i, t} = \beta_0 + \beta_{1,t} \ Mkt_{i, t-1} + \beta_{2, t} + \ Size_{i, t-1} + \beta_{3, t} \ Value_{i, t-1} + \epsilon_{i}
+f(x_{i, t}; \theta) = \theta^T x_{i, t}
 \end{equation}
 
 \begin{equation}
-\overline \beta_j = \frac{1}{T} \sum^{T}_{t=1}\beta_{j, t}
+\overline \theta_j = \frac{1}{T} \sum^{T}_{t=1}\theta_{j, t}
 \end{equation}
 
 \begin{equation}
-E(r_{i, t}) = \overline \beta_0 + \overline \beta_{1, t} \ Mkt_{i, t-1} + \overline \beta_{2, t} + \ Size_{i, t-1} + \overline \beta_{3, t} \ Value_{i, t-1}
+E_t \left[ r_{i, t} | x_{i, t-1} \right] = \overline \theta_{t-1}^T x_{i, t-1}
 \end{equation}
 
 One benefit that linear regression models have is that they do not require hyperparameter tuning. Therefore data  does not have to be split to three sub-samples for separate validation of hyperparameters and testing. To obtain the expected return mean of 120 historical regression coefficients is calculated. Due to their high computing cost machine learning models are usually trained only once a year and then used for the rest of the year. Each month recent information is just inserted to the model. Computing requirements for linear model is far lesser than for non-linear models. Nevertheless to ensure comparability between different models also the linear model is trained only once per year. That means that no more recent stock returns than $t-1$ are used to train the model to predict stock return $t$, but the gap between predicted return and last return used to train the model can grow up to 12 months. Since we use lagged variables, this means that for prediction of stock return $t$ we alway use stock characteristics from $t-1$, but some factors are only updated yearly. To mimic information set investor would have had available in historical periods we have to account for the delay in reporting balance sheet information. Therefore timeline of Fama and French \citeyear{FAMA19933} is followed and models are trained each year at end of June. 
@@ -419,7 +496,7 @@ NN & 0.0069 & 0.0167 & 0.2432 & 0.0208 & 11.67 & 0.0011 \\
 & FM & RF & NN \\
 \midrule
 $R^2_{oos}$ & -0.0168 & 0.0033 & -0.0087\\
-$R^2_{oos}$ Trad. & 0.0368 & 0.0533 & 0.0487\\
+$R^2_{oos \ Trad.}$  & 0.0368 & 0.0533 & 0.0487\\
 \midrule
 FM 	& 	& \textbf{8.4462*} (0.0000)& \textbf{2.1495} (0.0316)\\
 RF	& 	& 					& \textbf{-10.0946*} (0.0000)\\
