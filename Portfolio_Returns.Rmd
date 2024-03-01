@@ -131,12 +131,9 @@ portfolio_returns_long2 <- portfolio_returns_long[variable %in% c("EW.RET", "VW.
 ```
 
 ```{r}
-sharpe <- portfolio_returns_long2[, .(SR = mean(Return) / sd(Return)),
-                                  by = c("variable", "Portfolio")]
-
-# Check the portfolio statistics
-min_max <- portfolio_returns_long2[, .(Min = min(Return), Max = max(Return)),
-                                   by = c("variable", "Portfolio")]
+sharpe <- portfolio_returns_long2[, .(SR = mean(Return) / sd(Return),
+                              SD = sd(Return), Min = min(Return), Max = max(Return)),
+                              by = c("variable", "Portfolio")]
 ```
 
 ```{r}
@@ -146,8 +143,6 @@ portfolio_statistics[, Count := seq(.N), by = c("variable","Portfolio")][, Count
 
 portfolio_statistics <- dcast(portfolio_statistics, ... ~ Count,
                               value.var = "conf.int")
-portfolio_statistics <- merge(portfolio_statistics, min_max,
-                              by = c("variable", "Portfolio"))
 portfolio_statistics <- merge(portfolio_statistics, exp_portfolio_returns_long,
                               by = c("variable", "Portfolio"))
 portfolio_statistics <- merge(portfolio_statistics, sharpe, 
@@ -333,7 +328,7 @@ drawdown <- function(dt) {
   cum_profit <- dt[, .(Date, CUM.RET = cumprod(RET + 1)), by = c("variable", "Method")]
   drawdown <- cum_profit[, .(DRAWDOWN = (CUM.RET - cummax(CUM.RET))/ cummax(CUM.RET)),
                          by = c("variable", "Method")]
-  return(drawdown[, .(MDD = min(DRAWDOWN)), by = c("variable", "Method")])
+  return(drawdown[, .(MDD = round(min(DRAWDOWN), 4)), by = c("variable", "Method")])
 }
 high_low <- portfolio_returns[variable %in% c("EW.RET", "VW.RET"), 
                               .(Date, variable, RF, FM, NN)]
@@ -341,19 +336,22 @@ high_low_long <- melt(high_low, id.vars = c("Date", "variable"),
                       variable.name = "Method", value.name = "RET")
 max_drawdown <- drawdown(high_low_long)
 
-min_one_month <- high_low_long[, .(MIN.1MONTH = min(RET)),
-                               by = c("variable", "Method")]
+min_one_month <- high_low_long[, .(MIN.1MONTH = round(min(RET), 4)), 
+                  by = c("variable", "Method")]
+
+sharpe_high_low <- high_low_long[, .(SHARPE = round(mean(RET) / sd(RET), 4)),
+                     by = c("variable", "Method")]
 ```
 
 ```{r}
 load("Data/factors.Rdata")
 factors_wide <- dcast(factors, Date ~ ..., value.var = "USD.RET")
 factors_wide <- merge(high_low_long, factors_wide, by = "Date")
-FF_stats <- factors_wide[, {reg <- summary(lm(RET ~ RMRF + SMB + HML + RMW + CMA + MOM,
-                                              data = .SD, na.action = na.omit))
-  list(ALPHA = reg$coefficients["(Intercept)", "Estimate"],
-  T.STAT = reg$coefficients["(Intercept)", "t value"],
-  R.SQUARED = reg$r.squared)}, by = c("variable", "Method")]
+FF_stats <- factors_wide[, {reg <- summary(lm(RET ~ RMRF + SMB + HML + RMW + 
+                                CMA + MOM, data = .SD, na.action = na.omit))
+  list(ALPHA = round(reg$coefficients["(Intercept)", "Estimate"], 4),
+  T.STAT = round(reg$coefficients["(Intercept)", "t value"], 4),
+  R.SQUARED = round(reg$r.squared, 4))}, by = c("variable", "Method")]
 ```
 
 ```{r}
@@ -396,7 +394,7 @@ ggplot(turnover_long, aes(x = Date, y = V1)) + geom_bar(stat="identity") +
   labs(y = "Turnover") + facet_wrap(~temp, scales = "free", ncol = 2) +
   theme(axis.title = element_blank(), text = element_text(size = 9))
 
-turnover <- turnover_long[, .(TO = mean(V1)), by = c("Portfolio", "TYPE")]
+turnover <- turnover_long[, .(TO = round(mean(V1), 4)), by = c("Portfolio", "TYPE")]
 ```
 
 ```{r}
@@ -405,7 +403,11 @@ data3 <- melt(data2[, .(Date, Company, EXC.USD.RET, RF.EXP.RET, FM.EXP.RET, NN.E
               value.name = "EXP.RET")
 data3[, print(list(.BY, summary(lm(data = .SD, formula = EXC.USD.RET ~ EXP.RET))),
               digits = 1), by = Method]
-data3[, .(Mean = round(mean(EXP.RET), 4), SD = round(sd(EXP.RET), 4)), by = Method]
+
+univariate <- data3[, .(Mean = mean(EXP.RET), SD = sd(EXP.RET)),
+                    by = c("Method", "Date")]
+univariate <- univariate[, .(Mean = round(mean(Mean), 4),
+                             SD = round(mean(SD), 4)), by = Method]
 ```
 
 ```{r}
@@ -477,7 +479,7 @@ setorder(country_chacteristics, Country)
 
 After country level statistics descriptive statistics are calculated for all dependent and independent variables used in the study. Like with country statistics, we also calculate variable statistics both for separate markets and pooled market. For each variable we calculate mean standard deviation for each month. For both mean and standard deviation the final figure is the time series average of meand and standard deviations of respective variables.
 ```{r}
-var <- c("USD.RET", independend_variables)
+var <- c("EXC.USD.RET", independend_variables)
 means <- data[, (lapply(.SD, mean, na.rm = T)), .SDcols = var, by = Date]
 means <- melt(means, id.vars = "Date", value.name = "MEAN.Nordic")
 

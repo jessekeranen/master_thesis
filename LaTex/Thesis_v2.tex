@@ -122,7 +122,7 @@ Findings of Drobetz and Otto \citeyear{Drobetz} are also similar to Tobek and Hr
 
 Fieberg et al \citeyear{Fieberg} study stock market anomalies in 16 European stock markets using machine learning methods over almost the same period as Drobetz and Otto \citeyear{Drobetz} \footnotemark. Nevertheless they choose a slightly different approach where instead of including vast set of anomalies, they only consider six prominent equity factors. Their conclusion endorses findings of Drobetz and Otto \citeyear{Drobetz} and Tobek and Hronec \citeyear{TOBEK2021100588} as they shown that more complex machine learning models beat linear approach in terms of both economic and statistical performance.
 
-\footnotetext{Dataset of Fieberg et al \citeyear{Fieberg} contains Denmark, Finland, Norway and Sweden}
+\footnotetext{Dataset of Fieberg et al \citeyear{Fieberg} contains Denmark, Finland, Norway and Sweden.}
 
 \subsection{Nordic stock market anomalies}
 
@@ -181,11 +181,9 @@ In this study Nordic markets are examined as one market. In the introduction it 
 Data consists of variables that are available on three different frequencies. Majority of these variables are ratios calculated from accounting data. 
 Usually income statement or balance sheet information are available annually and therefore majority of accounting based variables are updated only once a year. To account for possible reporting delay associated with accounting data, accounting data from year $t$ is considered to be available end of June $t+1$. Detailed descriptions how each of these variables is calculated is provided in the table \ref{table:variableDefs} in appendix. Dataset contains also variables calculated from monthly data. These include momentum variables and market value. Even though the frequency of the return prediction will be monthly, some variables are calculated from weekly data. These include standard deviation, ratio between price and 52-week high price, beta coefficient, idiosyncratic volatility, turnover and on-balance volume. Standard deviation is calculated as rolling 52-week standard deviation of the stock returns. 
 
-Beta coefficient and idiosyncratic volatility are calculated by regressing returns of the stocks by the excess market return. As described above, in order to pool the dataset certain variables are converted to US dollars. One of these variables is weekly unadjusted stock price which is used to calculate the weekly stick returns used in the regression. Market return is constructed as equal weighted weekly market return following Green, Hand and Zhang \citeyear{Green2017}. Because the returns are noted in US dollars one-month Treasury bill rate, which is obtained from Kenneth French's database, is used as a risk free rate proxy. The regression is run for each company separately for each month on rolling basis. For each regression up to three years of weekly historical data is considered, but minimum 15 weeks of data is required. Finally, the beta is simply the sensitivity of stock returns on the market return changes and the idiosyncratic volatility is the standard deviation of the regression residuals.
-
 \begin{table}[ht] 
 \small
-\caption[Descriptive statistics]{\textbf{Descriptive statistics}\\ Table provides time series average of cross-sectional means and standard deviations of all variables used in this study. Values are reported separately for pooled Nordic market and four Nordic markets Denmark, Finland, Norway and Sweden. RET is monthly return calculated from total return index.}
+\caption[Descriptive statistics]{\textbf{Descriptive statistics}\\ Table provides time series average of cross-sectional means and standard deviations of all variables used in this study. Values are reported separately for pooled Nordic market and four Nordic markets Denmark, Finland, Norway and Sweden. EXC.RET is monthly excess return calculated from total return index. Risk free rate used to calculate excess returns is US dollars one-month Treasury bill rate.}
  \label{table:descriptive}
 \centering
 \begin{tabularx}{\textwidth}{@{\extracolsep{1pt}} X r r r r r r r r r r} 
@@ -194,7 +192,7 @@ Beta coefficient and idiosyncratic volatility are calculated by regressing retur
 \cline{2-3}\cline{4-5}\cline{6-7}\cline{8-9}\cline{10-11}
 Variable 		& Mean 	& Std. 	& Mean 	& Std. 	& Mean 	& Std. 	& Mean 	& Std. 	& Mean 	& Std. \\
 \midrule
-RET			& 0.010 	& 0.100	& 0.009 	& 0.088	& 0.011	& 0.089	& 0.008	& 0.106	& 0.012	& 0.098 \\
+EXC.RET		& 0.007 	& 0.100	& 0.007 	& 0.088	& 0.009	& 0.089	& 0.006	& 0.106	& 0.009	& 0.098 \\
 CA		 	& 0.117 	& 0.148	& 0.107 	& 0.159	& 0.108	& 0.119	& 0.132	& 0.159	& 0.115	& 0.144 \\
 CTO		 	& 0.813  	& 0.710 	& 0.739 	& 0.670	& 0.970	& 0.647	& 0.651	& 0.674	& 0.868	& 0.741 \\
 INV 			& 0.161 	& 0.422	& 0.118 	& 0.305	& 0.097	& 0.273	& 0.203	& 0.481	& 0.179	& 0.443 \\
@@ -222,6 +220,8 @@ OBV		 	& 0.170 	& 0.507	& 0.151 	& 0.544	& 0.098	& 0.390	& 0.174	& 0.529	& 0.216
 \end{tabularx}
 \end{table} 
 
+Beta coefficient and idiosyncratic volatility are calculated by regressing returns of the stocks by the excess market return. As described above, in order to pool the dataset certain variables are converted to US dollars. One of these variables is weekly unadjusted stock price which is used to calculate the weekly stick returns used in the regression. Market return is constructed as equal weighted weekly market return following Green, Hand and Zhang \citeyear{Green2017}. Because the returns are noted in US dollars one-month Treasury bill rate, which is obtained from Kenneth French's database, is used as a risk free rate proxy. The regression is run for each company separately for each month on rolling basis. For each regression up to three years of weekly historical data is considered, but minimum 15 weeks of data is required. Finally, the beta is simply the sensitivity of stock returns on the market return changes and the idiosyncratic volatility is the standard deviation of the regression residuals.
+
 Turnover is calculated by dividing weekly trading volume by number of shares out standing. Calculation of on balance volume consists of two steps and it is also calculated from weekly data. First current weekly turnover is multiplied by the sign of corresponding weeks return. Then this product is added to the cumulative sum of the historical on previous on-balance volumes.
 
 Machine learning algorithms can be sensitive to outliers in the data. Therefore, all explanatory variables are winsorized between 1st and 99th percentiles. In case value of the certain variable is less than 1st percentile of the corresponding months values it will be replaced by the 1st percentile threshold value. In case value of the certain variable is above 99th percentile of the corresponding months values it will be replaced by the 99th percentile threshold value. %check how the returns are winzorized
@@ -230,6 +230,8 @@ Additionally, any missing value in explanatory variables will be replaced by zer
 Table \ref{table:descriptive} provides descriptive statistics of company characteristics. For each explanatory variable time series average and standard deviation of the cross-sectional mean is reported. Values are reported for pooled nordic markets as well as individual markets. %discuss this more in detail
 
 %introduce the explanatory variables
+
+% excess returns like in gu et al not like Hanauer. Because we use pooled data set and want to predict comparably. Hanauer uses country balanced portfolios
 
 %time periods
 
@@ -243,7 +245,6 @@ In addition to the ten expected return portfolios, for each method zero investme
 \label{eq:maxDD}
 MaxDD = \max\limits_{0\leq t_1\leq t_2\leq T} (Y_{t_1} - Y_{t_2})
 \end{equation}
-
 
 where $Y_t$ stands for cumulative return from the beginning of the period until date $t$. Turnover will be calculated only for long side of the long-short portfolios. In order to examine risk adjusted returns long-short portfolio returns will be regressed against Fama-French \citeyear{FAMA20151} six factor model factors \footnotemark. From this regression alphas, which can interpret as the excess return that the models are able to generate that cannot be explained by the loadings in the six risk factors. Also $t$-statistics for the alphas and $R^2$ values are reported. Regression formula for risk adjusted performance
 
@@ -374,7 +375,8 @@ In stock return prediction literature it is common to split the data as describe
 \definecolor{LightGray}{RGB}{191,191,191}
 \begin{figure}[h]
 \centering
-\caption[SampleSplitting]{\textbf{SampleSplitting}\\ Illustration sample splitting used in training of the machine learning models. Machine learning models are trained once a year and after each training model is used for next 12 months to predict the stock returns. Each year training period is extended by 12 months. Training period is further split into training data and validation data randomly allocating 80\% of the data to training set and 20\% of the data to the validation set. Validation set is used to optimize hyperparameters. Minimum length of the training period is 50 months.}
+\label{plot:SampleSplittingScheme}
+\caption[Sample splitting scheme]{\textbf{Sample splitting}\\ Illustration sample splitting used in training of the machine learning models. Machine learning models are trained once a year and after each training model is used for next 12 months to predict the stock returns. Each year training period is extended by 12 months. Training period is further split into training data and validation data randomly allocating 80\% of the data to training set and 20\% of the data to the validation set. Validation set is used to optimize hyperparameters. Minimum length of the training period is 50 months.}
 \begin{tikzpicture}
 \draw[->] (0, 0) -- (12.8, 0);
 \foreach \x in {0, 1.6,...,12.8}{
@@ -397,7 +399,7 @@ In stock return prediction literature it is common to split the data as describe
 \label{plot:Turnover}
 \end{figure}
 
-The sample splitting scheme applied in this study is slightly different from above described ones. Above approaches use disjoint time periods to mimic the out-of-sample setting in the hyperparameter optimization. In this study training and validation set are separated from the testing data based on time. Approach is closer to approach of Gu et al. \citeyear{guetal} in a sense that training data window is increased each year. Nevertheless, the difference is that the data is distributed to training data and validation randomly instead of using the disjoint periods. Reason why this scheme is chosen is that we want to avoid the retraining of the model after the hyperparameter optimizatioin which is necessary if the most recent data should be included to the model. 
+The sample splitting scheme applied in this study is slightly different from above described ones. Above approaches use disjoint time periods to mimic the out-of-sample setting in the hyperparameter optimization. In this study training and validation set are separated from the testing data based on time. Approach is closer to approach of Gu et al. \citeyear{guetal} in a sense that training data window is increased each year. Nevertheless, the difference is that the data is distributed to training data and validation randomly instead of using the disjoint periods. Reason why this scheme is chosen is that we want to avoid the retraining of the model after the hyperparameter optimizatioin which is necessary if the most recent data should be included to the model. Sample splitting scheme is illustrated in figure \ref{plot:SampleSplittingScheme}.
 
 Since linear regression does not require any hypeparameter optimization there is no need for validation set and all data can be used to train the model. For random forest model we actually otpimize the hyperparameters. Therefore, training window is split to training and validation data so that $80\%$ of the data is used in the training and $20\%$ is assigned to the validation set. For neural network model we do not optimize any actual hyperparameterss, but we still need a validation set for the early stopping algorithm. Therefore, for neural network $15\%$ of the training window is assigned to the validation set.  Approach of this study follows the common approach to only train the models once a year.
 
@@ -407,20 +409,28 @@ Performance of the machine learning models will be evaluated from two aspects. F
 
 \subsection{Predictive performance}
 
-Table \ref{table:PredictionAccuracy} presents the out-of-sample predictive accuracies for all models. Additionally, it presents the. pairwise Diebold-Mariano statistics. 
+Panel A of table \ref{table:PredictionAccuracy} presents the out-of-sample predictive accuracies for all models. In panel B it presents the pairwise Diebold-Mariano statistics. It can clearly be seen from table \ref{table:PredictionAccuracy} that random forest model produces the most accurate out-of-sample predictions. Out of the three models it is the only one that produces positive out-of-sample $R^2$ value even with the more strict version where the benchmark model is prediction of zero. While linear and neural network models both produce negative out-of-sample $R^2$ of -0.0191 and -0.0039, it can be seen that neural network model performs better than the linear model. 
+
+Another interesting insight table \ref{table:PredictionAccuracy} provides is the relationship between traditional out-of-sample $R^2$ and the modified out-of-sample $R^2$. It confirms the hypothesis of Gu et al. \citeyear{guetal} about traditional out-of-sample $R^2$ metric being too loose and showing unrealistically strong results. The  traditional out-of-sample $R^2$ metric is positive for all three models, which means that compared to the more strict out-of-sample $R^2$ metric the sign of the metric changes for linear and neural network models. Nevertheless, the order between models does not change based on the definition of the out-of-sample $R^2$ metric. In this regards results are in line with findings of Fieberg et al. \citeyear{Fieberg}.
 
 \begin{table}[h]
 \small
-\caption[Prediction accuracy]{\textbf{Prediction accuracy}\\ ..}
+\caption[Prediction accuracy]{\textbf{Prediction accuracy}\\ Table presents the prediction accuracy metrics for different machine learning models. Panel A presents two out-of-sample $R^2$ values. First one uses zero prediction as a benchmark model. This means that the denominator in the calculation of the metric is squared excess return. Second out-of-sample $R^2$ figure follows the traditional definition and the realized excess return is demeaned by the historical mean return. Panel B of table presents the pairwise Diebold-Mariano statistics for all the methods. Bolded figure indicated significance at 5\% level, whereas asterisk indicates significance at 5\% level after three-way Bonferroni adjustment.}
 \label{table:PredictionAccuracy}
 \centering
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 \begin{tabularx}{\textwidth}{@{\extracolsep{4pt}} X Y Y Y} 
 \toprule
+\multicolumn{4}{l}{\textit{Panel A: Out-of-sample $R^2$}}\\
+\midrule
 & FM & RF & NN \\
 \midrule
-$R^2_{oos}$ & -0.0168 & 0.0033 & -0.0087\\
-$R^2_{oos \ Trad.}$  & 0.0368 & 0.0533 & 0.0487\\
+$R^2_{oos}$ & -0.0191 & 0.0051 & -0.0039\\
+$R^2_{oos \ Trad.}$  & 0.0299 & 0.0517 & 0.0431\\
+\midrule
+\multicolumn{4}{l}{\textit{Panel B: Diebold-Mariano statistics}}\\
+\midrule
+& FM & RF & NN \\
 \midrule
 FM 	& 	& \textbf{8.4462*} (0.0000)& \textbf{2.1495} (0.0316)\\
 RF	& 	& 					& \textbf{-10.0946*} (0.0000)\\
@@ -428,9 +438,27 @@ RF	& 	& 					& \textbf{-10.0946*} (0.0000)\\
 \end{tabularx}
 \end{table}
 
+%mentions also in the table that diebold-mariano statistics are calculated using newey west standard errors
+
+Figure \ref{plot:OOSR2_ts} in Appendix shows the out-of-sample $R^2$ values as a timeseries of prediction periods. Figure shows that the same trends can be seen from all of the methods. It also reveals that in prediction period starting from July 2011 neural network model produced extremely bad out-of-sample predictions. This period is difficult to other methods as well, but not in the same scale as for neural network model. Modified out-of-sample $R^2$ of neural network model reaches -0.14\% during this period.
+
+Inspecting the timeseries of the out-of-sample $R^2$ produced by the two definitions further the argumentation that the traditional out-of-sample $R^2$ is too optimistic metric to evaluate goodness of the stock return prediction model. Figure \ref{plot:OOSR2_ts} shows how the traditional out-of-sample $R^2$ are not only sifted upwards, but also the variation is smaller. This supports the argument of Gu et al. \citeyear{guetal} that the historical mean as an estimator of future stock return contains so much noise that it actually artificially improves the out-of-sample $R^2$ values.
+
+Results of the predictive performace of different model measured by out-of-sample $R^2$ is partially inline with previous literature. Results are inline with findings of Drobetz and Otto's \citeyear{Drobetz} study in European stock markets in a sense that the linear model offers worst out of sample preditcive power when measured by the out-of-sample $R^2$. They also find negative out-of-sample $R^2$ for linear model. Results are also inline in a sense that random forest model shows strong predictive performance. Results of Fieberg et al. \citeyear{Fieberg} are slightly more contradictory, since they show positive out-of-sample $R^2$ also for linear model \footnotemark. Both studies of Drobetz and Otto and Fieberg et al. are conducted in European stock markets, which partially overlap with markets of this study, but the difference is that Drobetz and Otto use twenty-two characteristics as well as their  second- and third order polynomials and two-way interactions whereas Fieberg et al. only use six characteristics. Variable selection of this study is in between of these two since we include more variables than Fieberg et al., but we do not include second- and third order polynomials or two-way interactions like Drobetz and Otto.
+
+\footnotetext{Fieberg et al. \citeyear{Fieberg} report result for multiple subsets where companies are filtered based on their market capitaalization. Linear model produces negative out-of-sample $R^2$ values when only biggest 20\% of the stocks are included, but this is not the setting of this study.}
+
+Where the results clearly deviation from previous literature is the predictive performance of the neural network model. In studies of Drobetz and Otto \citeyear{Drobetz} and Fieberg et al. \citeyear{Fieberg} neural network model produces highest, clearly positive, out-of-sample $R^2$ values. Naturally studies of Drobetz and Otto and Fieberg et al. are not directly comparable to this study since variable set differs and the datasets of  Drobetz and Otto and Fieberg et al. are much wider since they include more countries. The size of the dataset could also partially explain the relative poor performance of the neural network model, since usually neural network models require lot of data.
+
+Panel B of table \ref{table:PredictionAccuracy} presents the pairwise Diebold-Mariano statistics for all the models. Calculation of the statistics is described in section \ref{Methodology}. Table \ref{table:PredictionAccuracy} reports the Diebold-Mariano statistics together with corresponding p-values. Bolding of the Diebold-Mariano figure imply significance in normal 5\% level where as asterisk implies more conservative 5\% level which is Bonferroni adjusted for three-way comparisons. The three-way Bonferroni adjusted critical one-sided Diebold-Mariano value is 2.13.
+
+Discuss the results.
+
+Next the prediction accuracy is examined by following approach of Lewellen \citeyear{lewellen2015} by regressing the realized excess returns by the return predictions from different models. Table \ref{table:expRetRegressions} presents the summary statistics for these regressions. Left side of the table presents the univariate properties of expected returns and the right side of the table presents the regression statistics. Comparing univariate properties of the expected returns from table \ref{table:expRetRegressions} to descriptive statistics in table \ref{table:descriptive} shows that the mean expected return is really close to actual realized mean excess return for neural network and random forest model. Both mean expected and realized return are calculated as timeseries average of cross-sectional means. Linear model on the other hand seems to predict larger returns on average than what is actually realized. Another remark from the table \ref{table:expRetRegressions} is that the standard deviation for the return predictions produced by the linear model and neural network model is higher than the standard deviation of the realized excess returns. This indicates that the variation in expected returns from these models is larger than the variation in realized excess returns.
+
 \begin{table}[h]
 \small
-\caption[Expected return regressions]{\textbf{...} \\ ...}
+\caption[Expected return regression summaries]{\textbf{Expected return regression summaries} \\ Table provides univariate properties of the return predictions for all models and summary statistics for regression where realized excess returns are regressed with expected returns. Mean and standard deviation are reported for expected returns. Mean value reported is the timeseries average of the cross-sectional means and standard deviation is the timeseries average of cross-sectional standard deviations. Right side of the table reports the regression coefficients, standard errors of the coefficients, corresponding $t$-statistics and the $R^2$ values. }
 \label{table:expRetRegressions}
 \centering
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
@@ -440,62 +468,82 @@ RF	& 	& 					& \textbf{-10.0946*} (0.0000)\\
 \cline{2-3}\cline{4-7}
 & Mean & Std. & Slope. & SE & $t$-stat & $R^2$ \\
 \midrule
-FM & 0.0119 & 0.0160 & 0.1593 & 0.0217 & 7.324 & 0.0004 \\
-RF & 0.0073 & 0.0117 & 0.4877 & 0.0298 & 16.388 & 0.0022 \\
-NN & 0.0069 & 0.0167 & 0.2432 & 0.0208 & 11.67 & 0.0011 \\
+FM & 0.0124 & 0.0123 & 0.1638 & 0.0217 & 7.324 & 0.0005 \\
+RF & 0.0074 & 0.0093 & 0.5767 & 0.0306 & 18.831 & 0.0029 \\
+NN & 0.0070 & 0.0131 & 0.2949 & 0.0210 & 14.05 & 0.0016 \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\subsection{Portfolio performance}
+Results from right side of the table \ref{table:expRetRegressions} support the remarks from out-of-sample predictive performance and univariate properties. For all of the models there exists statistically highly significant positive relationship between expected returns and realized returns. If the expected returns would reflect realized excess returns perfectly regression slope shown in table \ref{table:expRetRegressions} should be one. Random forest model has the highest predictive slope of 0.58, which means that 1\% change in expected return respond to 0.58\% change in realized return. Neural network and linear models have slightly smaller slopes of 0.29 and 0.16 correspondingly. $R^2$ values from the regressions are also presented as third alternative out-of-sample prediction accuracy metric in addition to two previously introduced out-of-sample $R^2$ metrics. The third $R^2$ metric further confirms the message of first two as the ordering of the methods is the same for the their metric as for the two previous.
 
-\subsection{Variable importance}
+Given that the mean predicted return matches quite well mean realized excess return, but the standard deviation is higher and the slope is slower, it seems that models seem to overshoot in their predictions. It seems that, especially neural network and random forest models, are able to predict the returns correctly on average, but exaggerate the extreme returns. This could at least partially explain rather low out-of-sample $R^2$ values discovered in table \ref{table:PredictionAccuracy}. Further insight for this will be provided in next section where performance of expected return sorted portfolios is examined.
+
+\subsection{Portfolio performance}
 
 Table \ref{table:PortfolioPerformance}
 
-\begin{table}[h]
+\begin{table}[ht]
 \small
 \caption[Machine learning portfolio performance]{\textbf{Machine learning portfolio performance} \\ Table reports performance metrics for portfolios formed based on univariate expected return sort. Each month all stocks are allocated to ten portfolios based on their expected returns. Breakpoints for the allocation are calculated only from big stocks, which are the biggest stocks that in current month account for 90 percent of cumulative market value of all stocks in the dataset. H-L is zero investment portfolio which consist of short position in portfolio formed from stocks with lowest expected return and long position in portfolio formed from stocks with highest expected return. Time series average of predicted return and realized return of each portfolio is reported for each portfolio together with standard error of realized return. Additionally, Sharpe ratios are reported. Panel A reports result for equally weighted portfolios and panel B reports results for portfolios where each stock in portfolio is weighted by its lagged market value.}
 \label{table:PortfolioPerformance}
 \centering
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
-\begin{tabularx}{\textwidth}{@{\extracolsep{1pt}} l Y Y Y Y Y Y Y Y Y Y Y Y} 
+\begin{tabularx}{\textwidth}{@{\extracolsep{1pt}} l c c c c c c Y Y Y Y} 
 \toprule
-\multicolumn{13}{l}{\textit{Panel A: Equal weighted}}\\
+\multicolumn{11}{l}{\textit{Panel A: Linear regression}}\\
 \midrule
-& \multicolumn{4}{c}{FM} & \multicolumn{4}{c}{RF} & \multicolumn{4}{c}{NN} \\
-\cline{2-5}\cline{6-9}\cline{10-13}
-			& Pred 	& Avg 	& SE 	& SR 	& Pred 	& Avg 	& SE 	& SR  	& Pred 	& Avg 	& SE 	& SR  \\
+& \multicolumn{5}{c}{Equal weighted} & \multicolumn{5}{c}{Value weighted}\\
+\cline{2-6}\cline{7-11}
+			& Pred. 	& Avg. 	& Std. 	& $t$-stat	 & SR 	& Pred. 	& Avg. 	& Std. 	& $t$-stat	& SR \\
 \midrule
-Low			& -0.0042 	& 0.0037 	& 0.004	& 0.05 	& -0.0067 	& -0.0016	& 0.004 	& -0.02 	& -0.0148	& 0.0004 	& 0.004	& 0.01\\
-2			& 0.0025	& 0.0045 	& 0.004	& 0.07 	& 0.0006 	& 0.0053	& 0.004 	& 0.08 	& -0.0029	& 0.0065 	& 0.004 	& 0.10\\
-3		 	& 0.0050 	& 0.0055 	& 0.004	& 0.09 	& 0.0033 	& 0.0060	& 0.004 	& 0.10 	& 0.0010	& 0.0056 	& 0.003	& 0.09\\
-4 			& 0.0068 	& 0.0069 	& 0.003	& 0.11 	& 0.0056 	& 0.0107	& 0.003 	& 0.17 	& 0.0040	& 0.0084 	& 0.003 	& 0.14\\
-5 			& 0.0083	& 0.0090 	& 0.003	& 0.15 	& 0.0077	& 0.0095	& 0.003 	& 0.16 	& 0.0066	& 0.0085	& 0.003	& 0.14\\
-6			& 0.0099	& 0.0082 	& 0.003	& 0.14 	& 0.0098 	& 0.0081	& 0.003 	& 0.13 	& 0.0090	& 0.0094 	& 0.003	& 0.15\\
-7			& 0.0116 	& 0.0100 	& 0.003	& 0.16 	& 0.0117	& 0.0098	& 0.003	& 0.16 	& 0.0114	& 0.0103 	& 0.003	& 0.17\\
-8			& 0.0138	& 0.0115 	& 0.004	& 0.18 	& 0.0136	& 0.0121	& 0.003 	& 0.19 	& 0.0142	& 0.0108 	& 0.003 	& 0.17\\
-9			& 0.0171 	& 0.0118 	& 0.004	& 0.19 	& 0.0159	& 0.0142	& 0.003 	& 0.23 	& 0.0179	& 0.0129 	& 0.003 	& 0.20\\
-High			& 0.0300	& 0.0180 	& 0.004	& 0.26	& 0.0235	& 0.0178	& 0.004 	& 0.25 	& 0.0282	& 0.0142 	& 0.004 	& 0.21\\
-H-L			& 0.0342	& 0.0143 	& 0.003	& 0.27	& 0.0303	& 0.0194	& 0.002	& 0.48 	& 0.0430	& 0.0138 	& 0.002 	& 0.330\\
-\toprule
-\multicolumn{13}{l}{\textit{Panel B: Value weighted}}\\
+Low			& -0.0028 	& 0.0049 	& 0.0773	& 1.1621	& 0.0630 	& -0.0016 & 0.0081	& 0.0796	& 1.8704	& 0.1014\\
+2			& 0.0048 	& 0.0035 	& 0.0668 	& 0.9552	& 0.0518 	& 0.0048 	& 0.0063	& 0.0666	& 1.7495	& 0.0949\\
+3		 	& 0.0078 	& 0.0051 	& 0.0645	& 1.4703	& 0.0797 	& 0.0078 	& 0.0052	& 0.0638	& 1.4971	& 0.0812\\
+4 			& 0.0098 	& 0.0083 	& 0.0603 	& 2.5384	& 0.1377 	& 0.0098 	& 0.0089	& 0.0614	& 2.6690	& 0.1447\\
+5 			& 0.0115 	& 0.0097 	& 0.0640 	& 2.7957	& 0.1516 	& 0.0115 	& 0.0080	& 0.0662	& 2.2228	& 0.1205\\
+6			& 0.0115 	& 0.0088 	& 0.0609 	& 2.6740	& 0.1450 	& 0.0131 	& 0.0080	& 0.0640	& 2.2946	& 0.1244\\
+7			& 0.0148 	& 0.0086 	& 0.0619 	& 2.5691	& 0.1393 	& 0.0148 	& 0.0080	& 0.0635	& 2.3258	& 0.1261\\
+8			& 0.0170 	& 0.0094 	& 0.0623 	& 2.7933	& 0.1515 	& 0.0170 	& 0.0077	& 0.0646	& 2.1977	& 0.1192\\
+9			& 0.0202 	& 0.0130 	& 0.0636	& 3.7658	& 0.2042 	& 0.0203 	& 0.0110	& 0.0632	& 3.2209	& 0.1747\\
+High			& 0.0328 	& 0.0173 	& 0.0682 	& 4.6742	& 0.2535 	& 0.0346 	& 0.0127	& 0.0687	& 3.4027	& 0.1845\\
+H-L			& 0.0356 	& 0.0124 	& 0.0495 	& 4.6193	& 0.2505 	& 0.0362 	& 0.0046	& 0.0584	& 1.4510	& 0.0787\\
 \midrule
-& \multicolumn{4}{c}{FM} & \multicolumn{4}{c}{RF} & \multicolumn{4}{c}{NN} \\
-\cline{2-5}\cline{6-9}\cline{10-13}
-			& Pred 	& Avg 	& SE 	& SR 	& Pred 	& Avg 	& SE 	& SR  	& Pred 	& Avg 	& SE		& SR  \\
+\multicolumn{11}{l}{\textit{Panel B: Random forest}}\\
 \midrule
-Low			& -0.0033	& 0.0075 	& 0.004	& 0.10 	& -0.0056 	& 0.0017	& 0.004	& 0.02 	& -0.0126	& 0.0062 	& 0.004 	& 0.08\\
-2			& 0.0025	& 0.0054 	& 0.004	& 0.08 	& 0.0006 	& 0.0058	& 0.004	& 0.09 	& -0.0029	& 0.0058 	& 0.004 	& 0.08\\
-3		 	& 0.0050	& 0.0073 	& 0.004	& 0.11 	& 0.0033	& 0.0072	& 0.004	& 0.11 	& 0.0010	& 0.0063	& 0.004 	& 0.10\\
-4 			& 0.0068	& 0.0083 	& 0.004	& 0.13 	& 0.0056	& 0.0093	& 0.004	& 0.15 	& 0.0040	& 0.0096 	& 0.004 	& 0.15\\
-5 			& 0.0083	& 0.0085 	& 0.003	& 0.13 	& 0.0078 	& 0.0106	& 0.004	& 0.17 	& 0.0066	& 0.0080	& 0.003 	& 0.13\\
-6			& 0.0099	& 0.0080 	& 0.003	& 0.13 	& 0.0098 	& 0.0054	& 0.004	& 0.08 	& 0.0090	& 0.0092 	& 0.003 	& 0.15\\
-7			& 0.0116	& 0.0065 	& 0.003	& 0.11 	& 0.0117 	& 0.0070	& 0.004	& 0.11 	& 0.0114	& 0.0088	& 0.003 	& 0.14\\
-8			& 0.0138	& 0.0084 	& 0.004	& 0.13 	& 0.0136 	& 0.0097	& 0.004	& 0.15 	& 0.0142	& 0.0094 	& 0.004 	& 0.14\\
-9			& 0.0171	& 0.0089 	& 0.004	& 0.14 	& 0.0159 	& 0.0125	& 0.004	& 0.19 	& 0.0179	& 0.0108 	& 0.004 	& 0.17\\
-High			& 0.0313	& 0.0142 	& 0.004	& 0.21 	& 0.0219 	& 0.0140	& 0.004	& 0.18 	& 0.0283	& 0.0138 	& 0.004 	& 0.19\\
-H-L			& 0.0347	& 0.0067 	& 0.003	& 0.11 	& 0.0275 	& 0.0123	& 0.003	& 0.24 	& 0.0409	& 0.0076 	& 0.003 	& 0.14\\
+& \multicolumn{5}{c}{Equal weighted} & \multicolumn{5}{c}{Value weighted}\\
+\cline{2-6}\cline{7-11}
+			& Pred. 	& Avg. 	& Std. 	& $t$-stat	 & SR 	& Pred. 	& Avg. 	& Std. 	& $t$-stat	& SR \\
+\midrule
+Low			&  -0.0064	& -0.0002	 & 0.0754	& -0.0465	 & -0.0025	 & -0.0051	& 0.0036	& 0.0778	& 0.8523	& 0.0462 \\
+2			& 0.0010	& 0.0039	 & 0.0657 	& 1.0879	 & 0.0590	 & 0.0011	& 0.0027	& 0.0674	& 0.7275	& 0.0395\\
+3		 	& 0.0037	& 0.0078	 & 0.0621	& 2.3153	 & 0.1256	 & 0.0037	& 0.0086	& 0.0636	& 2.4876	& 0.1349\\
+4 			& 0.0059	& 0.0088	 & 0.0616 	& 2.6241	 & 0.1423	 & 0.0059	& 0.0094	& 0.0659	& 2.6240	& 0.1423\\
+5 			& 0.0078	& 0.0102	 & 0.0618 	& 3.0502	 & 0.1654	 & 0.0078	& 0.0098	& 0.0628	& 2.8919	& 0.1568\\
+6			& 0.0097	& 0.0093	 & 0.0602 	& 2.8504	 & 0.1546	 & 0.0097	& 0.0066	& 0.0654	& 1.8736	& 0.1016\\
+7			& 0.0114	& 0.0092	 & 0.0632 	& 2.6902	 & 0.1459	 & 0.0115	& 0.0071	& 0.0667	& 1.9635	& 0.1065\\
+8			& 0.0132	& 0.0118	 & 0.0632 	& 3.4294	 & 0.1860	 & 0.0132	& 0.0096	& 0.0672	& 2.6281	& 0.1425\\
+9			& 0.0153 	& 0.0144	 & 0.0619 	& 4.2851	 & 0.2324	 & 0.0153	& 0.0115	& 0.0630	& 3.3713	& 0.1828\\
+High			& 0.0220 	& 0.0170	 & 0.0674 	& 4.6541	 & 0.2524	 & 0.0208	& 0.0136	& 0.0714	& 3.5147	& 0.1906\\
+H-L			& 0.0284	& 0.0172	 & 0.0400 	& 7.9379	 & 0.4305	 & 0.0259	& 0.0100	& 0.0529	& 3.4916	& 0.1894\\
+\midrule
+\multicolumn{11}{l}{\textit{Panel C: Neural network}}\\
+\midrule
+& \multicolumn{5}{c}{Equal weighted} & \multicolumn{5}{c}{Value weighted}\\
+\cline{2-6}\cline{7-11}
+			& Pred. 	& Avg. 	 & Std. 	& $t$-stat	 & SR 	& Pred. 	& Avg. 	& Std. 	& $t$-stat	& SR \\
+\midrule
+Low			& -0.0158 	& 0.0006	 & 0.0791 	& 0.1338	 & 0.0073	 & -0.0139	& 0.0048	& 0.0853	& 1.0429	& 0.0566\\
+2			& -0.0027	& 0.0065	 & 0.0623 	& 1.9194	 & 0.1041	 & -0.0026	& 0.0097	& 0.0677	& 2.6479	& 0.1436\\
+3		 	& 0.0014	& 0.0078	 & 0.0618 	& 2.3290	 & 0.1263	 & 0.0015	& 0.0066	& 0.0646	& 1.8846	& 0.1022\\
+4 			& 0.0044  	& 0.0086	 & 0.0633 	& 2.5071	 & 0.1360	 & 0.0044	& 0.0077	& 0.0658	& 2.1447	& 0.1163\\
+5 			& 0.0068	& 0.0088	 & 0.0621 	& 2.6022	 & 0.1411	 & 0.0068	& 0.0081	& 0.0627	& 2.3724	& 0.1287\\
+6			& 0.0090 	& 0.0091	 & 0.0595  & 2.8136	 & 0.1526	 & 0.0090 	& 0.0089	& 0.0624	& 2.6240	& 0.1423\\
+7			& 0.0112 	& 0.0106	 & 0.0579 	& 3.3862	 & 0.1836	 & 0.0112	& 0.0082	& 0.0605	& 2.4928	& 0.1352\\
+8			& 0.0138 	& 0.0122	 & 0.0631 	& 3.5661	 & 0.1934	 & 0.0138	& 0.0094	& 0.0634	& 2.7275	& 0.1479\\
+9			& 0.0171 	& 0.0105	 & 0.0602 	& 3.2046	 & 0.1738	 & 0.0171	& 0.0080	& 0.0632	& 2.3286	& 0.1263\\
+High			& 0.0262 	& 0.0150	 & 0.0704 	& 3.9283	 & 0.2130	 & 0.0251	& 0.0129	& 0.0727	& 3.2685	& 0.1773\\
+H-L			& 0.0420	& 0.0144	 & 0.0439 	& 6.0612	 & 0.3287	 & 0.0391	& 0.0081	& 0.0564	& 2.6347	& 0.1429\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -512,13 +560,13 @@ H-L			& 0.0347	& 0.0067 	& 0.003	& 0.11 	& 0.0275 	& 0.0123	& 0.003	& 0.24 	& 0.
 \cline{2-4}\cline{5-7}\cline{6-7}
 					& FM 	& RF 	& NN 	& FM 	& RF 	& NN \\
 \midrule
-Max DD(\%) 			& -0.4504573	& -0.1888231 	& -0.3822367	& -0.5707584 	& -0.2706739 	& -0.4916363\\
-Max 1month Loss(\%) 	& -0.1988272 	& -0.1151289	&  -0.2061243	& -0.3200514 	& -0.1893646 & -0.3592626\\
-FF Alpha 				& 0.0048553 & 0.0148573	 & 0.0092023 & -0.0039026 & 0.0075169 & 0.0006789\\
-t-stats 				& 2.4673874 & 6.9306208 & 4.5004057 & -1.6110870  & 2.6993460 & 0.2422617\\
-$R^2$ 				& 0.5928532 & 0.1609467	& 0.2930559 & 0.5230763 & 0.1342177 & 0.2623851\\
-Sharpe ratio			& 0.2690346 & 0.4808831	& 0.3303232 & 0.1104301 & 0.2377289 & 0.1352148\\
-Turnover (\%)		 	& 0.10756625 & 0.11414496 & 0.12479359 & 0.09903494 & 0.14775978 	& 0.13905048\\
+Max DD(\%) 			& -0.3804	& -0.2708 	& -0.2627	& -0.6062 	& -0.5462 	& -0.4795\\
+Max 1month Loss(\%) 	& -0.1744	& -0.1883	& -0.1926	& -0.3374 	& -0.3542 & -0.3003\\
+FF Alpha 				& 0.0034 & 0.0136 & 0.0110 & -0.0048 & 0.0052 & 0.0030\\
+t-stats 				& 1.7530 & 6.8282 & 4.8320 & -1.9326  & 1.8517 & 1.0487\\
+$R^2$ 				& 0.5482 & 0.2638 & 0.2063 & 0.4547 & 0.1772 & 0.2523\\
+Sharpe ratio			& 0.2505 & 0.4305 & 0.3287 & 0.0787 & 0.1894 & 0.1429\\
+Turnover (\%)		 	& 0.1089 & 0.1140 & 0.1258 & 0.0995 & 0.1492 & 0.1417\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -537,12 +585,16 @@ Turnover (\%)		 	& 0.10756625 & 0.11414496 & 0.12479359 & 0.09903494 & 0.1477597
 \label{plot:cumul_ew_LS_portf_return}
 \end{figure}
 
+\subsection{Variable importance}\label{VariableImportance}
+
 \begin{figure}[h]
 \centering
 \caption[Variable importance]{\textbf{..}\\ ...}
 \input{R_graphs/combined_VI.tex}
 \label{plot:combined_VI}
 \end{figure}
+
+\section{Conclusion}\label{Conclusion}
 
 \appendix
 \section{Data}
