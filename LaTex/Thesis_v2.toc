@@ -8,11 +8,12 @@
 \contentsline {subsection}{\numberline {4.1}Linear regression}{11}{subsection.4.1}%
 \contentsline {subsection}{\numberline {4.2}Random forest}{12}{subsection.4.2}%
 \contentsline {subsection}{\numberline {4.3}Neural networks}{14}{subsection.4.3}%
-\contentsline {subsection}{\numberline {4.4}Variable importance}{14}{subsection.4.4}%
-\contentsline {section}{\numberline {5}Empirical results on Nordic equitites}{14}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Portfolio performance}{15}{subsection.5.1}%
-\contentsline {subsection}{\numberline {5.2}Predictive performance}{15}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}Variable importance}{15}{subsection.5.3}%
-\contentsline {section}{\numberline {A}Data}{17}{appendix.A}%
-\contentsline {section}{\numberline {B}Benchmark factors}{19}{appendix.B}%
-\contentsline {section}{References}{21}{section*.32}%
+\contentsline {subsection}{\numberline {4.4}Variable importance}{16}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Sample splitting}{16}{subsection.4.5}%
+\contentsline {section}{\numberline {5}Empirical results on Nordic equities}{17}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Predictive performance}{18}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Portfolio performance}{18}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Variable importance}{18}{subsection.5.3}%
+\contentsline {section}{\numberline {A}Data}{20}{appendix.A}%
+\contentsline {section}{\numberline {B}Benchmark factors}{22}{appendix.B}%
+\contentsline {section}{References}{25}{section*.33}%

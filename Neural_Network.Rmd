@@ -61,7 +61,7 @@ scheduler <- function(epoch, lr) {
     return(lr)    
   }
   else {
-    return(lr * 0.9)
+    return(lr)
   }
 }
 ```
@@ -81,7 +81,7 @@ neural_network <- function(dt, grid, date_index, independend_variables) {
   callback_1 <- callback_early_stopping(monitor = 'val_loss', patience = 5)
   #callback_2 <- callback_reduce_lr_on_plateau(monitor = 'val_loss', factor = 0.2,
   #                            patience = 2)
-  callback_3 <- callback_learning_rate_scheduler(scheduler)
+  #callback_3 <- callback_learning_rate_scheduler(scheduler)
   
   #csv_logger_1 <- callback_csv_logger("model_1_logs.csv", append = T)
   #csv_logger_2 <- callback_csv_logger("model_2_logs.csv", append = T)
@@ -174,7 +174,7 @@ neural_network <- function(dt, grid, date_index, independend_variables) {
   
   data <- dt[Date < trainings[date_index]]
   data <- data[sample(1:nrow(data))]
-  sample <- sample(c(TRUE, FALSE), nrow(data), replace = TRUE, prob = c(0.8, 0.2))
+  sample <- sample(c(TRUE, FALSE), nrow(data), replace = TRUE, prob = c(0.85, 0.15))
   
   x_train <- as.matrix(data[sample, ..independend_variables])
   y_train <- as.matrix(data[sample, EXC.USD.RET])
@@ -185,23 +185,23 @@ neural_network <- function(dt, grid, date_index, independend_variables) {
 
     index <- (date_index - 1) * NN_grid_size
     model_1 %>% fit(x_train, y_train, epochs = 100, batch_size = 502, 
-                  callbacks = list(callback_1, callback_3), 
+                  callbacks = list(callback_1), 
                   validation_data = list(x_validation, y_validation), 
                   verbose = 0)
     model_2 %>% fit(x_train, y_train, epochs = 100, batch_size = 502, 
-                  callbacks = list(callback_1, callback_3), 
+                  callbacks = list(callback_1), 
                   validation_data = list(x_validation, y_validation), 
                   verbose = 0)
     model_3 %>% fit(x_train, y_train, epochs = 100, batch_size = 502, 
-                  callbacks = list(callback_1, callback_3), 
+                  callbacks = list(callback_1), 
                   validation_data = list(x_validation, y_validation), 
                   verbose = 0)
     model_4 %>% fit(x_train, y_train, epochs = 100, batch_size = 502, 
-                  callbacks = list(callback_1, callback_3), 
+                  callbacks = list(callback_1), 
                   validation_data = list(x_validation, y_validation), 
                   verbose = 0)
     model_5 %>% fit(x_train, y_train, epochs = 100, batch_size = 502, 
-                  callbacks = list(callback_1, callback_3), 
+                  callbacks = list(callback_1), 
                   validation_data = list(x_validation, y_validation), 
                   verbose = 0)
 

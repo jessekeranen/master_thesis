@@ -442,7 +442,7 @@ data[, EP := WC01551 / (DEC.MV * 1000), by = Company]
 
 data[, ROA := WC01551 / shift(WC02999, 12), by = Company]
 
-data[, ROE := WC01551 / shift(BE), by = Company]
+data[, ROE := WC01551 / shift(BE, 12), by = Company]
 
 data[, Q := (WC02999 + DEC.MV - WC02001) / WC02999, by = Company]
 

@@ -263,7 +263,7 @@ Machine learning models are also evaluated based on their prediction accuracy. P
 
 \begin{equation}
 \label{eq:r2Trad}
-R^{2}_{oos} = 1 - \frac{\sum^T_{t=1} \sum^N_{i=1} (r_{i, t} - \hat r_{i, t})^2}{ \sum^T_{t=1} \sum^N_{i=1} (r_{i, t} - \overline{r}_{i, t} )^2}
+R^{2}_{oos \ Trad.} = 1 - \frac{\sum^T_{t=1} \sum^N_{i=1} (r_{i, t} - \hat r_{i, t})^2}{ \sum^T_{t=1} \sum^N_{i=1} (r_{i, t} - \overline{r}_{i, t} )^2}
 \end{equation}
 
 where $r_{i, t}$ is the realized return of stock $i$ in month $t$, $\hat r_{i, t}$ is the predicted return of the same stock for month $i$ and $\overline{r}_{i, t}$ is the historical mean return of the same stock excluding month $i$. Nevertheless, Gu et al. \citeyear{guetal} argue that the historical mean return is so noisy estimator that it underperforms compared to static estimation of zero and therefore artificially improves the out-of-sample $R^{2}$. Instead they propose alternative out-of-sample $R^{2}$ measure where the squared sum of returns in denominator is not demeaned. 
@@ -273,7 +273,7 @@ where $r_{i, t}$ is the realized return of stock $i$ in month $t$, $\hat r_{i, t
 R^{2}_{oos} = 1 - \frac{\sum^T_{t=1} \sum^N_{i=1} (r_{i, t} - \hat r_{i, t})^2}{ \sum^T_{t=1} \sum^N_{i=1} r^2_{i, t}}
 \end{equation}
 
-Pair-wise Diebold-Mariano tests.
+$R^2$ presents the prediction accuracy as a single figure, whereas Diebold-Mariano allows for pairwise comparison of different models. Diebold-Mariano value is calculated as:
 
 \begin{equation}
 \label{eq:Diebold-Mariano}
@@ -284,13 +284,91 @@ DM_{12} 			& = \ \frac{\overline{d}_{12}}{\hat \sigma_{d_{12}}} \\
 \end{split}
 \end{equation}
 
-In the spirit of Lewellen \citeyear{lewellen2015} expected returns are also estimated by regressing realized returns with expected returns. 
+where $\hat r_{i, t, 1}$ is the return prediction of first model for company $i$ at time $t$ and $\hat r_{i, t, 1}$ is the return prediction of the second model  for company $i$ at time $t$. $N_t$ is number of observations in prediction period $t$. Therefore, $d_{12, t}$ is a time series of differences in average squared prediction errors between model $1$ and model $2$. $\overline{d}_{12}$ is the mean of $d_{12, t}$ and $\hat \sigma_{d_{12}}$ is the Newey and West (source) standard error of $d_{12, t}$. Diebold-Mariano test allows us to estimate statistical significance of the prediction accuracy of two models. Under assumption that the there does not exists difference in prediction accuracy between models Diebold-Mariano test statistic follows norma distribution with mean of $0$ and standard deviation of $1$, $DM \sim \mathcal{N}(0,\, 1)$. The significance of the difference is reported both for traditional $5\%$ level as well as for 3-way comparisons with Bonferroni adjustment.
+
+In the spirit of Lewellen \citeyear{lewellen2015} expected returns are also estimated by regressing realized returns with the expected returns. This regression follows
 
 \begin{equation}
 \label{eq:realizedRegression}
 r_{i, t} = \alpha + \beta_1 \hat r_{i, t}
 \end{equation}
 
+where $r_{i, t}$ is the realized return of company $i$ at time $t$ and $\hat r_{i, t}$ is the expected return of corresponding model for company $i$ at time $t$. For these regressions betas, $t$-statistics for betas and $R^2$ values will be reported. Ideally the beta coefficient or the slope for the predicted return should be 1 and highly significant. Magnitude of the beta coefficients can provide information of possible over or undershooting of the models.
+
+\subsection{Linear regression}
+Benchmark model of this study is Fama-MacBeth \citeyear{FamaMacBeth1973} regression. First step of the method is to run rolling cross-sectional regressions with lagged variables. Second step of the method calculates means of the factor loadings obtained from the cross-sectional regressions. Finally expected stock return can be obtained by multiplying the mean factors loading with latest available stock characteristics. Below formulas show one model specification for Fama-French \citeyear{FAMA19933} three factors model.
+
+%review this
+\begin{equation}
+f(x_{i, t}; \theta) = \theta^T x_{i, t}
+\end{equation}
+
+\begin{equation}
+\overline \theta_j = \frac{1}{T} \sum^{T}_{t=1}\theta_{j, t}
+\end{equation}
+
+\begin{equation}
+E_t \left[ r_{i, t} | x_{i, t-1} \right] = \overline \theta_{t-1}^T x_{i, t-1}
+\end{equation}
+
+One benefit that linear regression models have is that they do not require hyperparameter tuning. Therefore data  does not have to be split to three sub-samples for separate validation of hyperparameters and testing. To obtain the expected return mean of 120 historical regression coefficients is calculated. Due to their high computing cost machine learning models are usually trained only once a year and then used for the rest of the year. Each month recent information is just inserted to the model. Computing requirements for linear model is far lesser than for non-linear models. Nevertheless to ensure comparability between different models also the linear model is trained only once per year. That means that no more recent stock returns than $t-1$ are used to train the model to predict stock return $t$, but the gap between predicted return and last return used to train the model can grow up to 12 months. Since we use lagged variables, this means that for prediction of stock return $t$ we alway use stock characteristics from $t-1$, but some factors are only updated yearly. To mimic information set investor would have had available in historical periods we have to account for the delay in reporting balance sheet information. Therefore timeline of Fama and French \citeyear{FAMA19933} is followed and models are trained each year at end of June. 
+
+\subsection{Random forest}
+
+Decision trees are one example of nonparametric machine learning algorithms. Idea of the decision trees is to split data into the most homogenous groups. Decision trees can be used for both classification and regression tasks. Starting point of the decision tree is called a root node. At each iteration of decision tree algorithm finds the optimal threshold to split the data to the nodes to minimize the objective function value. Then iteratively these nodes can be further split and the tree grows. This process is repeated until predefined tree size, set by the user, is reached or objective function cannot be improved anymore. Regression tree nodes that are not further split are called leaves. Final prediction of the regression tree leaf is the average of the dependant variable values of training set observations inside it. Gu et al. \citeyear{guetal} formulate prediction of a regression tree with $K$ leaves as 
+
+\begin{equation}
+f(x_{i, t}; \theta, K, L) = \sum_{k=1}^K \theta_k 1 _{\{x_{i, t} \in C_K(L)\}}
+\end{equation}
+
+Where $C_k(L)$ represents one of the $K$ splits the tree consists of. $L$ is the indicator of the depth of the leaf. $\theta_k$ indicates average return within leaf $k$ and $1 _{\{x_{i, t} \in C_K(L)\}}$ indicates whether observation $x_{i, t}$ belongs to leaf $k$. Since observation can only belong to one leaf, partition $C_K(L)$ is the product of the above partitions.
+
+\begin{figure}[ht]
+\centering
+\caption[Illustrative regression tree]{\textbf{Illustrative regression tree}\\ Tree is trained from the actual dataset for 30th of July 2004 and then pruned to show only few most important leaves. Figure serves only illustrative purposes and random forest models used in the study do not necessarily contain identical trees. }
+\input{R_graphs/regr_tree.tex}
+\label{plot:regre_tree}
+\end{figure}
+
+Advantage of the regression trees is that they are rather simple and intuitive, but still they are able to model even complex interactions and non-linear relationships among the predictors. One common problem with regression trees is that they easily overfit the data and would require heavy regularization. Random forest models aims to avoid this problem by deriving the predictions from ensemble of regression trees. As the name might suggest random forest consists of multiple decision trees. 
+
+Idea of the random forest is to randomly generate set of decision trees and then use the average outcome of the decision trees as the final output. This way the model is less likely to overfit the data. Nevertheless to avoid the overfitting trees inside random forest should not be too correlated and this is ensured including randomness in the construction of the decision trees. Randomness in the generation of the decision trees is applied by restricting the set of observations used in the training of the model. Number of the variables model considers in each split as well as maximum depth of the decision tree and number of trees in the random forest can also be limited. Setting these parameters correctly is a crucial part of the training. These are the hyperparameters which require input from the user, but which also can be optimized for different tasks. Table \ref{table:Hyperparameters} in Appendix shows which values were considered for each hyperparameter that were optimized for random forest.
+
+\subsection{Neural networks}
+
+Artificial neural networks are powerful machine learning method category. Currently neural networks are popular approach to many real world prediction issues. Due to their strong performance in multiple domains, neural networks are often considered as state of the art machine learning method. Despite their popularity, for many users neural networks are sort of black box tools because of their complexity. Compared to linear regression and tree based models, neural networks are far less interpretable. Another weakness of the neural networks is that they are highly parameterized and highly sensitive for parameter initialization. Some of the parameter, such as learning rate, are usually optimized during the training of the model while others such as architecture of the model are usually fixed. 
+
+\begin{figure}
+\centering
+\caption[Illustrative neural network]{\textbf{Illustrative neural network}\\  }
+\input{R_graphs/NN.tex}
+\label{plot:NN}
+\end{figure}
+
+One of the first things user has to deccide while training a neural network is the architecture of the model. This study focuses on feedforward neural networks which consists of input layer, hidden layers and an output layer. Input layer consists of the predictive variables whereas output layer produces the final predicition. In between thee exist 1 to N hidden layers. Hidden layers again consists of  so called neurons. Similar to number of hidden layers, user has to also decide number of neurons in each of the hidden layers. Number of the hidden layers is often referred as the deepness of the model where as number of the neurons in each hidden layer is referred as the width of the model. While lot of previous literature simultaneously examine multiple different architectural forms, due to computing capacity in this study only one architecture will be examined \cite{guetal, HANAUER2022, TOBEK2021100588}. Neural network of this study has two hidden layers. First hidden layer has 16 neurons and following common geometric pyramid rule second hidden layer has 8 neurons. Rather shallow and narrow architecture is chosen because they usually perform better with smaller datasets \cite{guetal}. In order to improve and fasten the converging of the model batch normalization is implemented between all layers.
+
+Idea of the neural network is that each neuron, using weights and biases terms, aggregates information from previous layer and subsequently feeds the information to the activations function. Neural network model used in this study is fully connected, meaning that each neuron is connected to all neurons in previous layer. Output of the activation function will be the input for the next layer. Neural network model is trained by optimizing these weights and biases terms. There exists many options for the activation function, which is again one choice user has to make. Activation function used in this study is rectified linear unit
+
+\begin{equation}
+\label{ReLU}
+ReLU(x) = max(0, x)
+\end{equation}
+
+Since model is trained for a regression task final neuron in the output layer has different activation function than the neurons in the hidden layers. Activation function for the output neuron is linear function. 
+
+As mentioned neural networks include numerous hyperparameters that can be optimized during the training of the model. Training neural network is computationally demanding. Due to limited computing capacity hyperparameters are not optimized in this study, but predefined values are used. Hyperparameters and their values are presented in table \ref{table:Hyperparameters}. Additionally, to further limit the computational demand and simultaneously avoid overfitting early stopping algorithm is applied. Early stopping is implemented so that training of the model is terminated after five epochs where the loss function value does not reduce for validation set. Instead of inserting whole dataset to the model at once data is inserted to the model in smaller subsamples so called batches. Epoch on the other hand measures how many times the whole dataset is run through the model. 
+
+Neural networks are also sensitive to the weight initialization, where the initial weights are set which the model starts to optimize. Depending on the initialization of the weights neural networks can converge to different results. To reduce model variance caused by this, an ensemble method is applied. Ensemble is implemented by training five separate models with different initial weights. Final prediction will be then average of the predictions of the five models.
+
+\subsection{Variable importance} \label{VariableImportance}
+
+One challenge in dealing with various statistical methods is that they lack common metrics for explanatory inference. Many of the models have metrics for variable importance, but comparability of these metrics can be questioned. Therefore, approach of Gu et al. \citeyear{guetal} is implemented to define variable importance metrics for model applied in this study. Approach consists of following steps. First one variable at a time is set to zero. Then the reduced model is retrained and new predicted returns are derived using the reduced model. Process of training and predicting returns is identical to the reduced model as for the full model. After obtaining the predicted returns from reduced model, out-of-sample $R^2$ values are calculated for these returns. Then change compared to out-of-sample $R^2$ of full model is calculated. Finally, to obtain relative variable importance metric sum of changes in out-of-sample $R^2$s is normalized to one within model. Same process is applied to each variable and all models.
+
+\subsection{Sample splitting} \label{SampleSplitting}
+
+It is common while training machine learning models to split the data to three sets. Training set will be used as the name suggest to train the model. In case machine learning model includes hyperparameters these can be optimized with validation set. Finally the true out-of-sample predictions can be performed for testing data. Because we want to mimic situation and information set of an investor we have to take into a consideration timeseries nature of the data. 
+
+In stock return prediction literature it is common to split the data as described above, but considering the chronological order. For example Fieberg et al. \citeyear{Fieberg} use rolling 10 year rolling scheme where they first train model using the first seven years of the data and then optimize hyperparameters using last three years of the rolling window. Finally they train the model with optimal hyperparameter initalization with whole ten year window to predict returns for the next year. Gu et al. \citeyear{guetal} use slightly diffrent approach. Instead of using rolling window they increase the training window size after each training period by one year. Common for these two approaches is that they both train the model only once a year.
 
 \definecolor{Gray}{RGB}{160,160,160}
 \definecolor{LightGray}{RGB}{191,191,191}
@@ -319,63 +397,57 @@ r_{i, t} = \alpha + \beta_1 \hat r_{i, t}
 \label{plot:Turnover}
 \end{figure}
 
-\subsection{Linear regression}
-Benchmark model of this study is Fama-MacBeth \citeyear{FamaMacBeth1973} regression. First step of the method is to run rolling cross-sectional regressions with lagged variables. Second step of the method calculates means of the factor loadings obtained from the cross-sectional regressions. Finally expected stock return can be obtained by multiplying the mean factors loading with latest available stock characteristics. Below formulas show one model specification for Fama-French \citeyear{FAMA19933} three factors model.
+The sample splitting scheme applied in this study is slightly different from above described ones. Above approaches use disjoint time periods to mimic the out-of-sample setting in the hyperparameter optimization. In this study training and validation set are separated from the testing data based on time. Approach is closer to approach of Gu et al. \citeyear{guetal} in a sense that training data window is increased each year. Nevertheless, the difference is that the data is distributed to training data and validation randomly instead of using the disjoint periods. Reason why this scheme is chosen is that we want to avoid the retraining of the model after the hyperparameter optimizatioin which is necessary if the most recent data should be included to the model. 
 
-%review this
-\begin{equation}
-f(x_{i, t}; \theta) = \theta^T x_{i, t}
-\end{equation}
+Since linear regression does not require any hypeparameter optimization there is no need for validation set and all data can be used to train the model. For random forest model we actually otpimize the hyperparameters. Therefore, training window is split to training and validation data so that $80\%$ of the data is used in the training and $20\%$ is assigned to the validation set. For neural network model we do not optimize any actual hyperparameterss, but we still need a validation set for the early stopping algorithm. Therefore, for neural network $15\%$ of the training window is assigned to the validation set.  Approach of this study follows the common approach to only train the models once a year.
 
-\begin{equation}
-\overline \theta_j = \frac{1}{T} \sum^{T}_{t=1}\theta_{j, t}
-\end{equation}
-
-\begin{equation}
-E_t \left[ r_{i, t} | x_{i, t-1} \right] = \overline \theta_{t-1}^T x_{i, t-1}
-\end{equation}
-
-One benefit that linear regression models have is that they do not require hyperparameter tuning. Therefore data  does not have to be split to three sub-samples for separate validation of hyperparameters and testing. To obtain the expected return mean of 120 historical regression coefficients is calculated. Due to their high computing cost machine learning models are usually trained only once a year and then used for the rest of the year. Each month recent information is just inserted to the model. Computing requirements for linear model is far lesser than for non-linear models. Nevertheless to ensure comparability between different models also the linear model is trained only once per year. That means that no more recent stock returns than $t-1$ are used to train the model to predict stock return $t$, but the gap between predicted return and last return used to train the model can grow up to 12 months. Since we use lagged variables, this means that for prediction of stock return $t$ we alway use stock characteristics from $t-1$, but some factors are only updated yearly. To mimic information set investor would have had available in historical periods we have to account for the delay in reporting balance sheet information. Therefore timeline of Fama and French \citeyear{FAMA19933} is followed and models are trained each year at end of June. 
-
-\subsection{Random forest}
-Decision trees are one example of nonparametric machine learning algorithms. Idea of the decision trees is to split data into the most homogenous groups. Decision trees can be used for both classification and regression tasks. Starting point of the decision tree is called a root node. At each iteration of decision tree algorithm finds the optimal threshold to split the data to the nodes to minimize the objective function value. %maybe introduce objective functions
-Then iteratively these nodes can be further split and the tree grows. This process is repeated until predefined tree size, set by the user, is reached or objective function can not be improved anymore. Regression tree nodes that are not further split are called leaves. Final prediction of the regression tree leaf is the average of the dependant variable values of training set observations inside it. Gu et al. \citeyear{guetal} formulate prediction of a regression tree with $K$ leaves as 
-
-\begin{equation}
-f(x_{i, t}; \theta, K, L) = \sum_{k=1}^K \theta_k 1 _{\{x_{i, t} \in C_K(L)\}}
-\end{equation}
-
-Where $C_k(L)$ represents one of the $K$ splits the tree consists of. $L$ is the indicator of the depth of the leaf. $\theta_k$ indicates average return within leaf $k$ and $1 _{\{x_{i, t} \in C_K(L)\}}$ indicates whether observation $x_{i, t}$ belongs to leaf $k$. Since observation can only belong to one leaf, partition $C_K(L)$ is the product of the above partitions.
-
-\begin{figure}[ht]
-\centering
-\caption[Illustrative regression tree]{\textbf{Illustrative regression tree}\\ Tree is trained from the actual dataset for 30th of July 2004 and then pruned to show only few most important leaves. Figure serves only illustrative purposes and random forest models used in the study do not necessarily contain identical trees. }
-\input{R_graphs/regr_tree.tex}
-\label{plot:regre_tree}
-\end{figure}
-
-Advantage of the regression trees is that they are rather simple and intuitive, but still they are able to model even complex interactions and non-linear relationships among the predictors. One common problem with regression trees is that they easily overfit the data and would require heavy regularization. Random forest models aims to avoid this problem by deriving the predictions from ensemble of regression trees. As the name might suggest random forest consists of multiple decision trees. Idea of the random forest is to randomly generate set of decision trees and then use the average outcome of the decision trees as the final output. This way the model is less likely to over fit the data. Nevertheless to avoid the overfitting trees inside random forest should not be too correlated and this is ensured including randomness in the construction of the decision trees. Randomness in the generation of the decision trees is applied by restricting the set of observations used in the training of the model. Number of the variables model consideres in each split as well as maximum depth of the decision tree and number of trees in the random forest can also be limited. Setting these parameters correctly is a crucial part of the training. These are the hyperparameters which require input from the user, but which also can be optimized for different tasks. Table \ref{table:Hyperparameters} in Appendix shows which values were considered for each hyperparameter that were optimized for random forest.
-
-\subsection{Neural networks}
-
-\subsection{Variable importance} \label{VariableImportance}
-
-One challenge in dealing with various statistical methods is that they lack common metrics for explanatory inference. Many of the models have metrics for variable importance, but comparability of these metrics can be questioned. Therefore, approach of Gu et al. \citeyear{guetal} is implemented to define variable importance metrics for model applied in this study. Approach consists of following steps. First one variable at a time is set to zero. Then the reduced model is retrained and new predicted returns are derived using the reduced model. Process of training and predicting returns is identical to the reduced model as for the full model. After obtaining the predicted returns from reduced model, out-of-sample $R^2$ values are calculated for these returns. Then change compared to out-of-sample $R^2$ of full model is calculated. Finally, to obtain relative variable importance metric sum of changes in out-of-sample $R^2$s is normalized to one within model. Same process is applied to each variable and all models.
-
-\begin{figure}
-\centering
-\caption[Illustrative neural network]{\textbf{Illustrative neural network}\\  }
-\input{R_graphs/NN.tex}
-\label{plot:NN}
-\end{figure}
-
-\section{Empirical results on Nordic equitites}
+\section{Empirical results on Nordic equities}
 
 Performance of the machine learning models will be evaluated from two aspects. First profitability of the models will be evaluated by investigating performance of univariate expected return sort portfolios. Construction of these portfolios is explained in more detail in section \ref{Methodology}. Second aspect that is examined is the prediction accuracy of the machine learning models. Prediction accuracy is evaluated by out-out sample $R^2$. Additionally, in the spirit of Lewellen \citeyear{lewellen2015} relationship between expected and realized excess returns are examined by regressing the realized excess returns with the individual stock level predicted returns. Finally, the variable importance for different methods are calculated to see effect of each explanatory variable to the prediction accuracy of the model. Process to define variable importance is described in section \ref{VariableImportance}.
 
-\subsection{Portfolio performance}
-
 \subsection{Predictive performance}
+
+Table \ref{table:PredictionAccuracy} presents the out-of-sample predictive accuracies for all models. Additionally, it presents the. pairwise Diebold-Mariano statistics. 
+
+\begin{table}[h]
+\small
+\caption[Prediction accuracy]{\textbf{Prediction accuracy}\\ ..}
+\label{table:PredictionAccuracy}
+\centering
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+\begin{tabularx}{\textwidth}{@{\extracolsep{4pt}} X Y Y Y} 
+\toprule
+& FM & RF & NN \\
+\midrule
+$R^2_{oos}$ & -0.0168 & 0.0033 & -0.0087\\
+$R^2_{oos \ Trad.}$  & 0.0368 & 0.0533 & 0.0487\\
+\midrule
+FM 	& 	& \textbf{8.4462*} (0.0000)& \textbf{2.1495} (0.0316)\\
+RF	& 	& 					& \textbf{-10.0946*} (0.0000)\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[h]
+\small
+\caption[Expected return regressions]{\textbf{...} \\ ...}
+\label{table:expRetRegressions}
+\centering
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+\begin{tabularx}{\textwidth}{@{\extracolsep{4pt}} X Y Y Y Y Y Y} 
+\toprule
+& \multicolumn{2}{c}{Univariate properties} & \multicolumn{4}{c}{Predictive ability}\\
+\cline{2-3}\cline{4-7}
+& Mean & Std. & Slope. & SE & $t$-stat & $R^2$ \\
+\midrule
+FM & 0.0119 & 0.0160 & 0.1593 & 0.0217 & 7.324 & 0.0004 \\
+RF & 0.0073 & 0.0117 & 0.4877 & 0.0298 & 16.388 & 0.0022 \\
+NN & 0.0069 & 0.0167 & 0.2432 & 0.0208 & 11.67 & 0.0011 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Portfolio performance}
 
 \subsection{Variable importance}
 
@@ -464,45 +536,6 @@ Turnover (\%)		 	& 0.10756625 & 0.11414496 & 0.12479359 & 0.09903494 & 0.1477597
 \input{R_graphs/cumul_ew_LS_return.tex}
 \label{plot:cumul_ew_LS_portf_return}
 \end{figure}
-
-\begin{table}[h]
-\small
-\caption[Expected return regressions]{\textbf{...} \\ ...}
-\label{table:expRetRegressions}
-\centering
-\newcolumntype{Y}{>{\centering\arraybackslash}X}
-\begin{tabularx}{\textwidth}{@{\extracolsep{4pt}} X Y Y Y Y Y Y} 
-\toprule
-& \multicolumn{2}{c}{Univariate properties} & \multicolumn{4}{c}{Predictive ability}\\
-\cline{2-3}\cline{4-7}
-& Mean & Std. & Slope. & SE & t-stat & $R^2$ \\
-\midrule
-FM & 0.0119 & 0.0160 & 0.1593 & 0.0217 & 7.324 & 0.0004 \\
-RF & 0.0073 & 0.0117 & 0.4877 & 0.0298 & 16.388 & 0.0022 \\
-NN & 0.0069 & 0.0167 & 0.2432 & 0.0208 & 11.67 & 0.0011 \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-
-\begin{table}[h]
-\small
-\caption[Prediction accuracy]{\textbf{Prediction accuracy}\\ ..}
-\label{table:PredictionAccuracy}
-\centering
-\newcolumntype{Y}{>{\centering\arraybackslash}X}
-\begin{tabularx}{\textwidth}{@{\extracolsep{4pt}} X Y Y Y} 
-\toprule
-& FM & RF & NN \\
-\midrule
-$R^2_{oos}$ & -0.0168 & 0.0033 & -0.0087\\
-$R^2_{oos \ Trad.}$  & 0.0368 & 0.0533 & 0.0487\\
-\midrule
-FM 	& 	& \textbf{8.4462*} (0.0000)& \textbf{2.1495} (0.0316)\\
-RF	& 	& 					& \textbf{-10.0946*} (0.0000)\\
-\bottomrule
-\end{tabularx}
-\end{table}
 
 \begin{figure}[h]
 \centering
@@ -698,7 +731,7 @@ Equation \ref{eq:FF6factors} shows formula for each factor. Acronym for each var
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 \begin{tabularx}{\textwidth}{@{\extracolsep{4pt}} X Y Y Y Y Y Y} 
 \toprule
-& Mean & Std. & t-stat. & p-value & Min & Max \\
+& Mean & Std. & $t$-stat. & p-value & Min & Max \\
 \midrule
 HML & 0.0014 & 0.0022 & 0.6299 & 0.5291 & -0.2662 & 0.2508 \\
 RMW & 0.0013 & 0.0015 & 0.8711 & 0.3842 & -0.1251 & 0.1640 \\
@@ -768,6 +801,13 @@ RMRF & -0.2740 & 0.0639 & -0.2078 & -0.2040 & -0.2695 & 1 \\
 \caption[Turnover of highest epected return portfolios]{\textbf{Turnover of highest epected return portfolios}\\ .}
 \input{R_graphs/turnover.tex}
 \label{plot:Turnover}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\caption[...]{\textbf{....}\\ ....}
+\input{R_graphs/variable_ts.tex}
+\label{plot:variableTSr}
 \end{figure}
 
 \pagebreak
