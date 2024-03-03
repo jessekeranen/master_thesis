@@ -23,6 +23,7 @@ tensorflow::set_random_seed(42)
 ```{r}
 load(file = "Data/data.Rdata")
 data[, NN.EXP.RET := NULL]
+setorder(data, Date, Company)
 ```
 
 ```{r}

@@ -19,6 +19,7 @@ Process is started by loading the data file generated in Data_collection file. I
 ```{r}
 load(file = "Data/data.Rdata")
 data[, FM.EXP.RET := NULL]
+setorder(data, Date, Company)
 #set.seed(1) # Initialize a pseudorandom numbers
 
 independend_variables <- c("CA", "CTO", "INV", "BEME", "CFP", "DEBT", "SP", "EP",

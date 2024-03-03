@@ -1,6 +1,76 @@
 \begin{thebibliography}{}
 
 \bibitem [\protect \citeauthoryear {%
+Ali%
+, Hwang%
+\BCBL {}\ \BBA {} Trombley%
+}{%
+Ali%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2003}}%
+}]{%
+ali2003}
+\APACinsertmetastar {%
+ali2003}%
+\begin{APACrefauthors}%
+Ali, A.%
+, Hwang, L\BHBI S.%
+\BCBL {}\ \BBA {} Trombley, M\BPBI A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2003}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Arbitrage risk and the book-to-market anomaly}
+  {Arbitrage risk and the book-to-market anomaly}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Financial Economics}{69}{2}{355-373}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.sciencedirect.com/science/article/pii/S0304405X03001168}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{https://doi.org/10.1016/S0304-405X(03)00116-8}
+  \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+ANG%
+, HODRICK%
+, XING%
+\BCBL {}\ \BBA {} ZHANG%
+}{%
+ANG%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2006}}%
+}]{%
+ang2006}
+\APACinsertmetastar {%
+ang2006}%
+\begin{APACrefauthors}%
+ANG, A.%
+, HODRICK, R\BPBI J.%
+, XING, Y.%
+\BCBL {}\ \BBA {} ZHANG, X.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2006}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The Cross-Section of Volatility and Expected Returns}
+  {The cross-section of volatility and expected returns}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Journal of Finance}{61}{1}{259-299}.
+\newblock
+\begin{APACrefURL}
+  \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1540-6261.2006.00836.x}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{https://doi.org/10.1111/j.1540-6261.2006.00836.x}
+  \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Anwar%
 \ \BBA {} Hogholm%
 }{%
@@ -30,6 +100,37 @@ Anwar, B\BPBI H.%
   \end{APACrefURL}
 \newblock
 \begin{APACrefDOI} \doi{10.1080/02102412.2018.1555348} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Banz%
+}{%
+Banz%
+}{%
+{\protect \APACyear {1981}}%
+}]{%
+BANZ1981}
+\APACinsertmetastar {%
+BANZ1981}%
+\begin{APACrefauthors}%
+Banz, R\BPBI W.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1981}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The relationship between return and market value of
+  common stocks} {The relationship between return and market value of common
+  stocks}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Financial Economics}{9}{1}{3-18}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.sciencedirect.com/science/article/pii/0304405X81900180}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{https://doi.org/10.1016/0304-405X(81)90018-0}
+  \end{APACrefDOI}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -280,6 +381,35 @@ Fieberg, C.%
   \end{APACrefURL}
 \newblock
 \begin{APACrefDOI} \doi{10.1007/s00291-022-00693-w} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+George%
+\ \BBA {} Hwang%
+}{%
+George%
+\ \BBA {} Hwang%
+}{%
+{\protect \APACyear {2004}}%
+}]{%
+george2004}
+\APACinsertmetastar {%
+george2004}%
+\begin{APACrefauthors}%
+George, T\BPBI J.%
+\BCBT {}\ \BBA {} Hwang, C\BHBI Y.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2004}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The 52-Week High and Momentum Investing} {The 52-week
+  high and momentum investing}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Journal of Finance}{59}{5}{2145--2176}.
+\newblock
+\begin{APACrefURL} [{2024-03-03}]\url{http://www.jstor.org/stable/3694820}
+  \end{APACrefURL}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -632,6 +762,35 @@ Lewellen, J.%
   \end{APACrefURL}
 \newblock
 \begin{APACrefDOI} \doi{10.1561/104.00000024} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Moskowitz%
+\ \BBA {} Grinblatt%
+}{%
+Moskowitz%
+\ \BBA {} Grinblatt%
+}{%
+{\protect \APACyear {1999}}%
+}]{%
+Moskowitz1999}
+\APACinsertmetastar {%
+Moskowitz1999}%
+\begin{APACrefauthors}%
+Moskowitz, T\BPBI J.%
+\BCBT {}\ \BBA {} Grinblatt, M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1999}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Do Industries Explain Momentum?} {Do industries explain
+  momentum?}{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Journal of Finance}{54}{4}{1249--1290}.
+\newblock
+\begin{APACrefURL} [{2024-03-03}]\url{http://www.jstor.org/stable/798005}
+  \end{APACrefURL}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%

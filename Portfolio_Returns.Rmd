@@ -30,6 +30,7 @@ independend_variables <- c("CA", "CTO", "BEME", "CFP", "INV", "DEBT", "SP", "EP"
                            "ROA", "ROE", "Q", "MOM7", "MOM12", "MOM36", "MOM2",
                            "MOM.IND", "L.SD", "L.HIGH52.RATIO", "L.BETA",
                            "L.IDVOL", "L.LOG.USD.MV", "L.TO", "L.OBV")
+setorder(data, Date, Company)
 ```
 
 ```{r}
@@ -151,7 +152,7 @@ round <- colnames(portfolio_statistics[, -c("variable", "Portfolio", "parameter"
                                         "alternative", "method", "data.name")])
 portfolio_statistics[, (round) := round(.SD, 4), .SDcols = round]
 
-portfolio_statistics[variable == "VW.RET" & substr(Portfolio, 1, 2) == "RF"]
+portfolio_statistics[variable == "EW.RET" & substr(Portfolio, 1, 2) == "RF"]
 ```
 
 ```{r}
@@ -186,6 +187,7 @@ load_exp_ret <- function(method, variable) {
 ```
 
 ```{r}
+setorder(data, Date)
 data[, MEAN.RET := shift(rollapplyr(EXC.USD.RET, .SD[, .N], mean, partial = T,
                                     na.rm = T), fill = 0), by = Company]
 ```

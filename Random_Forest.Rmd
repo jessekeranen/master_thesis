@@ -13,6 +13,8 @@ library(data.table)
 library(ranger)
 library(ggplot2)
 library(tikzDevice)
+
+set.seed(42)
 ```
 
 # Preliminary steps
@@ -21,7 +23,7 @@ Process is started by loading the data file generated in Data_collection file. I
 ```{r}
 load(file = "Data/data.Rdata")
 data[, RF.EXP.RET := NULL]
-set.seed(42)
+setorder(data, Date, Company)
 
 independend_variables <- c("CA", "CTO", "INV", "BEME", "CFP", "DEBT", "SP", "EP",
                            "ROA", "ROE", "Q", "MOM7", "MOM12", "MOM36", "MOM2",
@@ -93,9 +95,8 @@ random_forest <- function(dt, grid, date_index, formula, independend_variables) 
                  sample.fraction = grid$sample.fraction[index])
     
     # Calculate the MSE for test data
-    grid$MSE[index] <- test[, mean((EXC.USD.RET -
-                      predict(rf, .SD[, ..independend_variables])$predictions)^2,
-                      na.rm = T)]
+    grid$MSE[index] <- test[, mean((EXC.USD.RET - predict(rf,
+                                .SD[, ..independend_variables])$predictions)^2, na.rm = T)]
     
     # Check if the new hyperparameter initialization improved the model   
     if (grid$MSE[index] < mse_lowest) {
@@ -145,6 +146,7 @@ save(optimal_grid, file = "Data/RF_Optimal_Grid.Rdata")
 Variable importance for random forest approach is calculated replacing one variable at a time by 0 and then repeating above steps. Once the predicted returns are obtained for the reduced model, they are saved one by one to the RData files in Data folder for later usage.
 ```{r, warning=FALSE}
 invisible(lapply(independend_variables, function(x) {
+  set.seed(42)
   r2 <- copy(data)
   r2[, (x) := 0]
   
