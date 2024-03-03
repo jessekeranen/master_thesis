@@ -1,14 +1,14 @@
 \contentsline {figure}{\numberline {1}{\ignorespaces Illustrative regression tree}}{13}{figure.caption.6}%
 \contentsline {figure}{\numberline {2}{\ignorespaces Illustrative neural network}}{14}{figure.caption.7}%
 \contentsline {figure}{\numberline {3}{\ignorespaces Sample splitting scheme}}{17}{figure.caption.8}%
-\contentsline {figure}{\numberline {4}{\ignorespaces Cumulative return of machine learning portfolios}}{21}{figure.caption.13}%
-\contentsline {figure}{\numberline {5}{\ignorespaces Cumulative return of zero investment portfolios}}{22}{figure.caption.14}%
-\contentsline {figure}{\numberline {6}{\ignorespaces Variable importance}}{23}{figure.caption.15}%
-\contentsline {figure}{\numberline {A.2}{\ignorespaces Cumulative return of value weighted machine learning portfolios}}{23}{figure.caption.21}%
-\contentsline {figure}{\numberline {A.1}{\ignorespaces Number of companies}}{24}{figure.caption.20}%
-\contentsline {figure}{\numberline {A.3}{\ignorespaces Cumulative return of value weighted zero investment portfolios}}{24}{figure.caption.22}%
-\contentsline {figure}{\numberline {A.4}{\ignorespaces Relative variable importance}}{34}{figure.caption.23}%
-\contentsline {figure}{\numberline {A.5}{\ignorespaces Time series of out-of-sample $R^2$}}{35}{figure.caption.24}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Cumulative return of equal weighted machine learning portfolios}}{21}{figure.caption.13}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Cumulative return of equal weighted zero investment portfolios}}{22}{figure.caption.14}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Cumulative return of value weighted machine learning portfolios}}{23}{figure.caption.15}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Cumulative return of value weighted zero investment portfolios}}{24}{figure.caption.16}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Variable importance}}{25}{figure.caption.17}%
+\contentsline {figure}{\numberline {A.1}{\ignorespaces Number of companies}}{26}{figure.caption.22}%
+\contentsline {figure}{\numberline {A.2}{\ignorespaces Relative variable importance}}{34}{figure.caption.23}%
+\contentsline {figure}{\numberline {A.3}{\ignorespaces Time series of out-of-sample $R^2$}}{35}{figure.caption.24}%
 \contentsline {figure}{\numberline {B.1}{\ignorespaces Benchmark factor performance}}{36}{figure.caption.25}%
 \contentsline {figure}{\numberline {B.2}{\ignorespaces Factor autocorrelation}}{37}{figure.caption.28}%
 \contentsline {figure}{\numberline {B.3}{\ignorespaces Optimized random forest hyperparameters}}{38}{figure.caption.30}%

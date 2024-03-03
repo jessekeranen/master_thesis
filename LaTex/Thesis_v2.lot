@@ -4,10 +4,10 @@
 \contentsline {table}{\numberline {4}{\ignorespaces Expected return regression summaries}}{20}{table.caption.10}%
 \contentsline {table}{\numberline {5}{\ignorespaces Machine learning portfolio performance}}{30}{table.caption.11}%
 \contentsline {table}{\numberline {6}{\ignorespaces Zero investment portfolio performance metrics}}{31}{table.caption.12}%
-\contentsline {table}{\numberline {A.1}{\ignorespaces Constituent lists and keywords}}{31}{table.caption.16}%
-\contentsline {table}{\numberline {A.2}{\ignorespaces Static screens}}{31}{table.caption.17}%
-\contentsline {table}{\numberline {A.3}{\ignorespaces Country specific keywords}}{32}{table.caption.18}%
-\contentsline {table}{\numberline {A.4}{\ignorespaces Variable definitions}}{33}{table.caption.19}%
+\contentsline {table}{\numberline {A.1}{\ignorespaces Constituent lists and keywords}}{31}{table.caption.18}%
+\contentsline {table}{\numberline {A.2}{\ignorespaces Static screens}}{31}{table.caption.19}%
+\contentsline {table}{\numberline {A.3}{\ignorespaces Country specific keywords}}{32}{table.caption.20}%
+\contentsline {table}{\numberline {A.4}{\ignorespaces Variable definitions}}{33}{table.caption.21}%
 \contentsline {table}{\numberline {B.1}{\ignorespaces Benchmark factor summary statistics}}{36}{table.caption.26}%
 \contentsline {table}{\numberline {B.2}{\ignorespaces Benchmark factor correlation matrix}}{37}{table.caption.27}%
 \contentsline {table}{\numberline {B.3}{\ignorespaces Hyperparameters}}{38}{table.caption.29}%

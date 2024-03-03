@@ -481,7 +481,7 @@ Given that the mean predicted return matches quite well mean realized excess ret
 
 \subsection{Portfolio performance}
 
-Table \ref{table:PortfolioPerformance}
+This section focuses on backtesting portfolios, which are formed based on the expected returns produced by different machine learning models. Idea is to mimic of information set of a historical investor. Section describes the historical realized return for an investment strategy build on the machine learning models. Section mainly focuses on evaluating performance of the expected return portfolios. Formation of expected return portfolios is described in section \ref{Methodology}. Results are discussed separately for value and equal weighted portfolios. 
 
 \begin{table}[ht]
 \small
@@ -573,16 +573,30 @@ Turnover (\%)		 	& 0.1089 & 0.1140 & 0.1258 & 0.0995 & 0.1492 & 0.1417\\
 
 \begin{figure}[h]
 \centering
-\caption[Cumulative return of machine learning portfolios]{\textbf{..}\\ ...}
+\caption[Cumulative return of equal weighted machine learning portfolios]{\textbf{Cumulative return of equal weighted machine learning portfolios}\\ Figure plots the realized historical cumulative excess return of the out-of-sample predictions. Figure shows performance of portfolios that are formed allocating all except micro-cap stocks to ten portfolios based on their expected returns. Re-allocation is done monthly. Section \ref{Methodology} describes how expected returns are derived for different models. FM stands for linear model, RF stands for random forest model and NN stands for neural network model. Solid line plots the cumulative performance of the highest expected return portfolio whereas dashed line plots the cumulative excess return for the lowest expected return portfolio. All portfolios are equal weighted. Solid black line shows the value weighted marked return. All returns are converted to US dollars.}
 \input{R_graphs/cumul_ew_portf_return.tex}
 \label{plot:cumul_ew_portf_return}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-\caption[Cumulative return of zero investment portfolios]{\textbf{..}\\ ...}
+\caption[Cumulative return of equal weighted zero investment portfolios]{\textbf{Cumulative return of equal weighted zero investment portfolios}\\ Figure presents the realized cumulative spread return between highest expected return portfolio and lowest expected return portfolio. Re-allocation of stocks to portfolios is done monthly. Section \ref{Methodology} describes how expected returns are derived for different models. Both high and low expected return portfolios are equal weighted. FM stands for linear model, RF stands for random forest model and NN stands for neural network model. Solid black line shows the value weighted marked return. All returns are converted to US dollars.}
 \input{R_graphs/cumul_ew_LS_return.tex}
 \label{plot:cumul_ew_LS_portf_return}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\caption[Cumulative return of value weighted machine learning portfolios]{\textbf{Cumulative return of value weighted machine learning portfolios}\\ Figure plots the realized historical cumulative excess return of the out-of-sample predictions. Figure shows performance of portfolios that are formed allocating all except micro-cap stocks to ten portfolios based on their expected returns. Re-allocation is done monthly. Section \ref{Methodology} describes how expected returns are derived for different models. FM stands for linear model, RF stands for random forest model and NN stands for neural network model. Solid line plots the cumulative performance of the highest expected return portfolio whereas dashed line plots the cumulative excess return for the lowest expected return portfolio. All portfolios are value weighted. Solid black line shows the value weighted marked return. All returns are converted to US dollars.}
+\input{R_graphs/cumul_vw_portf_return.tex}
+\label{plot:cumul_vw_portf_return}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\caption[Cumulative return of value weighted zero investment portfolios]{\textbf{Cumulative return of value weighted zero investment portfolios}\\ Figure presents the realized cumulative spread return between highest expected return portfolio and lowest expected return portfolio. Re-allocation of stocks to portfolios is done monthly. Section \ref{Methodology} describes how expected returns are derived for different models. Both high and low expected return portfolios are value weighted. FM stands for linear model, RF stands for random forest model and NN stands for neural network model. Solid black line shows the value weighted marked return. All returns are converted to US dollars.}
+\input{R_graphs/cumul_vw_LS_return.tex}
+\label{plot:cumul_vw_LS_portf_return}
 \end{figure}
 
 \subsection{Variable importance}\label{VariableImportance}
@@ -672,26 +686,25 @@ Miscellaneous 		& ADS, BOND, CAP.SHS, CONV, DEFER, DEP, DEPY, ELKS, FD, FUND, GW
  \end{tabularx}
  \end{table} 
 
-
-\begin{table}[h] 
+\begin{table}[ht] 
 \small
-\caption[Variable definitions]{\textbf{Variable definitions} \\Tables provides definitions and initial authors for all anomalies used in the study. Construction of variables follows Green et. al \protect\citeyear{Green2017} and Hanauer and Kalsbach \protect\citeyear{HANAUER2022}.}
+\caption[Variable definitions]{\textbf{Variable definitions} \\ Tables provides definitions and initial authors for all anomalies used in the study. Construction of variables follows Green et. al \protect\citeyear{Green2017} and Hanauer and Kalsbach \protect\citeyear{HANAUER2022}.}
 \label{table:variableDefs}
 \centering
-\begin{tabularx}{\textwidth}{l X X}
+\begin{tabularx}{\textwidth}{l l X}
 \toprule
-Variable & Author & Definition\\
+Variable & Author & Definition \\
 \midrule
 Cash-to-Assets 		& \cite{PALAZZO2012162} 	& Cash-to-Asset ratio is calculated by dividing  cash and short-term investments by total assets.\\
 Capital Turnover 		& i						& Capital turnover is calculated by dividing total sales by one year lagged total assets.\\
 Investment 			& i						& Investments are defined as a yearly change in total assets.\\	
-Book-to-Market Equity 	& \cite{Rosenberg1985} 		&  Book-to-Market value is calculated by dividing company's book value of equity by company's market 										 	capitaliztion end of previous year. Book value of equity is calculated by summing common 												equity and deferred taxes of the company. \\
-Cash Flow-to-Price 		& \cite{LAKONISHOK1994} 	& Cash flow to price ratio is calculated by dividing company's cash flow from operating activities 												by the asset's market capitaliztion end of previous year. \\
-Debt-to-Price			& i						& Debt-to-price value is calculated as difference between total assets and common equity 													divided by the asset's market capitaliztion end of previous year.\\
-Sales-to-Price 			& i						& Sales-to-price ratio is calculated by dividing total sales by asset's market capitaliztion end of 													previous year.\\
-Earnings-to-Price 		& i						& Earnings-to-price ratio is calculated by dividing net income before extra Items and preferred 													dividends by asset's market capitaliztion end of previous year.\\
-Return-on-Assets 		& i						& Return-on-assets is calculated as net income before extra Items and preferred dividends divided 												by one year lagged total assets.\\
-Return-on-Equity 		& i						& Return-on-equity is calculated as net income before extra Items and preferred dividends divided 												by one year lagged book value of equity. See book-to-market equity for definition of book 													value of equity. \\
+Book-to-Market Equity 	& \cite{Rosenberg1985} 		&  Book-to-Market value is calculated by dividing company's book value of equity by company's market capitaliztion end of previous year. Book value of equity is calculated by summing common equity and deferred taxes of the company. \\
+Cash Flow-to-Price 		& \cite{LAKONISHOK1994} 	& Cash flow to price ratio is calculated by dividing company's cash flow from operating activities by the asset's market capitaliztion end of previous year. \\
+Debt-to-Price			& i						& Debt-to-price value is calculated as difference between total assets and common equity divided by the asset's market capitaliztion end of previous year.\\
+Sales-to-Price 			& i						& Sales-to-price ratio is calculated by dividing total sales by asset's market capitaliztion end of previous year.\\
+Earnings-to-Price 		& i						& Earnings-to-price ratio is calculated by dividing net income before extra Items and preferred dividends by asset's market capitaliztion end of previous year.\\
+Return-on-Assets 		& i						& Return-on-assets is calculated as net income before extra Items and preferred dividends divided by one year lagged total assets.\\
+Return-on-Equity 		& i						& Return-on-equity is calculated as net income before extra Items and preferred dividends divided by one year lagged book value of equity. See book-to-market equity for definition of book value of equity. \\
 Tobin's Q 				& i						& tbd\\
 Momentum$_{7}$ 		& i						& Cumulative return in US dollars between $t-7$ and $t-12$ months.\\
 Momentum$_{12}$ 		& i						& Cumulative return in US dollars between $t-2$ and $t-12$ months.\\
@@ -701,25 +714,11 @@ Momentum$_{2}$ 		& i						& Prior month return in US dollars.\\
 \end{tabularx}
 \end{table} 
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \caption[Number of companies]{\textbf{Number of companies}\\ Figure shows the development of total number of securities considered in the dataset from 1990 to 2022 for each Nordic country. Figures counts all securities that passed the static screens. Final amount of companies in each time point can be lower since security will be excluded from the dataset if it is missing certain information.}
 \input{R_graphs//number_of_companies.tex}
 \label{plot:number_of_companies}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\caption[Cumulative return of value weighted machine learning portfolios]{\textbf{..}\\ ...}
-\input{R_graphs/cumul_vw_portf_return.tex}
-\label{plot:cumul_vw_portf_return}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\caption[Cumulative return of value weighted zero investment portfolios]{\textbf{..}\\ ...}
-\input{R_graphs/cumul_vw_LS_return.tex}
-\label{plot:cumul_vw_LS_portf_return}
 \end{figure}
 
 \begin{figure}[h]
@@ -836,7 +835,7 @@ RMRF & -0.2740 & 0.0639 & -0.2078 & -0.2040 & -0.2695 & 1 \\
 			&	& mtry$ \ = \ \in (2, 3, 5, 7)$ 		& Batch size$ \ = 502$ \\
 			&	& max.depth$ \ = 2 \sim 6$ 		& Epochs$ \ = 100$ \\
 			&	& sample.fraction$ \ = 0.5$ 		& Patience$\  = 5$\\
-			&	& 						& Ensemble$ \ = 5$\\
+			&	& 							& Ensemble$ \ = 5$\\
 \bottomrule
 \end{tabularx}
 \end{table}

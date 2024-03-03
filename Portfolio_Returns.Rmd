@@ -150,6 +150,8 @@ portfolio_statistics <- merge(portfolio_statistics, sharpe,
 round <- colnames(portfolio_statistics[, -c("variable", "Portfolio", "parameter",
                                         "alternative", "method", "data.name")])
 portfolio_statistics[, (round) := round(.SD, 4), .SDcols = round]
+
+portfolio_statistics[variable == "VW.RET" & substr(Portfolio, 1, 2) == "RF"]
 ```
 
 ```{r}
@@ -204,10 +206,14 @@ RF_VI_ts <- rbind(RF_VI_ts, oos_r2(data, "RF.EXP.RET"))
 RF_r2s_scaled <- scale_oosr2(RF_VI_ts, "RF.EXP.RET")
 RF_r2s_scaled[, Rank := rank(.SD$V1), by = R2.Method]
 RF_r2_ts <- oos_r2(data, "RF.EXP.RET")
+
 RF_r2 <- data[!is.na(RF.EXP.RET), 
         .(R2OOS = 1 - (sum((EXC.USD.RET - RF.EXP.RET)^2) / (sum(EXC.USD.RET^2))),
-         TRAD.R2OOS = 1 - (sum((EXC.USD.RET - RF.EXP.RET)^2) / 
-                            (sum((EXC.USD.RET - MEAN.RET)^2))))]
+         TRAD.R2OOS = 1 - (sum((EXC.USD.RET - RF.EXP.RET)^2) / (sum((EXC.USD.RET - MEAN.RET)^2))))]
+
+RF_r2_2008 <- data[!is.na(RF.EXP.RET) & Date < as.POSIXct("2008-12-31", tz = "UTC"), 
+        .(R2OOS = 1 - (sum((EXC.USD.RET - RF.EXP.RET)^2) / (sum(EXC.USD.RET^2))),
+         TRAD.R2OOS = 1 - (sum((EXC.USD.RET - RF.EXP.RET)^2) / (sum((EXC.USD.RET - MEAN.RET)^2))))]
 ```
 
 ```{r}
@@ -227,8 +233,11 @@ FM_r2s_scaled[, Rank := rank(.SD$V1), by = R2.Method]
 FM_r2_ts <- oos_r2(data, "FM.EXP.RET")
 FM_r2 <- data[!is.na(FM.EXP.RET), 
         .(R2OOS = 1 - (sum((EXC.USD.RET - FM.EXP.RET)^2) / (sum(EXC.USD.RET^2))),
-          TRAD.R2OOS = 1 - (sum((EXC.USD.RET - FM.EXP.RET)^2) /
-                              (sum((EXC.USD.RET - MEAN.RET)^2))))]
+          TRAD.R2OOS = 1 - (sum((EXC.USD.RET - FM.EXP.RET)^2) / (sum((EXC.USD.RET - MEAN.RET)^2))))]
+
+FM_r2_2008 <- data[!is.na(FM.EXP.RET) & Date < as.POSIXct("2008-12-31", tz = "UTC"), 
+        .(R2OOS = 1 - (sum((EXC.USD.RET - FM.EXP.RET)^2) / (sum(EXC.USD.RET^2))),
+          TRAD.R2OOS = 1 - (sum((EXC.USD.RET - FM.EXP.RET)^2) / (sum((EXC.USD.RET - MEAN.RET)^2))))]
 ```
 
 ```{r}
@@ -250,6 +259,10 @@ NN_r2 <- data[!is.na(NN.EXP.RET),
         .(R2OOS = 1 - (sum((EXC.USD.RET - NN.EXP.RET)^2) / (sum(EXC.USD.RET^2))),
           TRAD.R2OOS = 1 - (sum((EXC.USD.RET - NN.EXP.RET)^2) /
                               (sum((EXC.USD.RET - MEAN.RET)^2))))]
+
+NN_r2_2008 <- data[!is.na(NN.EXP.RET) & Date < as.POSIXct("2008-12-31", tz = "UTC"), 
+        .(R2OOS = 1 - (sum((EXC.USD.RET - NN.EXP.RET)^2) / (sum(EXC.USD.RET^2))),
+          TRAD.R2OOS = 1 - (sum((EXC.USD.RET - NN.EXP.RET)^2) / (sum((EXC.USD.RET - MEAN.RET)^2))))]
 options(scipen = 999999)
 ```
 
