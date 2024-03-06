@@ -142,7 +142,7 @@ Value premium has shown consistency in Finnish stock markets. Davydov, Tikkanen 
 %(Finnish Stock Exchange in the period 1991–2013. In total, the number of companies varies from 39 to 136)
 %check the second article from patari and leivo
 
-Similar to Grobys and Huhta-Halkola \citeyear{grobys} Leivo and Pätäri \citeyear{cite-key} combine value anomaly with momentum anomaly in Finnish stock market for data set between 1993 and 2008. They show that two step portfolio sort that first allocates stocks to three portfolios based on their value indicators and subsequently based on momentum indicator can capture extraordinary stock returns. Leivo and Pätäri show that including momentum further increases returns of already recognised value sorting. Strategy performs even better when authors allow for long position in high value high momentum portfolio and short position on low value low momentum portfolio. Excess returns resulting from the two-fold portfolio construction can not be explained by CAP-model or two factor model including also size factor. It is not a surprise that value and momentum premium show existence in Nordic markets. Value and momentum anomalies are among the most well documented factors showing persistence in multiple cross-sectional studies (e.g, Gu, Jelly and Xiu \citeyear{guetal}, Lewellen \citeyear{lewellen2015}, Drobetz and Otto \citeyear{Drobetz}, Tobek and Hronec \citeyear{TOBEK2021100588} ).
+Similar to Grobys and Huhta-Halkola \citeyear{grobys} Leivo and Pätäri \citeyear{leivo2011} combine value anomaly with momentum anomaly in Finnish stock market for data set between 1993 and 2008. They show that two step portfolio sort that first allocates stocks to three portfolios based on their value indicators and subsequently based on momentum indicator can capture extraordinary stock returns. Leivo and Pätäri show that including momentum further increases returns of already recognised value sorting. Strategy performs even better when authors allow for long position in high value high momentum portfolio and short position on low value low momentum portfolio. Excess returns resulting from the two-fold portfolio construction can not be explained by CAP-model or two factor model including also size factor. It is not a surprise that value and momentum premium show existence in Nordic markets. Value and momentum anomalies are among the most well documented factors showing persistence in multiple cross-sectional studies (e.g, Gu, Jelly and Xiu \citeyear{guetal}, Lewellen \citeyear{lewellen2015}, Drobetz and Otto \citeyear{Drobetz}, Tobek and Hronec \citeyear{TOBEK2021100588}).
 % Helsinki Stock Exchange (HEX; later OMX Helsinki) during the period 1993–2008. E/P, EBITDA/EV, CF/P, dividend yield (D/P), B/P and S/P and combinations.
 %re-phrase the text
 
@@ -343,7 +343,34 @@ r_{i, t} = \alpha + \beta_1 \hat r_{i, t}
 
 where $r_{i, t}$ is the realized return of company $i$ at time $t$ and $\hat r_{i, t}$ is the expected return of corresponding model for company $i$ at time $t$. For these regressions betas, $t$-statistics for betas and $R^2$ values will be reported. Ideally the beta coefficient or the slope for the predicted return should be 1 and highly significant. Magnitude of the beta coefficients can provide information of possible over or undershooting of the models.
 
-\subsection{Linear regression}
+\subsection{Benchmark factors}\label{BenchmarkFactors}
+Benchmark factor construction follows $2 \times 3$ portfolio sort approach of Fama and French \citeyear{FAMA19933, FAMA20151} and Carhart \citeyear{Carhart1997}. Fama and French \citeyear{FAMA19933} use NYSE breakpoints for size and book-to-market value sort. Since on compared to US markets Nordic markets have less companies with high market value. Using NYSE breakpoints could lead to highly un-diversified portfolios especially among the high market value portfolios. On the other hand breakpoints should not be driven by the small stocks that are numerous, but only account for small part of the total market capitalization. Therefore approach of Fama and French \citeyear{FAMA2012457} is applied. 
+
+In the end of each June stocks are first distributed to two size portfolios. Companies with biggest market value that account for $90\%$ total market value are classified as big stocks. All the rest of the stocks are considered to be small stocks. Next stocks are allocated to three value, investment, profitability and momentum portfolios. For all of above variables 30th and 70th percentiles are used to calculate breakpoints. Breakpoints are calculated using only big companies from the size allocation, but the breakpoints are used to allocate all stocks to a portfolio.
+
+\begin{equation} \label{eq:FF6factors}
+\begin{split}
+SMB_{B/M} = & \ \frac{1}{3} (Small.High + Small.Neutral + Small.Low) \\
+			& - \frac{1}{3} (Big.High + Big.Neutral + Big.Low) \\[5pt]
+SMB_{OP} = & \ \frac{1}{3} (Small.Robust + Small.Neutral_{OP} + Small.Weak)\\
+			& - \frac{1}{3} (Big.Robust + Big.Neutral_{OP} + Big.Weak)\\[5pt]
+SMB_{INV} = & \ \frac{1}{3} (Small.Conservative + Small.Neutral_{INV} + Small.Aggressive)\\
+			& - \frac{1}{3} (Big.Conservative + Big.Neutral_{INV} + Big.Aggressive)\\[5pt]
+SMB_{MOM} = & \ \frac{1}{3} ((Small.Winner + Small.Neutral_{MOM} + Small.Loser)\\
+		     	& - \frac{1}{3} (Big.Winner + Big.Neutral_{MOM} + Big.Loser)\\[5pt]
+SMB = & \ \frac{1}{4} (SMB_{B/M} + SMB_{OP} + SMB_{INV} + SMB_{MOM})\\[20pt]
+HML = & \ \frac{1}{2} (Small.High + Big.High) - \frac{1}{2} (Small.Low + Big.Low)\\[5pt]
+RMW = & \ \frac{1}{2} (Small.Robust + Big.Robust) - \frac{1}{2} (Small.Weak + Big.Weak)\\[5pt]
+CMA = & \ \frac{1}{2} (Small.Conservative + Big.Conservative)\\
+		& - \frac{1}{2} (Small.Aggressive + Big.Aggressive)
+\end{split}
+\end{equation}
+
+Book-to-market value is used as indicator of value characteristic of a company. Book-to-market value is calculated as ratio between sum of common equity and deferred taxes and market capitalization on December $t-1$. Profitability is defined as net income before extra items/preferred dividends divided by the book equity of the company. Investment variable is calculated as annual change in total assets. Momentum is defined as cumulated return from $t-12$ to $t-2$. Returns are calculated using total return index that is converted to US dollars for comparability between different countries. Market value used in size allocation as well as to weight portfolio returns is also converted to US dollars. 
+
+Equation \ref{eq:FF6factors} shows formula for each factor. Acronym for each variable is derived from how they are calculated. Value factor is called high minus low (HML), profitability factors is called robust minus weak (RMW), investment factor is called conservative minus aggressive (CMA). Only momentum factor is exception to this rule and more intuitive naming is used. Portfolio allocation results six portfolios for value, investment, profitability and momentum factors and 24 two-fold size portfolios. After portfolio construction portfolio returns are calculated as difference on value weighted average returns on portfolios formed based on respective variable. E.g. value factor return is difference between average of value weighted returns of two high book-to-market portfolios and average of value weighted returns of two low book-to-market portfolios. Market factor is the average value weighted excess return of the whole market. Risk free rate is obtained from Kenneth French's website.
+
+\subsection{Linear regression}\label{LinearRegression}
 Benchmark model of this study is Fama-MacBeth \citeyear{FamaMacBeth1973} regression. First step of the method is to run rolling cross-sectional regressions with lagged variables. Second step of the method calculates means of the factor loadings obtained from the cross-sectional regressions. Finally expected stock return can be obtained by multiplying the mean factors loading with latest available stock characteristics. Below formulas show one model specification for Fama-French \citeyear{FAMA19933} three factors model.
 
 %review this
@@ -405,6 +432,8 @@ ReLU(x) = max(0, x)
 Since model is trained for a regression task final neuron in the output layer has different activation function than the neurons in the hidden layers. Activation function for the output neuron is linear function. 
 
 As mentioned neural networks include numerous hyperparameters that can be optimized during the training of the model. Training neural network is computationally demanding. Due to limited computing capacity hyperparameters are not optimized in this study, but predefined values are used. Hyperparameters and their values are presented in table \ref{table:Hyperparameters}. Additionally, to further limit the computational demand and simultaneously avoid overfitting early stopping algorithm is applied. Early stopping is implemented so that training of the model is terminated after five epochs where the loss function value does not reduce for validation set. Instead of inserting whole dataset to the model at once data is inserted to the model in smaller subsamples so called batches. Epoch on the other hand measures how many times the whole dataset is run through the model. 
+
+Neural networks learn by adjusting weights to the direction of gradient. This is done in repetitive iterations. In each iteration size of the change is defined by hyperparameter called learning rate. Since learning rate is a hyperparameter it needs an input from the user. It can also be optimized. Setting correct learning rate is crucial, since too big learning rate might prevent algorithm from converging to optimal solution, but too small learning rate makes converging slow. For above described reasons learning rate is not optimized in this study, but using learning rate scheduler it is adjusted during the training of the model. In order to ensure efficient training learning rate is set 0.01 in the beginning of the training and after ten epochs learning rate will be multiplied by 0.9.
 
 Neural networks are also sensitive to the weight initialization, where the initial weights are set which the model starts to optimize. Depending on the initialization of the weights neural networks can converge to different results. To reduce model variance caused by this, an ensemble method is applied. Ensemble is implemented by training five separate models with different initial weights. Final prediction will be then average of the predictions of the five models.
 
@@ -469,33 +498,6 @@ The sample splitting scheme applied in this study is slightly different from abo
 
 Since linear regression does not require any hypeparameter optimization there is no need for validation set and all data can be used to train the model. For random forest model we actually otpimize the hyperparameters. Therefore, training window is split to training and validation data so that $80\%$ of the data is used in the training and $20\%$ is assigned to the validation set. For neural network model we do not optimize any actual hyperparameterss, but we still need a validation set for the early stopping algorithm. Therefore, for neural network $15\%$ of the training window is assigned to the validation set.  Approach of this study follows the common approach to only train the models once a year.
 
-\subsection{Benchmark factors}\label{BenchmarkFactors}
-Benchmark factor construction follows $2 \times 3$ portfolio sort approach of Fama and French \citeyear{FAMA19933, FAMA20151} and Carhart \citeyear{Carhart1997}. Fama and French \citeyear{FAMA19933} use NYSE breakpoints for size and book-to-market value sort. Since on compared to US markets Nordic markets have less companies with high market value. Using NYSE breakpoints could lead to highly un-diversified portfolios especially among the high market value portfolios. On the other hand breakpoints should not be driven by the small stocks that are numerous, but only account for small part of the total market capitalization. Therefore approach of Fama and French \citeyear{FAMA2012457} is applied. 
-
-In the end of each June stocks are first distributed to two size portfolios. Companies with biggest market value that account for $90\%$ total market value are classified as big stocks. All the rest of the stocks are considered to be small stocks. Next stocks are allocated to three value, investment, profitability and momentum portfolios. For all of above variables 30th and 70th percentiles are used to calculate breakpoints. Breakpoints are calculated using only big companies from the size allocation, but the breakpoints are used to allocate all stocks to a portfolio.
-
-\begin{equation} \label{eq:FF6factors}
-\begin{split}
-SMB_{B/M} = & \ \frac{1}{3} (Small.High + Small.Neutral + Small.Low) \\
-			& - \frac{1}{3} (Big.High + Big.Neutral + Big.Low) \\[5pt]
-SMB_{OP} = & \ \frac{1}{3} (Small.Robust + Small.Neutral_{OP} + Small.Weak)\\
-			& - \frac{1}{3} (Big.Robust + Big.Neutral_{OP} + Big.Weak)\\[5pt]
-SMB_{INV} = & \ \frac{1}{3} (Small.Conservative + Small.Neutral_{INV} + Small.Aggressive)\\
-			& - \frac{1}{3} (Big.Conservative + Big.Neutral_{INV} + Big.Aggressive)\\[5pt]
-SMB_{MOM} = & \ \frac{1}{3} ((Small.Winner + Small.Neutral_{MOM} + Small.Loser)\\
-		     	& - \frac{1}{3} (Big.Winner + Big.Neutral_{MOM} + Big.Loser)\\[5pt]
-SMB = & \ \frac{1}{4} (SMB_{B/M} + SMB_{OP} + SMB_{INV} + SMB_{MOM})\\[20pt]
-HML = & \ \frac{1}{2} (Small.High + Big.High) - \frac{1}{2} (Small.Low + Big.Low)\\[5pt]
-RMW = & \ \frac{1}{2} (Small.Robust + Big.Robust) - \frac{1}{2} (Small.Weak + Big.Weak)\\[5pt]
-CMA = & \ \frac{1}{2} (Small.Conservative + Big.Conservative)\\
-		& - \frac{1}{2} (Small.Aggressive + Big.Aggressive)
-\end{split}
-\end{equation}
-
-Book-to-market value is used as indicator of value characteristic of a company. Book-to-market value is calculated as ratio between sum of common equity and deferred taxes and market capitalization on December $t-1$. Profitability is defined as net income before extra items/preferred dividends divided by the book equity of the company. Investment variable is calculated as annual change in total assets. Momentum is defined as cumulated return from $t-12$ to $t-2$. Returns are calculated using total return index that is converted to US dollars for comparability between different countries. Market value used in size allocation as well as to weight portfolio returns is also converted to US dollars. 
-
-Equation \ref{eq:FF6factors} shows formula for each factor. Acronym for each variable is derived from how they are calculated. Value factor is called high minus low (HML), profitability factors is called robust minus weak (RMW), investment factor is called conservative minus aggressive (CMA). Only momentum factor is exception to this rule and more intuitive naming is used. Portfolio allocation results six portfolios for value, investment, profitability and momentum factors and 24 two-fold size portfolios. After portfolio construction portfolio returns are calculated as difference on value weighted average returns on portfolios formed based on respective variable. E.g. value factor return is difference between average of value weighted returns of two high book-to-market portfolios and average of value weighted returns of two low book-to-market portfolios. Market factor is the average value weighted excess return of the whole market. Risk free rate is obtained from Kenneth French's website.
-
 \section{Empirical results on Nordic equities}
 
 Performance of the machine learning models will be evaluated from two aspects. First profitability of the models will be evaluated by investigating performance of univariate expected return sort portfolios. Construction of these portfolios is explained in more detail in section \ref{Methodology}. Second aspect that is examined is the prediction accuracy of the machine learning models. Prediction accuracy is evaluated by out-out sample $R^2$. Additionally, in the spirit of Lewellen \citeyear{lewellen2015} relationship between expected and realized excess returns are examined by regressing the realized excess returns with the individual stock level predicted returns. Finally, the variable importance for different methods are calculated to see effect of each explanatory variable to the prediction accuracy of the model. Process to define variable importance is described in section \ref{VariableImportance}.
@@ -503,8 +505,6 @@ Performance of the machine learning models will be evaluated from two aspects. F
 \subsection{Benchmark factor performance}\label{BenchmarkFactorPerformance}
 
 This section works as prequisite for the machine learning portfolios as it shows the performance of Fama and French five factor \citeyear{FAMA20151} model factors extended by the momentum factor.  Later these factors are used to evaluate the risk adjusted performance of the machine learning portfolios, but prior to that it is interesting to observe whether simpler factor construction shows persistence in Nordic markets. 
-
-Table \ref{table:variableFFfactors} provides time series average factor returns, standard deviation of the factor returns, corresponding $t$ and p-values as well as monthly minimum and maximum returns for all six factors. It is clear that momentum factor shows strongest performance measured both by the magnitude of the return as well as the statistical significance. Monthly momentum factor return is 0.9\% with $t$-statistic of 4.3. Table \ref{table:FFfactorsCorrelations} in appendix shows the correlations between factor returns. In Nordic markets correlation of momentum factor with other factors is only minor. Interestingly in Nordic markets momentum factor seems to negatively correlate with market factor. Strong performance of the momentum factor is inline with previous literature 
 
 \begin{table}[h]
 \small
@@ -526,12 +526,19 @@ RMRF & 0.0074 & 0.0032 & 2.3051 & 0.0217 & -0.2576 & 0.2072 \\
 \end{tabularx}
 \end{table}
 
+Table \ref{table:variableFFfactors} provides time series average factor returns, standard deviation of the factor returns, corresponding $t$ and p-values as well as monthly minimum and maximum returns for all six factors. It is clear that momentum factor shows strongest performance measured both by the magnitude of the return as well as the statistical significance. Monthly momentum factor return is 0.9\% with $t$-statistic of 4.3. Table \ref{table:FFfactorsCorrelations} in appendix shows the correlations between factor returns. In Nordic markets correlation of momentum factor with other factors is only minor. Interestingly in Nordic markets momentum factor seems to negatively correlate with market factor. 
+
+Strong performance of the momentum factor is inline with previous literature. Many previous studies have documented excess momentum returns either in pooled or individual Nordic markets (e.g. Grobys and Huhta-Halkola \citeyear{grobys} and Leivo and Pätäri \citeyear{leivo2011}). Slightly more surprising is the poor performance of the value factor. Some of the previous studies document value premium in Nordic markets. Grobys and Huhta-Halkola \citeyear{grobys} find statistically significant value premium in Nordic markets, but Grobys and Huhta-Halkola constrruct equal weighted portfolios where as benhmark factors reported here are formed from value weighted portfolios.
+% check if huhta-halkola reports value weughted factors
+
 \begin{figure}[h]
 \centering
 \caption[Benchmark factor performance]{\textbf{Benchmark factor performance}\\ Plot presents the cumulative return of the benchmark factors. RMRF is average value weighted excess return of pooled Nordic market. Portfolio returns are calculated based on $2 \times 3$ sorts on size and one other factor. HML is the difference in average of value weighted return of two high value portfolios and average of value weighted return of two low value portfolios. RMW, CMA and MOM are calculated in similar manner, but portfolio sort are done based on investment, profitability momentum factors. SMB is the average of the value weighted returns of the 12 portfolios of small stocks minus the average of the value weighted returns of the 12 portfolios of big stocks. Returns are calculated in US dollars.}
 \input{R_graphs/factor_performance.tex}
 \label{plot:factor_performance}
 \end{figure}
+
+Figure \ref{plot:factor_performance} shows the historical performance of the benchmark factors. It shows that until 2008 even momentum factor could not exceed the market return, but still seemed to be less volatile. In post financial crisis period momentum factor has been clearly the strongest performing factor. Interestingly late nineties, which was strong period for market return, was extremely difficult period for value factor. Contrary in the early 2000's value factor performed strongly when market factor was decreasing steeply. Until 2003 performance of value factor is almost opposite to the market factor. Figure \ref{plot:factor_performance} also shows that the performance of the size, investment and profitability factors has been poor through out the examined period.
 
 \subsection{Predictive performance}\label{PredictivePerformance}
 
@@ -605,9 +612,11 @@ Results from right side of the table \ref{table:expRetRegressions} support the r
 
 Given that the mean predicted return matches quite well mean realized excess return, but the standard deviation is higher and the slope is slower, it seems that models seem to overshoot in their predictions. It seems that, especially neural network and random forest models, are able to predict the returns correctly on average, but exaggerate the extreme returns. This could at least partially explain rather low out-of-sample $R^2$ values discovered in table \ref{table:PredictionAccuracy}. Further insight for this will be provided in next section where performance of expected return sorted portfolios is examined.
 
-\subsection{Portfolio performance}
+\subsection{Portfolio performance}\label{Portfolio performance}
 
-This section focuses on backtesting portfolios, which are formed based on the expected returns produced by different machine learning models. Idea is to mimic of information set of a historical investor. Section describes the historical realized return for an investment strategy build on the machine learning models. Section mainly focuses on evaluating performance of the expected return portfolios. Formation of expected return portfolios is described in section \ref{Methodology}. Results are discussed separately for value and equal weighted portfolios. 
+This section focuses on backtesting the machine learning portfolios, which are formed based on the expected returns produced by different models. Idea is to mimic of information set of a historical investor. Section describes the historical realized return for an investment strategy build on the machine learning models. Section mainly focuses on evaluating performance of the expected return portfolios. Formation of expected return portfolios is described in section \ref{Methodology}. Results are discussed separately for value and equal weighted portfolios. 
+
+Table \ref{table:PortfolioPerformance} presents the performance statistics for all ten expected return portfolios for all three models. Average predicted return, average realized excess return, standard deviation of the realized excess return, corresponding $t$-statistic and Sharpe ratio is reported for each portfolio. Left side of the table presents the values for equal weighted portfolios, whereas right of the table presents the values for the value weighted portfolios. Panel A of the table shows results for linear regression model, panel B shows the results for random forest model and panel C shows the results for neural network model. 
 
 \begin{table}[p]
 \small

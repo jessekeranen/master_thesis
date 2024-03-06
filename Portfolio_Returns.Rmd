@@ -152,7 +152,7 @@ round <- colnames(portfolio_statistics[, -c("variable", "Portfolio", "parameter"
                                         "alternative", "method", "data.name")])
 portfolio_statistics[, (round) := round(.SD, 4), .SDcols = round]
 
-portfolio_statistics[variable == "EW.RET" & substr(Portfolio, 1, 2) == "RF"]
+portfolio_statistics[variable == "EW.RET" & substr(Portfolio, 1, 2) == "NN"]
 ```
 
 ```{r}
@@ -330,7 +330,7 @@ temp5 <- melt(temp4, id.vars = "method")
 temp5$variable <- with(temp5, base::factor(variable, levels = c("FM", "RF", "NN")))
 
 tikz(file = "Latex/R_graphs/combined_VI.tex", width = 6, height = 4)
-plot7 <- ggplot(temp5, aes(variable, method)) + geom_tile(aes(fill = value), show.legend = F) +
+plot7 <- ggplot(temp5, aes(variable, reorder(method, value))) + geom_tile(aes(fill = value), show.legend = F) +
   scale_fill_distiller(palette = "Blues", direction = 1) + scale_x_discrete(expand = c(0, 0)) + scale_y_discrete(expand = c(0, 0)) + theme(axis.title = element_blank())
 print(plot7)
 dev.off()

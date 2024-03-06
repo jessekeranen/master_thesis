@@ -1,16 +1,16 @@
-\contentsline {figure}{\numberline {1}{\ignorespaces Illustrative regression tree}}{16}{figure.caption.6}%
-\contentsline {figure}{\numberline {2}{\ignorespaces Illustrative neural network}}{17}{figure.caption.7}%
-\contentsline {figure}{\numberline {3}{\ignorespaces Sample splitting scheme}}{19}{figure.caption.8}%
+\contentsline {figure}{\numberline {1}{\ignorespaces Illustrative regression tree}}{18}{figure.caption.6}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Illustrative neural network}}{19}{figure.caption.7}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Sample splitting scheme}}{21}{figure.caption.8}%
 \contentsline {figure}{\numberline {4}{\ignorespaces Benchmark factor performance}}{24}{figure.caption.11}%
-\contentsline {figure}{\numberline {5}{\ignorespaces Cumulative return of equal weighted machine learning portfolios}}{27}{figure.caption.16}%
-\contentsline {figure}{\numberline {6}{\ignorespaces Cumulative return of equal weighted zero investment portfolios}}{29}{figure.caption.17}%
-\contentsline {figure}{\numberline {7}{\ignorespaces Cumulative return of value weighted machine learning portfolios}}{30}{figure.caption.18}%
-\contentsline {figure}{\numberline {8}{\ignorespaces Cumulative return of value weighted zero investment portfolios}}{31}{figure.caption.19}%
-\contentsline {figure}{\numberline {9}{\ignorespaces Variable importance}}{32}{figure.caption.20}%
-\contentsline {figure}{\numberline {10}{\ignorespaces Relative variable importance}}{33}{figure.caption.21}%
-\contentsline {figure}{\numberline {A.1}{\ignorespaces Number of companies}}{36}{figure.caption.25}%
-\contentsline {figure}{\numberline {A.2}{\ignorespaces ...}}{37}{figure.caption.26}%
-\contentsline {figure}{\numberline {B.1}{\ignorespaces Factor autocorrelation}}{39}{figure.caption.28}%
-\contentsline {figure}{\numberline {C.1}{\ignorespaces Time series of out-of-sample $R^2$}}{40}{figure.caption.29}%
-\contentsline {figure}{\numberline {C.2}{\ignorespaces Turnover of highest epected return portfolios}}{41}{figure.caption.30}%
-\contentsline {figure}{\numberline {C.3}{\ignorespaces Optimized random forest hyperparameters}}{41}{figure.caption.31}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Cumulative return of equal weighted machine learning portfolios}}{30}{figure.caption.16}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Cumulative return of equal weighted zero investment portfolios}}{31}{figure.caption.17}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Cumulative return of value weighted machine learning portfolios}}{32}{figure.caption.18}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Cumulative return of value weighted zero investment portfolios}}{33}{figure.caption.19}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Variable importance}}{34}{figure.caption.20}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Relative variable importance}}{35}{figure.caption.21}%
+\contentsline {figure}{\numberline {A.1}{\ignorespaces Number of companies}}{38}{figure.caption.25}%
+\contentsline {figure}{\numberline {A.2}{\ignorespaces ...}}{39}{figure.caption.26}%
+\contentsline {figure}{\numberline {B.1}{\ignorespaces Factor autocorrelation}}{41}{figure.caption.28}%
+\contentsline {figure}{\numberline {C.1}{\ignorespaces Time series of out-of-sample $R^2$}}{42}{figure.caption.29}%
+\contentsline {figure}{\numberline {C.2}{\ignorespaces Turnover of highest epected return portfolios}}{43}{figure.caption.30}%
+\contentsline {figure}{\numberline {C.3}{\ignorespaces Optimized random forest hyperparameters}}{43}{figure.caption.31}%
