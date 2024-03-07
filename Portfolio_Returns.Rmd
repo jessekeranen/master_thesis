@@ -50,12 +50,12 @@ factor <- function(dt, variable, name, labels, quantiles) {
 }
 data2 <- factor(data2[Date > as.POSIXct("1994-7-31", tz = "UTC") &
                       Date < as.POSIXct("2022-12-30", tz = "UTC")],
-                "FM.EXP.RET", "FM.POSITION", c("FM.Short", "FM.2", "FM.3", "FM.4",
-                 "FM.5", "FM.6", "FM.7", "FM.8", "FM.9", "FM.Long"), quantiles)
-data2 <- factor(data2, "RF.EXP.RET", "RF.POSITION", c("RF.Short", "RF.2", "RF.3",
-            "RF.4", "RF.5", "RF.6", "RF.7", "RF.8", "RF.9", "RF.Long"), quantiles)
-data2 <- factor(data2, "NN.EXP.RET", "NN.POSITION", c("NN.Short", "NN.2", "NN.3",
-            "NN.4", "NN.5", "NN.6", "NN.7", "NN.8", "NN.9", "NN.Long"), quantiles)
+                "FM.EXP.RET", "FM.POSITION", c("FM.Low", "FM.2", "FM.3", "FM.4",
+                 "FM.5", "FM.6", "FM.7", "FM.8", "FM.9", "FM.High"), quantiles)
+data2 <- factor(data2, "RF.EXP.RET", "RF.POSITION", c("RF.Low", "RF.2", "RF.3",
+            "RF.4", "RF.5", "RF.6", "RF.7", "RF.8", "RF.9", "RF.High"), quantiles)
+data2 <- factor(data2, "NN.EXP.RET", "NN.POSITION", c("NN.Low", "NN.2", "NN.3",
+            "NN.4", "NN.5", "NN.6", "NN.7", "NN.8", "NN.9", "NN.High"), quantiles)
 
 portfolioreturns <- function(dt, portfolio, return){
   #browser()
@@ -75,8 +75,8 @@ portfolio_returns <- merge(portfolio_returns1, portfolio_returns2,
 portfolio_returns <- merge(portfolio_returns, portfolio_returns3,
                            by = c("Date", "variable"))
 
-portfolio_returns[, `:=` (RF = RF.Long - RF.Short, FM = FM.Long - FM.Short,
-                          NN = NN.Long - NN.Short), by = c("Date", "variable")]
+portfolio_returns[, `:=` (RF = RF.High - RF.Low, FM = FM.High - FM.Low,
+                          NN = NN.High - NN.Low), by = c("Date", "variable")]
 portfolio_returns_long <- melt(portfolio_returns, id.vars = c("Date", "variable"),
                                variable.name = "Portfolio", value.name = "Return")
 portfolio_returns_long <- portfolio_returns_long[, cum_prod := cumprod(Return + 1),
@@ -104,14 +104,14 @@ print(plot2)
 dev.off()
 
 tikz(file = "Latex/R_graphs/cumul_vw_portf_return.tex", width = 6, height = 4)
-plot3 <- ggplot() + geom_line(data = portfolio_returns_long[Position %in% c("Long", "Short") & variable == "VW.RET"], aes(Date, cum_prod, color = Method, linetype = Position)) + scale_y_log10() + geom_line(data = market_return, aes(Date, cum_prod)) +
+plot3 <- ggplot() + geom_line(data = portfolio_returns_long[Position %in% c("Low", "High") & variable == "VW.RET"], aes(Date, cum_prod, color = Method, linetype = Position)) + scale_y_log10() + geom_line(data = market_return, aes(Date, cum_prod)) +
   theme(axis.title = element_blank(), legend.position = "bottom", text =
           element_text(size = 9))
 print(plot3)
 dev.off()
 
 tikz(file = "Latex/R_graphs/cumul_ew_portf_return.tex", width = 6, height = 4)
-plot4 <- ggplot() + geom_line(data = portfolio_returns_long[Position %in% c("Long", "Short") & variable == "EW.RET"], aes(Date, cum_prod, color = Method, linetype = Position)) + scale_y_log10() + geom_line(data = market_return, aes(Date, cum_prod)) +
+plot4 <- ggplot() + geom_line(data = portfolio_returns_long[Position %in% c("Low", "High") & variable == "EW.RET"], aes(Date, cum_prod, color = Method, linetype = Position)) + scale_y_log10() + geom_line(data = market_return, aes(Date, cum_prod)) +
   theme(axis.title = element_blank(), legend.position = "bottom", text =
           element_text(size = 9))
 print(plot4)
@@ -152,7 +152,7 @@ round <- colnames(portfolio_statistics[, -c("variable", "Portfolio", "parameter"
                                         "alternative", "method", "data.name")])
 portfolio_statistics[, (round) := round(.SD, 4), .SDcols = round]
 
-portfolio_statistics[variable == "EW.RET" & substr(Portfolio, 1, 2) == "NN"]
+portfolio_statistics[variable == "VW.RET" & substr(Portfolio, 1, 2) == "NN"]
 ```
 
 ```{r}
@@ -369,6 +369,7 @@ FF_stats <- factors_wide[, {reg <- summary(lm(RET ~ RMRF + SMB + HML + RMW +
   R.SQUARED = round(reg$r.squared, 4))}, by = c("variable", "Method")]
 ```
 
+
 ```{r}
 turnover_long <- copy(data2)
 turnover_long <- melt(turnover_long[, -c("pf.size", "year", "EXC.USD.RET",
@@ -376,7 +377,7 @@ turnover_long <- melt(turnover_long[, -c("pf.size", "year", "EXC.USD.RET",
                       id.vars = c("Date", "Company", "USD.RET", "L.USD.MV"),
                       value.name = "Portfolio", variable.name = "Method")
 
-turnover_long <- turnover_long[Portfolio %in% c("FM.Long", "RF.Long", "NN.Long")]
+turnover_long <- turnover_long[Portfolio %in% c("FM.High", "RF.High", "NN.High")]
 turnover_long[, `:=` (V.WEIGHT = L.USD.MV / sum(L.USD.MV), E.WEIGHT = 1/.N),
               by = c("Date", "Portfolio")]
 turnover_long <- melt(turnover_long, measure.vars = c("V.WEIGHT", "E.WEIGHT"),
@@ -534,7 +535,7 @@ test <- test[, .(mean = mean(value)), by = c("Date", "variable")]
 
 
 tikz(file = "Latex/R_graphs/variable_ts.tex", width = 6, height = 8)
-plot9 <- ggplot(test[Date > as.POSIXct("1994-01-01", tz = "utc")], aes(Date, mean)) +
+plot9 <- ggplot(test[Date > as.POSIXct("1994-01-01", tz = "UTC")], aes(Date, mean)) +
   geom_line() + facet_wrap(~variable, scales = "free", ncol = 3) +
   theme(axis.title = element_blank(), text = element_text(size = 9))
 print(plot9)

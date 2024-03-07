@@ -15,9 +15,9 @@
 \contentsline {subsection}{\numberline {5.1}Benchmark factor performance}{22}{subsection.5.1}%
 \contentsline {subsection}{\numberline {5.2}Predictive performance}{23}{subsection.5.2}%
 \contentsline {subsection}{\numberline {5.3}Portfolio performance}{27}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}Variable importance}{29}{subsection.5.4}%
-\contentsline {section}{\numberline {6}Conclusion}{29}{section.6}%
-\contentsline {section}{\numberline {A}Data}{36}{appendix.A}%
-\contentsline {section}{\numberline {B}Benchmark factors}{40}{appendix.B}%
-\contentsline {section}{\numberline {C}Additional Information}{42}{appendix.C}%
-\contentsline {section}{References}{44}{section*.32}%
+\contentsline {subsection}{\numberline {5.4}Variable importance}{32}{subsection.5.4}%
+\contentsline {section}{\numberline {6}Conclusion}{32}{section.6}%
+\contentsline {section}{\numberline {A}Data}{37}{appendix.A}%
+\contentsline {section}{\numberline {B}Benchmark factors}{42}{appendix.B}%
+\contentsline {section}{\numberline {C}Additional Information}{44}{appendix.C}%
+\contentsline {section}{References}{46}{section*.33}%

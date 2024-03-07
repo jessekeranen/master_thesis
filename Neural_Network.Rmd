@@ -10,15 +10,15 @@ knitr::opts_chunk$set(echo = TRUE)
 rm(list = ls(all.names = TRUE))
 gc()
 
+
+library(keras)
+library(tensorflow)
+tensorflow::set_random_seed(42, disable_gpu = TRUE)
 library(data.table)
 library(ggplot2)
 library(neuralnet)
 library(tikzDevice)
 library(zoo)
-library(keras)
-library(tensorflow)
-tensorflow::set_random_seed(42)
-set.seed(42)
 ```
 
 ```{r}
@@ -256,7 +256,7 @@ NN_grid2 <- expand.grid(dates = trainings, MSE = 0)
 NN_grid2 <- setorder(as.data.table(NN_grid2), dates)
 
 invisible(lapply(independend_variables, function(x) {
-  tensorflow::set_random_seed(42)
+  tensorflow::set_random_seed(42, disable_gpu = TRUE)
   r2 <- copy(data)
   setorder(r2, Date, Company)
   
