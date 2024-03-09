@@ -1,17 +1,17 @@
-\contentsline {figure}{\numberline {1}{\ignorespaces Illustrative regression tree}}{18}{figure.caption.6}%
-\contentsline {figure}{\numberline {2}{\ignorespaces Illustrative neural network}}{19}{figure.caption.7}%
-\contentsline {figure}{\numberline {3}{\ignorespaces Sample splitting scheme}}{21}{figure.caption.8}%
-\contentsline {figure}{\numberline {4}{\ignorespaces Benchmark factor performance}}{24}{figure.caption.11}%
-\contentsline {figure}{\numberline {5}{\ignorespaces Cumulative return of equal weighted machine learning portfolios}}{30}{figure.caption.15}%
-\contentsline {figure}{\numberline {6}{\ignorespaces Cumulative return of value weighted machine learning portfolios}}{31}{figure.caption.16}%
-\contentsline {figure}{\numberline {7}{\ignorespaces Cumulative return of equal weighted zero investment portfolios}}{33}{figure.caption.18}%
-\contentsline {figure}{\numberline {8}{\ignorespaces Cumulative return of value weighted zero investment portfolios}}{34}{figure.caption.19}%
-\contentsline {figure}{\numberline {9}{\ignorespaces Variable importance}}{35}{figure.caption.20}%
-\contentsline {figure}{\numberline {10}{\ignorespaces Relative variable importance}}{36}{figure.caption.21}%
-\contentsline {figure}{\numberline {A.1}{\ignorespaces Number of companies}}{39}{figure.caption.25}%
-\contentsline {figure}{\numberline {A.2}{\ignorespaces Number of non micro-cap companies}}{40}{figure.caption.26}%
-\contentsline {figure}{\numberline {A.3}{\ignorespaces ...}}{41}{figure.caption.27}%
-\contentsline {figure}{\numberline {B.1}{\ignorespaces Factor autocorrelation}}{43}{figure.caption.29}%
-\contentsline {figure}{\numberline {C.1}{\ignorespaces Time series of out-of-sample $R^2$}}{44}{figure.caption.30}%
-\contentsline {figure}{\numberline {C.2}{\ignorespaces Turnover of highest epected return portfolios}}{45}{figure.caption.31}%
-\contentsline {figure}{\numberline {C.3}{\ignorespaces Optimized random forest hyperparameters}}{45}{figure.caption.32}%
+\contentsline {figure}{\numberline {1}{\ignorespaces Number of non micro-cap companies}}{10}{figure.caption.5}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Illustrative regression tree}}{21}{figure.caption.7}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Illustrative neural network}}{23}{figure.caption.8}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Sample splitting scheme}}{25}{figure.caption.9}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Benchmark factor performance}}{28}{figure.caption.12}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Cumulative return of equal weighted machine learning portfolios}}{34}{figure.caption.16}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Cumulative return of value weighted machine learning portfolios}}{35}{figure.caption.17}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Cumulative return of equal weighted zero investment portfolios}}{38}{figure.caption.19}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Cumulative return of value weighted zero investment portfolios}}{39}{figure.caption.20}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Variable importance}}{40}{figure.caption.21}%
+\contentsline {figure}{\numberline {11}{\ignorespaces Relative variable importance}}{41}{figure.caption.22}%
+\contentsline {figure}{\numberline {A.1}{\ignorespaces Number of companies}}{44}{figure.caption.27}%
+\contentsline {figure}{\numberline {A.2}{\ignorespaces Time series of the mean cross-sectional properties}}{45}{figure.caption.28}%
+\contentsline {figure}{\numberline {B.1}{\ignorespaces Factor autocorrelation}}{47}{figure.caption.30}%
+\contentsline {figure}{\numberline {C.1}{\ignorespaces Time series of out-of-sample $R^2$}}{48}{figure.caption.31}%
+\contentsline {figure}{\numberline {C.2}{\ignorespaces Turnover of highest epected return portfolios}}{49}{figure.caption.32}%
+\contentsline {figure}{\numberline {C.3}{\ignorespaces Optimized random forest hyperparameters}}{49}{figure.caption.33}%

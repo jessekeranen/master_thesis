@@ -176,7 +176,7 @@ dynamic_screens <- function(dt) {
   dt <- dt[RET <= 9.9, ] # Remove returns bigger than 990%
   # Abnormal short term reversal removal
   dt <- dt[, .SD[!((RET > 3 | shift(RET) > 3) & (1 + RET) *
-                                       (1 + shift(RET)) < 0.5), ], by = Company]
+                                       (1 + shift(RET) - 1) < 0.5), ], by = Company]
   setorder(dt, -Date)
   dt[, temp := cumsum(RET), by = Company]
   
