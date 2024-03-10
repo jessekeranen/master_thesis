@@ -1,23 +1,26 @@
 \contentsline {section}{\numberline {1}Introduction}{1}{section.1}%
 \contentsline {section}{\numberline {2}Literature}{3}{section.2}%
-\contentsline {subsection}{\numberline {2.1}US stock market anomalies}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.1}US stock market anomalies}{4}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}European stock market anomalies}{4}{subsection.2.2}%
 \contentsline {subsection}{\numberline {2.3}Nordic stock market anomalies}{6}{subsection.2.3}%
 \contentsline {section}{\numberline {3}Data}{7}{section.3}%
-\contentsline {section}{\numberline {4}Methodology}{15}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Benchmark factors}{17}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}Linear regression}{19}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Random forest}{20}{subsection.4.3}%
-\contentsline {subsection}{\numberline {4.4}Neural networks}{21}{subsection.4.4}%
-\contentsline {subsection}{\numberline {4.5}Variable importance}{24}{subsection.4.5}%
-\contentsline {subsection}{\numberline {4.6}Sample splitting}{24}{subsection.4.6}%
-\contentsline {section}{\numberline {5}Empirical results on Nordic equities}{26}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Benchmark factor performance}{26}{subsection.5.1}%
-\contentsline {subsection}{\numberline {5.2}Predictive performance}{27}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}Portfolio performance}{31}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}Variable importance}{37}{subsection.5.4}%
-\contentsline {section}{\numberline {6}Conclusion}{37}{section.6}%
-\contentsline {section}{\numberline {A}Data collection}{42}{appendix.A}%
-\contentsline {section}{\numberline {B}Benchmark factors}{46}{appendix.B}%
-\contentsline {section}{\numberline {C}Additional information}{48}{appendix.C}%
-\contentsline {section}{References}{50}{section*.34}%
+\contentsline {subsection}{\numberline {3.1}Nordic stock market data}{8}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Company characteristics}{11}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Methodology}{16}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Benchmark factors}{16}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Linear regression}{18}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Random forest}{19}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Neural networks}{20}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Prediction performance evaluation}{23}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Variable importance}{26}{subsection.4.6}%
+\contentsline {subsection}{\numberline {4.7}Sample splitting}{26}{subsection.4.7}%
+\contentsline {section}{\numberline {5}Empirical results on Nordic equities}{28}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Benchmark factor performance}{28}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Predictive performance}{30}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Portfolio performance}{33}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Variable importance}{38}{subsection.5.4}%
+\contentsline {section}{\numberline {6}Conclusion}{38}{section.6}%
+\contentsline {section}{\numberline {A}Data collection}{43}{appendix.A}%
+\contentsline {section}{\numberline {B}Benchmark factors}{47}{appendix.B}%
+\contentsline {section}{\numberline {C}Additional information}{49}{appendix.C}%
+\contentsline {section}{References}{51}{section*.34}%

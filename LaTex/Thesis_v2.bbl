@@ -103,6 +103,40 @@ Anwar, B\BPBI H.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Balakrishnan%
+, Bartov%
+\BCBL {}\ \BBA {} Faurel%
+}{%
+Balakrishnan%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2010}}%
+}]{%
+BALAKRISHNAN2010}
+\APACinsertmetastar {%
+BALAKRISHNAN2010}%
+\begin{APACrefauthors}%
+Balakrishnan, K.%
+, Bartov, E.%
+\BCBL {}\ \BBA {} Faurel, L.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2010}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Post loss/profit announcement drift} {Post loss/profit
+  announcement drift}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Accounting and Economics}{50}{1}{20-41}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.sciencedirect.com/science/article/pii/S0165410109000810}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{https://doi.org/10.1016/j.jacceco.2009.12.002}
+  \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Banz%
 }{%
 Banz%
@@ -134,6 +168,63 @@ Banz, R\BPBI W.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Basu%
+}{%
+Basu%
+}{%
+{\protect \APACyear {1977}}%
+}]{%
+Basu1977}
+\APACinsertmetastar {%
+Basu1977}%
+\begin{APACrefauthors}%
+Basu, S.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1977}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Investment Performance of Common Stocks in Relation to
+  Their Price-Earnings Ratios: A Test of the Efficient Market Hypothesis}
+  {Investment performance of common stocks in relation to their price-earnings
+  ratios: A test of the efficient market hypothesis}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Journal of Finance}{32}{3}{663--682}.
+\newblock
+\begin{APACrefURL} [{2024-03-09}]\url{http://www.jstor.org/stable/2326304}
+  \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Bondt%
+\ \BBA {} Thaler%
+}{%
+Bondt%
+\ \BBA {} Thaler%
+}{%
+{\protect \APACyear {1985}}%
+}]{%
+DeBondt1985}
+\APACinsertmetastar {%
+DeBondt1985}%
+\begin{APACrefauthors}%
+Bondt, W\BPBI F\BPBI M\BPBI D.%
+\BCBT {}\ \BBA {} Thaler, R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1985}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Does the Stock Market Overreact?} {Does the stock market
+  overreact?}{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Journal of Finance}{40}{3}{793--805}.
+\newblock
+\begin{APACrefURL} [{2024-03-09}]\url{http://www.jstor.org/stable/2327804}
+  \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Carhart%
 }{%
 Carhart%
@@ -156,6 +247,101 @@ Carhart, M\BPBI M.%
 \APACjournalVolNumPages{The Journal of Finance}{52}{1}{57--82}.
 \newblock
 \begin{APACrefURL} [{2023-11-24}]\url{http://www.jstor.org/stable/2329556}
+  \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Cooper%
+, Gulen%
+\BCBL {}\ \BBA {} Schill%
+}{%
+Cooper%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2008}}%
+}]{%
+cooper2008}
+\APACinsertmetastar {%
+cooper2008}%
+\begin{APACrefauthors}%
+Cooper, M\BPBI J.%
+, Gulen, H.%
+\BCBL {}\ \BBA {} Schill, M\BPBI J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2008}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Asset Growth and the Cross-Section of Stock Returns}
+  {Asset growth and the cross-section of stock returns}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Journal of Finance}{63}{4}{1609--1651}.
+\newblock
+\begin{APACrefURL} [{2024-03-09}]\url{http://www.jstor.org/stable/25094485}
+  \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Datar%
+, {Y. Naik}%
+\BCBL {}\ \BBA {} Radcliffe%
+}{%
+Datar%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {1998}}%
+}]{%
+datar1998}
+\APACinsertmetastar {%
+datar1998}%
+\begin{APACrefauthors}%
+Datar, V\BPBI T.%
+, {Y. Naik}, N.%
+\BCBL {}\ \BBA {} Radcliffe, R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1998}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Liquidity and stock returns: An alternative test}
+  {Liquidity and stock returns: An alternative test}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Financial Markets}{1}{2}{203-219}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.sciencedirect.com/science/article/pii/S1386418197000049}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{https://doi.org/10.1016/S1386-4181(97)00004-9}
+  \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Davis%
+, Fama%
+\BCBL {}\ \BBA {} French%
+}{%
+Davis%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2000}}%
+}]{%
+Davis2000}
+\APACinsertmetastar {%
+Davis2000}%
+\begin{APACrefauthors}%
+Davis, J\BPBI L.%
+, Fama, E\BPBI F.%
+\BCBL {}\ \BBA {} French, K\BPBI R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2000}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Characteristics, Covariances, and Average Returns: 1929
+  to 1997} {Characteristics, covariances, and average returns: 1929 to
+  1997}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Journal of Finance}{55}{1}{389--406}.
+\newblock
+\begin{APACrefURL} [{2024-03-09}]\url{http://www.jstor.org/stable/222559}
   \end{APACrefURL}
 \PrintBackRefs{\CurrentBib}
 
@@ -384,6 +570,37 @@ Fieberg, C.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Freyberger%
+, Neuhierl%
+\BCBL {}\ \BBA {} Weber%
+}{%
+Freyberger%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2020}}%
+}]{%
+Freyberger2020}
+\APACinsertmetastar {%
+Freyberger2020}%
+\begin{APACrefauthors}%
+Freyberger, J.%
+, Neuhierl, A.%
+\BCBL {}\ \BBA {} Weber, M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2020}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Dissecting Characteristics Nonparametrically}
+  {Dissecting characteristics nonparametrically}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Review of Financial Studies}{33}{5}{pp.
+  2326--2377}.
+\newblock
+\begin{APACrefURL} [{2024-03-09}]\url{https://www.jstor.org/stable/48574462}
+  \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 George%
 \ \BBA {} Hwang%
 }{%
@@ -517,9 +734,9 @@ Hanauer%
 }{%
 {\protect \APACyear {2023}}%
 }]{%
-HANAUER2022}
+HANAUER2023}
 \APACinsertmetastar {%
-HANAUER2022}%
+HANAUER2023}%
 \begin{APACrefauthors}%
 Hanauer, M\BPBI X.%
 \BCBT {}\ \BBA {} Kalsbach, T.%
@@ -572,6 +789,39 @@ Hanauer, M\BPBI X.%
   \end{APACrefURL}
 \newblock
 \begin{APACrefDOI} \doi{https://doi.org/10.1016/j.jbankfin.2022.106712}
+  \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Haugen%
+\ \BBA {} Baker%
+}{%
+Haugen%
+\ \BBA {} Baker%
+}{%
+{\protect \APACyear {1996}}%
+}]{%
+HAUGEN1996}
+\APACinsertmetastar {%
+HAUGEN1996}%
+\begin{APACrefauthors}%
+Haugen, R\BPBI A.%
+\BCBT {}\ \BBA {} Baker, N\BPBI L.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1996}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Commonality in the determinants of expected stock
+  returns} {Commonality in the determinants of expected stock returns}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Financial Economics}{41}{3}{401-439}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.sciencedirect.com/science/article/pii/0304405X9500868F}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{https://doi.org/10.1016/0304-405X(95)00868-F}
   \end{APACrefDOI}
 \PrintBackRefs{\CurrentBib}
 
@@ -644,6 +894,62 @@ Jacobs, H.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Jegadeesh%
+}{%
+Jegadeesh%
+}{%
+{\protect \APACyear {1990}}%
+}]{%
+Jegadeesh1990}
+\APACinsertmetastar {%
+Jegadeesh1990}%
+\begin{APACrefauthors}%
+Jegadeesh, N.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1990}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Evidence of Predictable Behavior of Security Returns}
+  {Evidence of predictable behavior of security returns}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Journal of Finance}{45}{3}{881--898}.
+\newblock
+\begin{APACrefURL} [{2024-03-09}]\url{http://www.jstor.org/stable/2328797}
+  \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Jegadeesh%
+\ \BBA {} Titman%
+}{%
+Jegadeesh%
+\ \BBA {} Titman%
+}{%
+{\protect \APACyear {1993}}%
+}]{%
+Jegadeesh1993}
+\APACinsertmetastar {%
+Jegadeesh1993}%
+\begin{APACrefauthors}%
+Jegadeesh, N.%
+\BCBT {}\ \BBA {} Titman, S.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1993}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Returns to Buying Winners and Selling Losers:
+  Implications for Stock Market Efficiency} {Returns to buying winners and
+  selling losers: Implications for stock market efficiency}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Journal of Finance}{48}{1}{65--91}.
+\newblock
+\begin{APACrefURL} [{2024-03-09}]\url{http://www.jstor.org/stable/2328882}
+  \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Jokipii%
 \ \BBA {} V{\"a}h{\"a}maa%
 }{%
@@ -671,21 +977,21 @@ Jokipii, A.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
-LAKONISHOK%
-, SHLEIFER%
-\BCBL {}\ \BBA {} VISHNY%
+Lakonishok%
+, Shleifer%
+\BCBL {}\ \BBA {} Vishny%
 }{%
-LAKONISHOK%
+Lakonishok%
 \ \protect \BOthers {.}}{%
 {\protect \APACyear {1994}}%
 }]{%
-LAKONISHOK1994}
+Lakonishok1994}
 \APACinsertmetastar {%
-LAKONISHOK1994}%
+Lakonishok1994}%
 \begin{APACrefauthors}%
-LAKONISHOK, J.%
-, SHLEIFER, A.%
-\BCBL {}\ \BBA {} VISHNY, R\BPBI W.%
+Lakonishok, J.%
+, Shleifer, A.%
+\BCBL {}\ \BBA {} Vishny, R\BPBI W.%
 \end{APACrefauthors}%
 \unskip\
 \newblock
@@ -694,14 +1000,10 @@ LAKONISHOK, J.%
 {\BBOQ}\APACrefatitle {Contrarian Investment, Extrapolation, and Risk}
   {Contrarian investment, extrapolation, and risk}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{The Journal of Finance}{49}{5}{1541-1578}.
+\APACjournalVolNumPages{The Journal of Finance}{49}{5}{1541--1578}.
 \newblock
-\begin{APACrefURL}
-  \url{https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1540-6261.1994.tb04772.x}
+\begin{APACrefURL} [{2024-03-09}]\url{http://www.jstor.org/stable/2329262}
   \end{APACrefURL}
-\newblock
-\begin{APACrefDOI} \doi{https://doi.org/10.1111/j.1540-6261.1994.tb04772.x}
-  \end{APACrefDOI}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -713,9 +1015,9 @@ Leivo%
 }{%
 {\protect \APACyear {2011}}%
 }]{%
-cite-key}
+leivo2011}
 \APACinsertmetastar {%
-cite-key}%
+leivo2011}%
 \begin{APACrefauthors}%
 Leivo, T\BPBI H.%
 \BCBT {}\ \BBA {} P{\"a}t{\"a}ri, E\BPBI J.%
@@ -743,22 +1045,22 @@ Lewellen%
 }{%
 {\protect \APACyear {2015}}%
 }]{%
-lewellen2015}
+Lewellen2015}
 \APACinsertmetastar {%
-lewellen2015}%
+Lewellen2015}%
 \begin{APACrefauthors}%
 Lewellen, J.%
 \end{APACrefauthors}%
 \unskip\
 \newblock
-\APACrefYearMonthDay{2015}{June}{}.
+\APACrefYearMonthDay{2015}{}{}.
 \newblock
-{\BBOQ}\APACrefatitle {{The Cross-section of Expected Stock Returns}} {{The
-  Cross-section of Expected Stock Returns}}.{\BBCQ}
+{\BBOQ}\APACrefatitle {The Cross-section of Expected Stock Returns} {The
+  cross-section of expected stock returns}.{\BBCQ}
 \newblock
 \APACjournalVolNumPages{Critical Finance Review}{4}{1}{1-44}.
 \newblock
-\begin{APACrefURL} \url{https://ideas.repec.org/a/now/jnlcfr/104.00000024.html}
+\begin{APACrefURL} \url{http://dx.doi.org/10.1561/104.00000024}
   \end{APACrefURL}
 \newblock
 \begin{APACrefDOI} \doi{10.1561/104.00000024} \end{APACrefDOI}
@@ -794,6 +1096,36 @@ Moskowitz, T\BPBI J.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Novy-Marx%
+}{%
+Novy-Marx%
+}{%
+{\protect \APACyear {2012}}%
+}]{%
+NOVYMARX2012}
+\APACinsertmetastar {%
+NOVYMARX2012}%
+\begin{APACrefauthors}%
+Novy-Marx, R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2012}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Is momentum really momentum?} {Is momentum really
+  momentum?}{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Financial Economics}{103}{3}{429-453}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.sciencedirect.com/science/article/pii/S0304405X11001152}
+  \end{APACrefURL}
+\newblock
+\begin{APACrefDOI} \doi{https://doi.org/10.1016/j.jfineco.2011.05.003}
+  \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Palazzo%
 }{%
 Palazzo%
@@ -821,33 +1153,6 @@ Palazzo, B.%
 \newblock
 \begin{APACrefDOI} \doi{https://doi.org/10.1016/j.jfineco.2011.12.009}
   \end{APACrefDOI}
-\PrintBackRefs{\CurrentBib}
-
-\bibitem [\protect \citeauthoryear {%
-Rosenberg%
-, Reid%
-\BCBL {}\ \BBA {} Lanstein%
-}{%
-Rosenberg%
-\ \protect \BOthers {.}}{%
-{\protect \APACyear {1985}}%
-}]{%
-Rosenberg1985}
-\APACinsertmetastar {%
-Rosenberg1985}%
-\begin{APACrefauthors}%
-Rosenberg, B.%
-, Reid, K.%
-\BCBL {}\ \BBA {} Lanstein, R.%
-\end{APACrefauthors}%
-\unskip\
-\newblock
-\APACrefYearMonthDay{1985}{Apr}{}.
-\newblock
-{\BBOQ}\APACrefatitle {Persuasive evidence of market inefficiency} {Persuasive
-  evidence of market inefficiency}.{\BBCQ}
-\newblock
-\APACjournalVolNumPages{Journal of Portfolio Management}{11}{}{9-16}.
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -883,6 +1188,32 @@ Tobek, O.%
 \newblock
 \begin{APACrefDOI} \doi{https://doi.org/10.1016/j.finmar.2020.100588}
   \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Tsang%
+\ \BBA {} Chong%
+}{%
+Tsang%
+\ \BBA {} Chong%
+}{%
+{\protect \APACyear {2009}}%
+}]{%
+tsang2009}
+\APACinsertmetastar {%
+tsang2009}%
+\begin{APACrefauthors}%
+Tsang, W\BPBI W\BPBI H.%
+\BCBT {}\ \BBA {} Chong, T\BPBI T\BPBI L.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2009}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Profitability of the On-Balance Volume Indicator}
+  {Profitability of the on-balance volume indicator}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Economics Bulletin}{29}{}{2424-2431}.
 \PrintBackRefs{\CurrentBib}
 
 \end{thebibliography}

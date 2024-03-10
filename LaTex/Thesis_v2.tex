@@ -93,25 +93,25 @@ Final contribution of this study is to expand the explanatory variable set. This
 
 %all developed, but small -> liquidity
 
-Structure of this paper goes as follows. In second chapter introduction to related literature is provided. In this chapter performance of different methods and persistence of different anomalies in different regions is discussed. Third chapter introduces the methodology and data. Fourth chapter presents the empirical study and final chapter provides as conclusion. \par
+Structure of this paper goes as follows. In second chapter introduction to related literature is provided. In this chapter performance of different methods and persistence of different anomalies in different regions is discussed. Third chapter introduces the data used in this study and filters applied to the data. Fourth chapter presents the methodology. It introduces the implemented models in more detail and describes the measurements applied for the models. Fifth chapter describes the results of the empirical study. Fifth chapter is divided to discuss separately predictive accuracy, economic profitability and covariate importance for the machine learning models.Finally the last chapter provides conclusion of the empirical study. \par
 
 \footnotetext{Butt and Hogholm \citeyear{ButtHogholm2020} calculate share of foreign ownership from IMF Coordinated Direct Investment Survey CDIS data. Foreign ownership share of Butt and Hogholm is 52\% for Denmark, 42\% for Finland, 35\% for Norway and 56\% for Sweden. %check the source
 }
 
 \section{Literature}\label{Literature}
-Being the largest and most prominent stock market in the world US stock market has been subject to majority of asset pricing studies. Despite the dominance of US markets in capturing the the attraction of the academics lot of anomaly asset pricing literature has been conducted in international setting as well. Characteristic for international asset pricing literature is that instead of focusing on single countries they aggregate stock market data to a certain regional level such as Europe or Asia-Pacific. Following chapter provides an overview for pioneering asset pricing anomaly literature. Focus will mainly be on literature on US and European markets. US stock markets are chosen because of their significance on international stock markets and because most anomalies have been discovered there and therefore majority of the initial studies of these anomalies have been conducted there. European studies provide interesting perspective since in many of them Nordic countries are included. \par
+Being the largest and most prominent stock market in the world US stock market has been subject to majority of asset pricing studies. Despite the dominance of US markets in capturing the the attraction of the academics lot of anomaly asset pricing literature has been conducted in international setting as well. Characteristic for international asset pricing literature is that instead of focusing on single countries they aggregate stock market data to a certain regional level such as Europe or Asia-Pacific. Following chapter provides an overview for pioneering asset pricing anomaly literature. Focus will mainly be on literature on US and European markets. US stock markets are chosen because of their significant impact on international stock markets and because most anomalies have been discovered there and therefore majority of the initial studies of these anomalies have been conducted there. European studies provide interesting perspective for this study since in many of them Nordic countries are included. \par
 
 Chapter introduces the most important anomalies in these markets and how they have been exploited with different methods. This works as starting point to define set of factors that will be used in this study. It can be argued that this kind of process when the set of variables are chosen based on their performance in previous studies is one sort of forward looking information if we try to mimic investors information set. On the other hand Jacobs and Müller \citeyear{JACOBS2020213} only find reliable post-publication decline in long/short returns in US which emphasizes the practical potential of this study. \par
 
 \subsection{US stock market anomalies}\label{USStockMarketAnomalies}
 
-Many of the recent cross-sectional stock return studies use framework of Lewellen \citeyear{lewellen2015} as base model. He runs 10-year rolling Fama-MacBeth regressions using lagged firm characteristics to predict out of the sample stock returns. He studies cross-sections of US stock return between 1964 and 2013 using different model settings up to 15 company characteristics. He finds strong positive correlation between expected return derived from rolling Fama-MacBeth regressions and realised returns. Additionally Lewellen shows that spread between realised return of portfolio formed from stock with lowest expected returns and portfolio with highest expected return is up to 2.36\%. In his study logarithmic market value of equity, logarithmic book-to-market value, momentum and accruals show the strongest statistical power in explaining monthly returns using lagged variables. \par
+Many of the recent cross-sectional stock return studies use framework of Lewellen \citeyear{Lewellen2015} as base model. He runs 10-year rolling Fama-MacBeth regressions using lagged firm characteristics to predict out of the sample stock returns. He studies cross-sections of US stock return between 1964 and 2013 using different model settings up to 15 company characteristics. He finds strong positive correlation between expected return derived from rolling Fama-MacBeth regressions and realised returns. Additionally Lewellen shows that spread between realised return of portfolio formed from stock with lowest expected returns and portfolio with highest expected return is up to 2.36\%. In his study logarithmic market value of equity, logarithmic book-to-market value, momentum and accruals show the strongest statistical power in explaining monthly returns using lagged variables. \par
 
-Gu, Jelly and Xiu \citeyear{guetal} contribute to the literature by applying machine learning methods to exploit stock market anomalies. By deploying sophisticated models that do not suffer from over parameterization as heavily as OLS Gu et al. are able to include 94 stock characteristics and their interactions as well as eight aggregated time series variables to their models. Gu et al. use large variety of statistical methods including linear regression, generalized linear models with penalization, dimension reduction via principal components regression and partial least squares, gradient boosted regression trees, random forest and different settings of neural networks. Out of these gradient boosted regression trees and neural networks \footnotemark explain the monthly out of sample stock return the best reaching out of sample $R^{2}$ 0.33 and 0.44 correspondingly where as three factor OLS model introduced by Lewellen \citeyear{lewellen2015} only reaches out of sample $R^{2}$ of -3.46. \par
+Gu, Jelly and Xiu \citeyear{guetal} contribute to the literature by applying machine learning methods to exploit stock market anomalies. By deploying sophisticated models that do not suffer from over parameterization as heavily as OLS Gu et al. are able to include 94 stock characteristics and their interactions as well as eight aggregated time series variables to their models. Gu et al. use large variety of statistical methods including linear regression, generalized linear models with penalization, dimension reduction via principal components regression and partial least squares, gradient boosted regression trees, random forest and different settings of neural networks. Out of these gradient boosted regression trees and neural networks \footnotemark explain the monthly out of sample stock return the best reaching out of sample $R^{2}$ 0.33 and 0.44 correspondingly where as three factor OLS model introduced by Lewellen \citeyear{Lewellen2015} only reaches out of sample $R^{2}$ of -3.46. \par
 
 \footnotetext{Gu et al. \citeyear{guetal} use five different settings of neural networks differing by number of hidden layers. Neural network with three hidden layers reaches the highest $R^{2}_{oos}$ and is reported here.}
 
-Similar to Lewellen \citeyear{lewellen2015} Gu et al. construct portfolios based on predicted return of different models. Monthly spread in realized return between portfolio constructed from decile of companies with lowest expected return and decile of stocks with highest expected return \footnotemark is 0.94, 1.62 and 2.12 for models based on OLS, random forest and three layer neural network correspondingly. Gu et al. also show that all methods they examine show somewhat similar patterns on variable importance on return predictability. Most important factors are price trends such as momentum followed by stock liquidity, stock volatility, and valuation ratios. \par
+Similar to Lewellen \citeyear{Lewellen2015} Gu et al. construct portfolios based on predicted return of different models. Monthly spread in realized return between portfolio constructed from decile of companies with lowest expected return and decile of stocks with highest expected return \footnotemark is 0.94, 1.62 and 2.12 for models based on OLS, random forest and three layer neural network correspondingly. Gu et al. also show that all methods they examine show somewhat similar patterns on variable importance on return predictability. Most important factors are price trends such as momentum followed by stock liquidity, stock volatility, and valuation ratios. \par
 % all stocks, confirm again
 % Deeper neural networks seem to be too complex
 
@@ -148,7 +148,7 @@ Value premium has shown consistency in Finnish stock markets. Davydov, Tikkanen 
 %(Finnish Stock Exchange in the period 1991–2013. In total, the number of companies varies from 39 to 136)
 %check the second article from patari and leivo
 
-Similar to Grobys and Huhta-Halkola \citeyear{grobys} Leivo and Pätäri \citeyear{leivo2011} combine value anomaly with momentum anomaly in Finnish stock market for data set between 1993 and 2008. They show that two step portfolio sort that first allocates stocks to three portfolios based on their value indicators and subsequently based on momentum indicator can capture extraordinary stock returns. Leivo and Pätäri show that including momentum further increases returns of already recognised value sorting. Strategy performs even better when authors allow for long position in high value high momentum portfolio and short position on low value low momentum portfolio. Excess returns resulting from the two-fold portfolio construction can not be explained by CAP-model or two factor model including also size factor. It is not a surprise that value and momentum premium show existence in Nordic markets. Value and momentum anomalies are among the most well documented factors showing persistence in multiple cross-sectional studies (e.g, Gu, Jelly and Xiu \citeyear{guetal}, Lewellen \citeyear{lewellen2015}, Drobetz and Otto \citeyear{Drobetz}, Tobek and Hronec \citeyear{TOBEK2021100588}). \par
+Similar to Grobys and Huhta-Halkola \citeyear{grobys} Leivo and Pätäri \citeyear{leivo2011} combine value anomaly with momentum anomaly in Finnish stock market for data set between 1993 and 2008. They show that two step portfolio sort that first allocates stocks to three portfolios based on their value indicators and subsequently based on momentum indicator can capture extraordinary stock returns. Leivo and Pätäri show that including momentum further increases returns of already recognised value sorting. Strategy performs even better when authors allow for long position in high value high momentum portfolio and short position on low value low momentum portfolio. Excess returns resulting from the two-fold portfolio construction can not be explained by CAP-model or two factor model including also size factor. It is not a surprise that value and momentum premium show existence in Nordic markets. Value and momentum anomalies are among the most well documented factors showing persistence in multiple cross-sectional studies (e.g, Gu, Jelly and Xiu \citeyear{guetal}, Lewellen \citeyear{Lewellen2015}, Drobetz and Otto \citeyear{Drobetz}, Tobek and Hronec \citeyear{TOBEK2021100588}). \par
 % Helsinki Stock Exchange (HEX; later OMX Helsinki) during the period 1993–2008. E/P, EBITDA/EV, CF/P, dividend yield (D/P), B/P and S/P and combinations.
 %re-phrase the text
 
@@ -158,6 +158,10 @@ Jokipii and Vähämaa \citeyear{jokipii2006free} investigate free cash flow anom
 %Finnish companies during the period 1992-2002. net cash flow from operating activities minus capital expenditures. The net cash flow from operating activities, in turn, is defined as the sum of net income, all non-cash charges and credits (e.g.,  depreciation,  amortization  of  intangibles,  and  deferred  taxes),  extra ordinary items, and net change in working capital
 
 \section{Data}\label{Data}
+
+This section provides an overview of the dataset used in this study. Section starts by introducing overall market setting in Nordic stock markets. Section discusses how companies are distributed across Nordic markets and also describes the size properties of the companies in different Nordic markets. This part also describes the static and dynamic screens applied to the Datastream data in order to ensure sufficient data quality. Second part of the section describes the firm level characteristics considered in this study. This stock level excess returns as well as all independent variables. This part introduces definitions of all variables including which characteristics are included calculation of each variable. Descriptive statistics of the firm level characteristics are also presented in this part of the study. \par
+
+\subsection{Nordic stock market data}\label{NordicStockMarketData}
 
 Main datasource for this study is Thomson Datastream. Company fundamentals data is collected from Worldscope database. Dataset spans from 1990 January to 2022 December which is shorter than in many previous studies. Reason why time period is limited to 1990 is that the amount of publicly listed companies in Nordic markets was rather low in the 1980's and finding reliable data for period before 1990 is difficult. Dataset contains all stocks listed in primary markets of corresponding countries including also companies that went bankrupt or were de-listed for any other reason. Therefore, dataset is not subject to survivorship bias. \par
 
@@ -191,7 +195,7 @@ Nordic		& 200 	& 527 	& 343 	& 1422	& 1946.46 	& 583.02	& 699688.8  \\
 \end{tabularx}
 \end{table} 
 
-On average number of companies with large market capitalization is more limited in nordic countries than in US or Europe. The smallest companies can be numerous, but still only account for fraction of total market capitalization. Liquidity of these companies is often also quite low. To avoid results to be driven by such a stock, approach of Hanauer and Kalsbach \citeyear{HANAUER2022} applied for emerging markets and exclude companies with smallest market value that account 3\% of the aggregated market value. On the other hand we do not want few extremely large companies to drive the results either. Therefore, market value of the companies is winsorized monthly to 99\%. If company's market value is among 1\% biggest market values in corresponding month, the market value will be replaced by the 1\% threshold. \par
+On average number of companies with large market capitalization is more limited in nordic countries than in US or Europe. The smallest companies can be numerous, but still only account for fraction of total market capitalization. Liquidity of these companies is often also quite low. To avoid results to be driven by such a stock, approach of Hanauer and Kalsbach \citeyear{HANAUER2023} applied for emerging markets and exclude companies with smallest market value that account 3\% of the aggregated market value. On the other hand we do not want few extremely large companies to drive the results either. Therefore, market value of the companies is winsorized monthly to 99\%. If company's market value is among 1\% biggest market values in corresponding month, the market value will be replaced by the 1\% threshold. \par
 
 Table \ref{table:CountrySummary} presents the number of companies and their sizes in separate and pooled nordic markets after above described filters. The total number of non-micro cap stocks in the dataset is 1422 whereas the monthly number of stocks in the dataset is 343 on average. Figure \ref{plot:number_of_companies_wo_micro} shows the development of the non micro-cap company count that passed the static and dynamic screens screens over time. Figure \ref{plot:number_of_companies} in appendix shows the development of company counts over time including micro-cap stocks. Comparing the two figures shows that even though micro-cap stocks account only for 3\% of the aggregated market value, they account for remarkable share of company count. Maximum number of companies including micro-cap stocks exceeds 1000 whereas maximum number of companies excluding micro-cap stocks is slightly above 500. \par
 
@@ -206,53 +210,55 @@ Sweden is clearly the biggest of the four markets both in regards off the number
 
 In this study Nordic markets are examined as one market. In the introduction it was argued that in the eyes of foreign investors Nordic markets can appear quite homogenous. There is also more practical reason why Nordic markets are pooled in this study. Table \ref{table:CountrySummary} shows that individual Nordic stock markets hold limited amount of large market capitalization stocks. This leads to situation where the performance of the whole market or portfolios formed from the market can be driven by very few large market capitalization stocks even after winsorizing the market values. Later in the study we will allocate stocks to portfolios based on their expected returns and we want to ensure that there exist reasonable amount of companies to diversify each portfolio. Unfortunately, Nordic countries have different currencies. In order to ensure comparability of the companies from different countries, we have to convert certain variables to common currency which in this case is US dollar using historical currency rates. Variables that are converted to US dollars include for example return index and market capitalization. Majority of the variables are ratios which can be calculated from local currency values. \par
 
+\subsection{Company characteristics}\label{CompanyCharacteristics}
+
 Total 23 characteristics are derived from stock level data. All the models use same set of explanatory variables which includes book-to-market ratio (BEME), investment (INV), earnings-to-price ratio (EP), cash-to-total assets ratio (CA), capital turnover (CTO), cashflow-to-price ratio (CFP), leverage (DEBT), sales-to-price ratio (SP), return on assets (ROA), return on equity (ROE), Tobin's Q (Q), one month momentum (MOM$_2$), momentum from $t-12$ to $t-7$ month (MOM$_7$), momentum from $t-12$ to $t-2$ (MOM$_{12}$), momentum from $t-36$ to $t-12$ (MOM$_{36}$), industry momentum (MOM.IND), log scaled market capitalization (LOG.MV), standard deviation (SD), ratio of current price and 52 week high price (HIGH52), beta coefficient (BETA), idiosyncratic volatility (IDVOL), turnover (TO) and on balance volume (OBV). \par
+
+Data consists of variables that are available on three different frequencies. Majority of these variables are ratios calculated from accounting data. 
+Usually income statement or balance sheet information are available annually and therefore majority of accounting based variables are updated only once a year. To account for possible reporting delay associated with accounting data, accounting data from year $t$ is considered to be available end of June $t+1$. Detailed descriptions how each of these variables is calculated is provided in the table \ref{table:variableDefs}. Dataset contains also variables calculated from monthly data. These include momentum variables and the market value. Even though the frequency of the return prediction will be monthly, some variables are calculated from weekly data. These include standard deviation, ratio between price and 52-week high price, beta coefficient, idiosyncratic volatility, turnover and on-balance volume. Standard deviation is calculated as rolling 52-week standard deviation of the stock returns. \par
 
 {\small {\setstretch{1.0}
 \newcolumntype{Z}{>{\centering\arraybackslash}X}
-\begin{xltabular}{\textwidth}{l p{0.2\textwidth} X}
-\caption[Variable definitions]{\textbf{Variable definitions} \\ Tables provides definitions and initial authors for all anomalies used in the study. Construction of variables follows mainly Green et. al \protect\citeyear{Green2017} and Hanauer and Kalsbach \protect\citeyear{HANAUER2022} and can deviate from variable definitions of initial authors.}\
+\begin{xltabular}{\textwidth}{ >{\raggedright\arraybackslash}p{0.23\textwidth} >{\raggedright\arraybackslash}p{0.2\textwidth} X}
+\caption[Variable definitions]{\textbf{Variable definitions} \\ Tables provides definitions and initial authors for all anomalies used in the study. Construction of variables follows mainly Green et. al \protect\citeyear{Green2017} and Hanauer and Kalsbach \protect\citeyear{HANAUER2023} and can deviate from variable definitions of initial authors. Table also provides the direct formulas and relevant Datastream items used to calculated the variables. Abbreviatons used to indicate different variables later in the study are also displayed in the table. MV$_{t-1, Dec}$ indicates market value as of end of December in year $t -1$. Frequency of the variable is indicated after the variable name.}\
 \label{table:variableDefs} \\ \toprule
 Variable & Author & Definition \\ \midrule
 \endfirsthead 
 \multicolumn{3}{@{}l}{\ldots\ \small Continued from the previous page}\\ \midrule
-Variable & Author & Definition \\ \midrule
+Variable & Author & Definition and affected Datastream items \\ \midrule
 \endhead 
 \midrule
 \multicolumn{3}{r@{}}{\small Table continues in the next page \ldots}\\ 
 \endfoot 
 \endlastfoot
-Cash-to-Assets 		& \citeyear{PALAZZO2012162} 			& Cash-to-Asset ratio is calculated by dividing  cash and short-term investments by total assets.\\
-Capital Turnover 		& i									& Capital turnover is calculated by dividing total sales by one year lagged total assets.\\
-Investment 			& i									& Investments are defined as a yearly change in total assets.\\	
-Book-to-Market Equity 	& Rosenberg  \citeyear{Rosenberg1985} 		&  Book-to-Market value is calculated by dividing company's book value of equity by company's market capitaliztion end of previous year. Book value of equity is calculated by summing common equity and deferred taxes of the company. \\
-Cash Flow-to-Price 		& \citeyear{LAKONISHOK1994} 			& Cash flow to price ratio is calculated by dividing company's cash flow from operating activities by the asset's market capitaliztion end of previous year. \\
-Debt-to-Price			& i									& Debt-to-price value is calculated as difference between total assets and common equity divided by the asset's market capitaliztion end of previous year.\\
-Sales-to-Price 			& i									& Sales-to-price ratio is calculated by dividing total sales by asset's market capitaliztion end of previous year.\\
-Earnings-to-Price 		& i									& Earnings-to-price ratio is calculated by dividing net income before extra Items and preferred dividends by asset's market capitaliztion end of previous year.\\
-Return-on-Assets 		& i									& Return-on-assets is calculated as net income before extra items and preferred dividends divided by one year lagged total assets.\\
-Return-on-Equity 		& i									& Return-on-equity is calculated as net income before extra Items and preferred dividends divided by one year lagged book value of equity. See book-to-market equity for definition of book value of equity. \\
-Tobin's Q 				& i									& tbd\\
-Momentum$_{7}$ 		& i									& Cumulative return in US dollars between $t-7$ and $t-12$ months.\\
-Momentum$_{12}$ 		& i									& Cumulative return in US dollars between $t-2$ and $t-12$ months.\\
-Momentum$_{36}$ 		& i									& Cumulative return in US dollars between $t-12$ and $t-36$ months.\\
-Momentum$_{2}$ 		& i									& Prior month return in US dollars.\\ 
-Industry Momentum		& Moskowitz and Grinblatt \citeyear{Moskowitz1999}	 & 12 month cumulative equal weighted industry momentum. Industry is defined using INDG attribute from Datastream. \\
-Standard deviation		& Ang, Hodrick, Xing and Zhang \citeyear{ang2006}	& Standard deviation of unadjusted weekly price for last 52 weeks. \\ 
-52-week high price		& George and Hwang \citeyear{george2004}	& Calculated from weekly unadjusted prices by dividing current price by past 52-week high price. \\
-Beta					& Fama and MacBeth \citeyear{FamaMacBeth1973}	& Beta coefficients are estimated by regressing unadjusted weekly returns noted in US dollars with equally weighted market returns. Minimum 15 observations is required.\\
-Idiosyncratic volatility	& Ali, Hwang and Trombley \citeyear{ali2003}	& Idiosynctratic volatility is estimated by standard deviation of regression residuals from regressing unadjusted weekly US dollar returns by equally weighted market return. \\
-Log. market value		& Banz \citeyear{BANZ1981}				& Natural logarithm of the market value of the company end of previous month.\\
-Turnover				& Datar, Naik and Radcliffe \citeyear{datar1998}									& Turnover is defines as end of previous month weekly trading volume divided by the shares outstanding. \\
-On-balance volume		& Tsang and Chong \citeyear{tsang2009}									& First on-balance volume is the weekly trading volume multiplied by corresponding week return's sign. Following on-balance volumes are calulated by adding the product of trading volume and sign of return to previous on-balance volume.\\ 
+Cash-to-Assets \newline Yearly		& Palazzo \citeyear{PALAZZO2012162} 			& Cash-to-Asset ratio is calculated by dividing cash and short-term investments by total assets. \newline CA = WC02001$_{t}$ / WC02999$_{t}$\\ \rule{-1ex}{3ex}
+Capital Turnover \newline Yearly	& Haugen and Baker \citeyear{HAUGEN1996}		& Capital turnover is calculated by dividing total sales by one year lagged total assets. \newline CTO = WC01001$_{t}$ / WC02999$_{t-1}$\\ \rule{-1ex}{3ex}
+Investment  \newline Yearly		& Cooper, Gulen and Schill \citeyear{cooper2008}	& Investments are defined as a yearly change in total assets. \newline INV = (WC02999$_{t}$ - WC02999$_{t-12}$) / WC02999$_{t-12}$\\	\rule{-1ex}{3ex}
+Book-to-Market Equity \newline Yearly & Davis, Fama and French \citeyear{Davis2000}	&  Book-to-Market value is calculated by dividing company's book value of equity by company's market capitaliztion end of previous year. Book value of equity is calculated by summing common equity and deferred taxes of the company. \newline BEME = (WC03501$_{t}$ + WC03263$_{t}$) /  MV$_{t-1, Dec}$\\ \rule{-1ex}{3ex}
+Cash Flow-to-Price \newline Yearly	& Lakonishok, Shleifer and Vishny  \citeyear{Lakonishok1994} 	& Cash flow to price ratio is calculated by dividing company's cash flow from operating activities by the asset's market capitalization end of previous year. \newline CFP = WC04860$_{t}$ / MV$_{t-1, Dec}$\\ \rule{-1ex}{3ex}
+Debt-to-Price \newline Yearly		& Hanauer and Kalsbach \citeyear{HANAUER2023}	& Debt-to-price value is calculated as difference between total assets and common equity divided by the asset's market capitalization end of previous year. \newline DEBT = (WC02999$_{t}$ - WC03501$_{t}$) / MV$_{t-1, Dec}$\\ \rule{-1ex}{3ex}
+Sales-to-Price 	\newline Yearly		& Lewellen \citeyear{Lewellen2015}				& Sales-to-price ratio is calculated by dividing total sales by asset's market capitaliztion end of previous year. \newline WC01001$_{t}$ / MV$_{t-1, Dec}$ \\ \rule{-1ex}{3ex}
+Earnings-to-Price \newline Yearly	& Basu \citeyear{Basu1977}					& Earnings-to-price ratio is calculated by dividing net income before extra Items and preferred dividends by asset's market capitaliztion end of previous year. \newline EP = WC01551$_{t}$ / MV$_{t-1, Dec}$ \\ \rule{-1ex}{3ex}
+Return-on-Assets \newline Yearly	& Balakrishnan, Bartov and Faurel \citeyear{BALAKRISHNAN2010}	& Return-on-assets is calculated as net income before extra items and preferred dividends divided by one year lagged total assets. \newline ROA = WC01551$_{t}$ / WC02999$_{t-12}$ \\ \rule{-1ex}{3ex}
+Return-on-Equity \newline Yearly	& Haugen and Baker \citeyear{HAUGEN1996}		& Return-on-equity is calculated as net income before extra Items and preferred dividends divided by one year lagged book value of equity. See book-to-market equity for definition of book value of equity. \newline ROE = WC01551$_{t}$ / BE$_{t-12}$ \\ \rule{-1ex}{3ex}
+Tobin's Q 	\newline Yearly			& Freyberger, Neuhierl and Michael Weber \citeyear{	Freyberger2020} & Tobin's Q is calculated by summing up total assets and market capitalization from previous December, then subtracting cash and short-term investments and deferred taxes. Finally result is divided by the total assets. \newline Q = (WC02999$_{t}$ + MV$_{t-1, Dec}$ - WC02001$_{t}$ - WC03263$_{t}$) / WC02999$_{t}$ \\ \rule{-1ex}{3ex}
+Momentum$_{7}$ \newline Monthly	& Novy-Marx \citeyear{NOVYMARX2012}			& MOM7 is defined as cumulative return in US dollars between $t-7$ and $t-12$ months.\\ \rule{-1ex}{3ex}
+Momentum$_{12}$ \newline Monthly	& Jegadeesh and Titman \citeyear{Jegadeesh1993}	& MOM12 is defined as cumulative return in US dollars between $t-2$ and $t-12$ months.\\ \rule{-1ex}{3ex}
+Momentum$_{36}$ \newline Monthly	& De Bondt and Thaler \citeyear{DeBondt1985}		& MOM36 is defined as cumulative return in US dollars between $t-12$ and $t-36$ months.\\ \rule{-1ex}{3ex}
+Momentum$_{2}$ \newline Monthly	& Jegadeesh \citeyear{Jegadeesh1990}			& MOM2 is defined as prior month return in US dollars.\\ \rule{-1ex}{3ex}
+Industry Momentum \newline Monthly & Moskowitz and Grinblatt \citeyear{Moskowitz1999}	 & MOM.IND is defined as 12 month cumulative equal weighted industry momentum. Industry is defined using INDG attribute from Datastream. \\ \rule{-1ex}{3ex}
+Standard deviation \newline Monthly	& Ang, Hodrick, Xing and Zhang \citeyear{ang2006}	& L.SD is defined as standard deviation of unadjusted weekly price for last 52 weeks. \\ \rule{-1ex}{3ex}
+52-week high price \newline Monthly	& George and Hwang \citeyear{george2004}	& Calculated from weekly unadjusted prices by dividing current price by past 52-week high price. \newline  L.HIGH52.RATIO = UP$_{t}$ / UP$_{52 week high}$\\ \rule{-1ex}{3ex}
+Beta	 \newline Monthly			& Fama and MacBeth \citeyear{FamaMacBeth1973}	& L.BETA is estimated by beta coefficients obtained by regressing unadjusted weekly returns noted in US dollars with equally weighted market returns. Minimum 15 observations is required.\\ \rule{-1ex}{3ex}
+Idiosyncratic volatility \newline Monthly & Ali, Hwang and Trombley \citeyear{ali2003}	& L.IDVOL is estimated by standard deviation of regression residuals from regressing unadjusted weekly US dollar returns by equally weighted market return. \\ \rule{-1ex}{3ex}
+Log. market value \newline Monthly 	& Banz \citeyear{BANZ1981}				& Natural logarithm of the market value of the company end of previous month. \newline L.LOG.USD.MV = $\ln$(USD.MV$_{t-1}$)\\ \rule{-1ex}{3ex}
+Turnover \newline Monthly 		& Datar, Naik and Radcliffe \citeyear{datar1998} & Turnover is defines as end of previous month weekly trading volume divided by the shares outstanding. \newline L.TO = VO$_t$ / NOSH$_t$ \\ \rule{-1ex}{3ex}
+On-balance volume \newline Monthly & Tsang and Chong \citeyear{tsang2009}		& OBV is calculated with following process. First on-balance volume is the weekly trading volume multiplied by corresponding week return's sign. Following on-balance volumes are calculated by adding the product of trading volume and sign of return to previous on-balance volume.\\ 
 \bottomrule
 \end{xltabular}
 }}
 
-Data consists of variables that are available on three different frequencies. Majority of these variables are ratios calculated from accounting data. 
-Usually income statement or balance sheet information are available annually and therefore majority of accounting based variables are updated only once a year. To account for possible reporting delay associated with accounting data, accounting data from year $t$ is considered to be available end of June $t+1$. Detailed descriptions how each of these variables is calculated is provided in the table \ref{table:variableDefs}. Dataset contains also variables calculated from monthly data. These include momentum variables and the market value. Even though the frequency of the return prediction will be monthly, some variables are calculated from weekly data. These include standard deviation, ratio between price and 52-week high price, beta coefficient, idiosyncratic volatility, turnover and on-balance volume. Standard deviation is calculated as rolling 52-week standard deviation of the stock returns. \par
-
-Set of explanatory variables includes seven value indicators. Book-to-market value is calculated by dividing sum of common equity and deferred taxes by the market value of last December. Four of the value indicators are price ratios. Income before extraordinary items, net cash flow from operating activities and net sales are divided by market capitalization of previous year December in order to obtain earnings-to-price, cashflow-to-price ratio and sales-to-price ratios correspondingly. Leverage is calculated by first subtracting common equity from total assets and the dividing by market capitalization of previous year December. Rest two of the value indicators are normalized by total assets. Cash-to-total assets is calculated by dividing cash and short-term investments by total assets and Tobin's Q is calculated by dividing subtracting cash and short-term investments from sum of total assets and the market capitalization of previous December and dividing the result by total assets. \par
+Set of explanatory variables includes seven value indicators. Book-to-market value is calculated by dividing sum of common equity and deferred taxes by the market value of last December. Four of the value indicators are price ratios. Income before extraordinary items, net cash flow from operating activities and net sales are divided by market capitalization of previous year December in order to obtain earnings-to-price, cashflow-to-price ratio and sales-to-price ratios correspondingly. Leverage is calculated by first subtracting common equity from total assets and the dividing by market capitalization of previous year December. Rest two of the value indicators are normalized by total assets. Cash-to-total assets is calculated by dividing cash and short-term investments by total assets and Tobin's Q is calculated by summing up total assets and market capitalization from previous December, then subtracting cash and short-term investments and deferred taxes and finally dividing by the total assets. \par
 
 Profitability of the companies is described with three indicators. Return on assets and return on equity divide earnings before extraordinary items by lagged total assets and lagged book equity. As described above book equity is defined as the sum of common equity and deferred taxes. Third profitability indicator is capital turnover. Capital turnover is calculated by dividing net sales by total assets. Momentum characteristics are described by five different momentum variables. Momentum variables include traditional and intermediate momentum as well as short-term and long-term reversals. Traditional momentum is defined as cumulative return from $t-12$ to $t-2$ and intermediate as cumulative return from $t-12$ to $t-7$. Short-term reversal is the return of the previous month whereas long-term reversal is defined as cumulative return from $t-36$ to $t-12$. \par
 
@@ -334,64 +340,9 @@ Table \ref{table:DescriptiveStatistics} provides descriptive statistics of compa
 
 \section{Methodology} \label{Methodology}
 
-This study will evaluate machine learning methods from two perspectives. First perspective that is evaluated is the profitability of the methods. Profitability is estimated via portfolio construction following Lewellen \citeyear{lewellen2015}. First expected returns are derived from each model. This process is introduced in more detail in following subsections. After obtaining the expected returns, each month all stocks are distributed to ten portfolios based on the magnitude of the expected return. Allocation is univariate and does not consider other variables than the expected return of the stock for the next month. Even though models are trained only once a year, expected returns are re-calculated every month as the most recent available data is inserted to the model. Therefore, also the portfolio allocation is repeated monthly. Each month all stocks are allocated to one of the ten expected return portfolio, but to avoid result to be mainly driven by small stocks approach from Hanauer and Kalsbach is applied \citeyear{HANAUER2022}  and the breakpoints for the allocation are calculated only from the large market value stocks. Large market value stocks are the biggest stocks that account for 97\% of the aggregated total market value of respective month. \par
+This section provides the theoretical framework of this study. Sections starts by describing how benchmark factors are calculated, which are later used in risk adjusted evaluation of machine learning portfolios. Next chapter provides the theoretical foundation of the three machine learning models. Following section describes how stock return predictions obtained from different models are evaluated. Section describes both prediction accuracy and economic profitability metrics used to evaluate the performance of the models. \par
 
-In addition to the ten expected return portfolios, for each method zero investment portfolio is formed. Zero investment or long-short portfolio is simply the spread between return of the highest expected return portfolio and return of the lowest expected return portfolio. Both value and equal weighted returns will be reported for each portfolio. Performance of the machine learning portfolios is backtested and evaluated in multiple ways. For all expected return portfolios historical realized mean returns are reported together with Sharpe ratios. For long-short portfolios also maximum drawdown and maximum 1 month loss will be reported. Maximum 1 month loss is simply the largest negative monthly return of each portfolio. Maximum drawdown is define as \par
-
-\begin{equation}
-\label{eq:maxDD}
-MaxDD = \max\limits_{0\leq t_1\leq t_2\leq T} (Y_{t_1} - Y_{t_2})
-\end{equation}
-
-where $Y_t$ stands for cumulative return from the beginning of the period until date $t$. Turnover will be calculated only for long side of the long-short portfolios. In order to examine risk adjusted returns long-short portfolio returns will be regressed against Fama-French \citeyear{FAMA20151} six factor model factors \footnotemark. From this regression alphas, which can interpret as the excess return that the models are able to generate that cannot be explained by the loadings in the six risk factors. Also $t$-statistics for the alphas and $R^2$ values are reported. Regression formula for risk adjusted performance \par
-
-\begin{equation}
-\label{eq:FFRegFormula}
-\begin{split}
-\hat r_{i, t} = 	& \ \alpha+ \beta_{1} \ RMRF{t} + \beta_{2} + \ SMB_{t} + \beta_{3} \ HML_{t} + \\
-		&  \beta_{4} \ CMA_{t} +  \beta_{5} \ RMW_{t} + \beta_{6} \ MOM_{t} + \epsilon_{t}
-\end{split}
-\end{equation}
-
-where $RMRF$ is the excess market return, $SMB$ is the spread in the return between small market value stocks and large market value stocks, $HML$ is the spread in the return between high book-to-market value stocks and low book-to-market value stocks, $CMA$ is the spread in the return between conservatively investing stocks and aggressively investing stocks, $RMW$ is the spread in the return between stocks with robust profitability and stocks with weak profitability and $MOM$ is the between returns of stocks that had highest return in period $t-1$ and the stocks that had lowest return in period $t-1$. Factors are constructed from the same dataset as machine learning portfolios, except that the micro-cap stocks are not excluded. Construction of these factors is described in more detail in Appendix. \par
-
-\footnotetext{Fama and French \citeyear{FAMA20151} introduced the five factor model. Factors used to regress machine learning portfolio returns include five factor model factors and momentum factor from Carhart \citeyear{Carhart1997}.}
-
-Machine learning models are also evaluated based on their prediction accuracy. Prediction accuracy will be evaluated using out-of-sample $R^{2}_{oos}$ and Diebold-Mariano tests. Two out-of-sample $R^{2}$ figures are presented. Traditional out-of-sample $R^{2}$ uses historical mean  return as the benchmark estimation. Traditional out-of-sample $R^{2}$ is defined as \par
-
-\begin{equation}
-\label{eq:r2Trad}
-R^{2}_{oos \ Trad.} = 1 - \frac{\sum^T_{t=1} \sum^N_{i=1} (r_{i, t} - \hat r_{i, t})^2}{ \sum^T_{t=1} \sum^N_{i=1} (r_{i, t} - \overline{r}_{i, t} )^2}
-\end{equation}
-
-where $r_{i, t}$ is the realized return of stock $i$ in month $t$, $\hat r_{i, t}$ is the predicted return of the same stock for month $i$ and $\overline{r}_{i, t}$ is the historical mean return of the same stock excluding month $i$. Nevertheless, Gu et al. \citeyear{guetal} argue that the historical mean return is so noisy estimator that it underperforms compared to static estimation of zero and therefore artificially improves the out-of-sample $R^{2}$. Instead they propose alternative out-of-sample $R^{2}$ measure where the squared sum of returns in denominator is not demeaned. \par
-
-\begin{equation}
-\label{eq:r2}
-R^{2}_{oos} = 1 - \frac{\sum^T_{t=1} \sum^N_{i=1} (r_{i, t} - \hat r_{i, t})^2}{ \sum^T_{t=1} \sum^N_{i=1} r^2_{i, t}}
-\end{equation}
-
-$R^2$ presents the prediction accuracy as a single figure, whereas Diebold-Mariano allows for pairwise comparison of different models. Diebold-Mariano value is calculated as \par
-
-\begin{equation}
-\label{eq:Diebold-Mariano}
-\begin{split}
- d_{12, t} 			& = \ \frac{1}{N_{t}}  \sum^N_{i=1}((r_{i, t} - \hat r_{i, t, 1})^2 - (r_{i, t} - \hat r_{i, t, 2})^2) \\
-\overline{d}_{12} 	& = \ \frac{1}{T} \sum^T_{t=1} d_{12, t} \\
-DM_{12} 			& = \ \frac{\overline{d}_{12}}{\hat \sigma_{d_{12}}} \\
-\end{split}
-\end{equation}
-
-where $\hat r_{i, t, 1}$ is the return prediction of first model for company $i$ at time $t$ and $\hat r_{i, t, 1}$ is the return prediction of the second model  for company $i$ at time $t$. $N_t$ is number of observations in prediction period $t$. Therefore, $d_{12, t}$ is a time series of differences in average squared prediction errors between model $1$ and model $2$. $\overline{d}_{12}$ is the mean of $d_{12, t}$ and $\hat \sigma_{d_{12}}$ is the Newey and West (source) standard error of $d_{12, t}$. Diebold-Mariano test allows us to estimate statistical significance of the prediction accuracy of two models. Under assumption that the there does not exists difference in prediction accuracy between models Diebold-Mariano test statistic follows norma distribution with mean of $0$ and standard deviation of $1$, $DM \sim \mathcal{N}(0,\, 1)$. The significance of the difference is reported both for traditional $5\%$ level as well as for 3-way comparisons with Bonferroni adjustment. \par
-
-In the spirit of Lewellen \citeyear{lewellen2015} expected returns are also estimated by regressing realized returns with the expected returns. This regression follows \par
-
-\begin{equation}
-\label{eq:realizedRegression}
-r_{i, t} = \alpha + \beta_1 \hat r_{i, t}
-\end{equation}
-
-where $r_{i, t}$ is the realized return of company $i$ at time $t$ and $\hat r_{i, t}$ is the expected return of corresponding model for company $i$ at time $t$. For these regressions betas, $t$-statistics for betas and $R^2$ values will be reported. Ideally the beta coefficient or the slope for the predicted return should be 1 and highly significant. Magnitude of the beta coefficients can provide information of possible over or undershooting of the models. \par
+Variable importance section presents the approach implemented in order to evaluate comparably between models the importance of different covariates to the predictive accuracy of the models. Final part of this section introduces the sample splitting scheme applied while training the machine learning models. It also describes the hyperparameters considered as well as if they are subject to optimization. \par
 
 \subsection{Benchmark factors}\label{BenchmarkFactors}
 
@@ -413,7 +364,9 @@ SMB = & \ \frac{1}{4} (SMB_{B/M} + SMB_{OP} + SMB_{INV} + SMB_{MOM})\\[20pt]
 HML = & \ \frac{1}{2} (Small.High + Big.High) - \frac{1}{2} (Small.Low + Big.Low)\\[5pt]
 RMW = & \ \frac{1}{2} (Small.Robust + Big.Robust) - \frac{1}{2} (Small.Weak + Big.Weak)\\[5pt]
 CMA = & \ \frac{1}{2} (Small.Conservative + Big.Conservative)\\
-		& - \frac{1}{2} (Small.Aggressive + Big.Aggressive)
+		& - \frac{1}{2} (Small.Aggressive + Big.Aggressive)\\[5pt]
+MOM = & \ \frac{1}{2} (Small.Winner + Big.Winner)\\
+		& - \frac{1}{2} (Small.Loser + Big.Loser)\\
 \end{split}
 \end{equation}
 
@@ -464,7 +417,7 @@ Idea of the random forest is to randomly generate set of decision trees and then
 
 Artificial neural networks are powerful machine learning method category. Currently neural networks are popular approach to many real world prediction issues. Due to their strong performance in multiple domains, neural networks are often considered as state of the art machine learning method. Despite their popularity, for many users neural networks are sort of black box tools because of their complexity. Compared to linear regression and tree based models, neural networks are far less interpretable. Another weakness of the neural networks is that they are highly parameterized and highly sensitive for parameter initialization. Some of the parameter, such as learning rate, are usually optimized during the training of the model while others such as architecture of the model are usually fixed.  \par
 
-One of the first things user has to decide while training a neural network is the architecture of the model. This study focuses on feedforward neural networks which consists of input layer, hidden layers and an output layer. Input layer consists of the predictive variables whereas output layer produces the final predicition. In between thee exist 1 to N hidden layers. Hidden layers again consists of  so called neurons. Similar to number of hidden layers, user has to also decide number of neurons in each of the hidden layers. Number of the hidden layers is often referred as the deepness of the model where as number of the neurons in each hidden layer is referred as the width of the model. While lot of previous literature simultaneously examine multiple different architectural forms, due to computing capacity in this study only one architecture will be examined \cite{guetal, HANAUER2022, TOBEK2021100588}. Neural network of this study has two hidden layers. First hidden layer has 16 neurons and following common geometric pyramid rule second hidden layer has 8 neurons. Rather shallow and narrow architecture is chosen because they usually perform better with smaller datasets \cite{guetal}. In order to improve and fasten the converging of the model batch normalization is implemented between all layers. \par
+One of the first things user has to decide while training a neural network is the architecture of the model. This study focuses on feedforward neural networks which consists of input layer, hidden layers and an output layer. Input layer consists of the predictive variables whereas output layer produces the final predicition. In between thee exist 1 to N hidden layers. Hidden layers again consists of  so called neurons. Similar to number of hidden layers, user has to also decide number of neurons in each of the hidden layers. Number of the hidden layers is often referred as the deepness of the model where as number of the neurons in each hidden layer is referred as the width of the model. While lot of previous literature simultaneously examine multiple different architectural forms, due to computing capacity in this study only one architecture will be examined \cite{guetal, HANAUER2023, TOBEK2021100588}. Neural network of this study has two hidden layers. First hidden layer has 16 neurons and following common geometric pyramid rule second hidden layer has 8 neurons. Rather shallow and narrow architecture is chosen because they usually perform better with smaller datasets \cite{guetal}. In order to improve and fasten the converging of the model batch normalization is implemented between all layers. \par
 
 \begin{figure}
 \centering
@@ -487,6 +440,67 @@ As mentioned neural networks include numerous hyperparameters that can be optimi
 Neural networks learn by adjusting weights to the direction of gradient. This is done in repetitive iterations. In each iteration size of the change is defined by hyperparameter called learning rate. Since learning rate is a hyperparameter it needs an input from the user. It can also be optimized. Setting correct learning rate is crucial, since too big learning rate might prevent algorithm from converging to optimal solution, but too small learning rate makes converging slow. For above described reasons learning rate is not optimized in this study, but using learning rate scheduler it is adjusted during the training of the model. In order to ensure efficient training learning rate is set 0.01 in the beginning of the training and after ten epochs learning rate will be multiplied by 0.9. \par
 
 Neural networks are also sensitive to the weight initialization, where the initial weights are set which the model starts to optimize. Depending on the initialization of the weights neural networks can converge to different results. To reduce model variance caused by this, an ensemble method is applied. Ensemble is implemented by training five separate models with different initial weights. Final prediction will be then average of the predictions of the five models. \par
+
+\subsection{Prediction performance evaluation}\label{PredictionPerformanceEvaluation}
+
+This study will evaluate machine learning methods from two perspectives. First perspective that is evaluated is the profitability of the methods. Profitability is estimated via portfolio construction following Lewellen \citeyear{Lewellen2015}. First expected returns are derived from each model. This process is introduced in more detail in following subsections. After obtaining the expected returns, each month all stocks are distributed to ten portfolios based on the magnitude of the expected return. Allocation is univariate and does not consider other variables than the expected return of the stock for the next month. Even though models are trained only once a year, expected returns are re-calculated every month as the most recent available data is inserted to the model. Therefore, also the portfolio allocation is repeated monthly. Each month all stocks are allocated to one of the ten expected return portfolio, but to avoid result to be mainly driven by small stocks approach from Hanauer and Kalsbach is applied \citeyear{HANAUER2023}  and the breakpoints for the allocation are calculated only from the large market value stocks. Large market value stocks are the biggest stocks that account for 97\% of the aggregated total market value of respective month. \par
+
+In addition to the ten expected return portfolios, for each method zero investment portfolio is formed. Zero investment or long-short portfolio is simply the spread between return of the highest expected return portfolio and return of the lowest expected return portfolio. Both value and equal weighted returns will be reported for each portfolio. Performance of the machine learning portfolios is backtested and evaluated in multiple ways. For all expected return portfolios historical realized mean returns are reported together with Sharpe ratios. For long-short portfolios also maximum drawdown and maximum 1 month loss will be reported. Maximum 1 month loss is simply the largest negative monthly return of each portfolio. Maximum drawdown is define as \par
+
+\begin{equation}
+\label{eq:maxDD}
+MaxDD = \max\limits_{0\leq t_1\leq t_2\leq T} (Y_{t_1} - Y_{t_2})
+\end{equation}
+
+where $Y_t$ stands for cumulative return from the beginning of the period until date $t$. Turnover will be calculated only for long side of the long-short portfolios. In order to examine risk adjusted returns long-short portfolio returns will be regressed against Fama-French \citeyear{FAMA20151} six factor model factors \footnotemark. From this regression alphas, which can interpret as the excess return that the models are able to generate that cannot be explained by the loadings in the six risk factors. Also $t$-statistics for the alphas and $R^2$ values are reported. Regression formula for risk adjusted performance \par
+
+\begin{equation}
+\label{eq:FFRegFormula}
+\begin{split}
+\hat r_{i, t} = 	& \ \alpha+ \beta_{1} \ RMRF{t} + \beta_{2} + \ SMB_{t} + \beta_{3} \ HML_{t} + \\
+		&  \beta_{4} \ CMA_{t} +  \beta_{5} \ RMW_{t} + \beta_{6} \ MOM_{t} + \epsilon_{t}
+\end{split}
+\end{equation}
+
+where $RMRF$ is the excess market return, $SMB$ is the spread in the return between small market value stocks and large market value stocks, $HML$ is the spread in the return between high book-to-market value stocks and low book-to-market value stocks, $CMA$ is the spread in the return between conservatively investing stocks and aggressively investing stocks, $RMW$ is the spread in the return between stocks with robust profitability and stocks with weak profitability and $MOM$ is the between returns of stocks that had highest return in period $t-1$ and the stocks that had lowest return in period $t-1$. Factors are constructed from the same dataset as machine learning portfolios, except that the micro-cap stocks are not excluded. Construction of these factors is described in more detail in Appendix. \par
+
+\footnotetext{Fama and French \citeyear{FAMA20151} introduced the five factor model. Factors used to regress machine learning portfolio returns include five factor model factors and momentum factor from Carhart \citeyear{Carhart1997}.}
+
+Machine learning models are also evaluated based on their prediction accuracy. Prediction accuracy will be evaluated using out-of-sample $R^{2}_{oos}$ and Diebold-Mariano tests. Two out-of-sample $R^{2}$ figures are presented. Traditional out-of-sample $R^{2}$ uses historical mean  return as the benchmark estimation. Traditional out-of-sample $R^{2}$ is defined as \par
+
+\begin{equation}
+\label{eq:r2Trad}
+R^{2}_{oos \ Trad.} = 1 - \frac{\sum^T_{t=1} \sum^N_{i=1} (r_{i, t} - \hat r_{i, t})^2}{ \sum^T_{t=1} \sum^N_{i=1} (r_{i, t} - \overline{r}_{i, t} )^2}
+\end{equation}
+
+where $r_{i, t}$ is the realized return of stock $i$ in month $t$, $\hat r_{i, t}$ is the predicted return of the same stock for month $i$ and $\overline{r}_{i, t}$ is the historical mean return of the same stock excluding month $i$. Nevertheless, Gu et al. \citeyear{guetal} argue that the historical mean return is so noisy estimator that it underperforms compared to static estimation of zero and therefore artificially improves the out-of-sample $R^{2}$. Instead they propose alternative out-of-sample $R^{2}$ measure where the squared sum of returns in denominator is not demeaned. \par
+
+\begin{equation}
+\label{eq:r2}
+R^{2}_{oos} = 1 - \frac{\sum^T_{t=1} \sum^N_{i=1} (r_{i, t} - \hat r_{i, t})^2}{ \sum^T_{t=1} \sum^N_{i=1} r^2_{i, t}}
+\end{equation}
+
+$R^2$ presents the prediction accuracy as a single figure, whereas Diebold-Mariano allows for pairwise comparison of different models. Diebold-Mariano value is calculated as \par
+
+\begin{equation}
+\label{eq:Diebold-Mariano}
+\begin{split}
+ d_{12, t} 			& = \ \frac{1}{N_{t}}  \sum^N_{i=1}((r_{i, t} - \hat r_{i, t, 1})^2 - (r_{i, t} - \hat r_{i, t, 2})^2) \\
+\overline{d}_{12} 	& = \ \frac{1}{T} \sum^T_{t=1} d_{12, t} \\
+DM_{12} 			& = \ \frac{\overline{d}_{12}}{\hat \sigma_{d_{12}}} \\
+\end{split}
+\end{equation}
+
+where $\hat r_{i, t, 1}$ is the return prediction of first model for company $i$ at time $t$ and $\hat r_{i, t, 1}$ is the return prediction of the second model  for company $i$ at time $t$. $N_t$ is number of observations in prediction period $t$. Therefore, $d_{12, t}$ is a time series of differences in average squared prediction errors between model $1$ and model $2$. $\overline{d}_{12}$ is the mean of $d_{12, t}$ and $\hat \sigma_{d_{12}}$ is the Newey and West (source) standard error of $d_{12, t}$. Diebold-Mariano test allows us to estimate statistical significance of the prediction accuracy of two models. Under assumption that the there does not exists difference in prediction accuracy between models Diebold-Mariano test statistic follows norma distribution with mean of $0$ and standard deviation of $1$, $DM \sim \mathcal{N}(0,\, 1)$. The significance of the difference is reported both for traditional $5\%$ level as well as for 3-way comparisons with Bonferroni adjustment. \par
+
+In the spirit of Lewellen \citeyear{Lewellen2015} expected returns are also estimated by regressing realized returns with the expected returns. This regression follows \par
+
+\begin{equation}
+\label{eq:realizedRegression}
+r_{i, t} = \alpha + \beta_1 \hat r_{i, t}
+\end{equation}
+
+where $r_{i, t}$ is the realized return of company $i$ at time $t$ and $\hat r_{i, t}$ is the expected return of corresponding model for company $i$ at time $t$. For these regressions betas, $t$-statistics for betas and $R^2$ values will be reported. Ideally the beta coefficient or the slope for the predicted return should be 1 and highly significant. Magnitude of the beta coefficients can provide information of possible over or undershooting of the models. \par
 
 \subsection{Variable importance} \label{VariableImportance}
 
@@ -551,7 +565,7 @@ Since linear regression does not require any hyperparameter optimization there i
 
 \section{Empirical results on Nordic equities}
 
-Performance of the machine learning models will be evaluated from two aspects. First profitability of the models will be evaluated by investigating performance of univariate expected return sort portfolios. Construction of these portfolios is explained in more detail in section \ref{Methodology}. Second aspect that is examined is the prediction accuracy of the machine learning models. Prediction accuracy is evaluated by out-out sample $R^2$. Additionally, in the spirit of Lewellen \citeyear{lewellen2015} relationship between expected and realized excess returns are examined by regressing the realized excess returns with the individual stock level predicted returns. Finally, the variable importance for different methods are calculated to see effect of each explanatory variable to the prediction accuracy of the model. Process to define variable importance is described in section \ref{VariableImportance}. \par
+Performance of the machine learning models will be evaluated from two aspects. First profitability of the models will be evaluated by investigating performance of univariate expected return sort portfolios. Construction of these portfolios is explained in more detail in section \ref{Methodology}. Second aspect that is examined is the prediction accuracy of the machine learning models. Prediction accuracy is evaluated by out-out sample $R^2$. Additionally, in the spirit of Lewellen \citeyear{Lewellen2015} relationship between expected and realized excess returns are examined by regressing the realized excess returns with the individual stock level predicted returns. Finally, the variable importance for different methods are calculated to see effect of each explanatory variable to the prediction accuracy of the model. Process to define variable importance is described in section \ref{VariableImportance}. \par
 
 \subsection{Benchmark factor performance}\label{BenchmarkFactorPerformance}
 
@@ -638,7 +652,7 @@ Panel B of table \ref{table:PredictionAccuracy} presents the pairwise Diebold-Ma
 
 Discuss the results.
 
-Next the prediction accuracy is examined by following approach of Lewellen \citeyear{lewellen2015} by regressing the realized excess returns by the return predictions from different models. Table \ref{table:expRetRegressions} presents the summary statistics for these regressions. Left side of the table presents the univariate properties of expected returns and the right side of the table presents the regression statistics. Comparing univariate properties of the expected returns from table \ref{table:expRetRegressions} to descriptive statistics in table \ref{table:DescriptiveStatistics} shows that the mean expected return is really close to actual realized mean excess return for neural network and random forest model. Both mean expected and realized return are calculated as time series average of cross-sectional means. Linear model on the other hand seems to predict larger returns on average than what is actually realized. Another remark from the table \ref{table:expRetRegressions} is that the standard deviation for the return predictions produced by the linear model and neural network model is higher than the standard deviation of the realized excess returns. This indicates that the variation in expected returns from these models is larger than the variation in realized excess returns. \par
+Next the prediction accuracy is examined by following approach of Lewellen \citeyear{Lewellen2015} by regressing the realized excess returns by the return predictions from different models. Table \ref{table:expRetRegressions} presents the summary statistics for these regressions. Left side of the table presents the univariate properties of expected returns and the right side of the table presents the regression statistics. Comparing univariate properties of the expected returns from table \ref{table:expRetRegressions} to descriptive statistics in table \ref{table:DescriptiveStatistics} shows that the mean expected return is really close to actual realized mean excess return for neural network and random forest model. Both mean expected and realized return are calculated as time series average of cross-sectional means. Linear model on the other hand seems to predict larger returns on average than what is actually realized. Another remark from the table \ref{table:expRetRegressions} is that the standard deviation for the return predictions produced by the linear model and neural network model is higher than the standard deviation of the realized excess returns. This indicates that the variation in expected returns from these models is larger than the variation in realized excess returns. \par
 
 \begin{table}[h]
 \small

@@ -79,8 +79,8 @@ data[, `:=` (NN.EXP.RET = NULL, NN1.EXP.RET = NULL, NN2.EXP.RET = NULL,
 
 neural_network <- function(dt, grid, date_index, independend_variables) {
   callback_1 <- callback_early_stopping(monitor = 'val_loss', patience = 5)
-  #callback_2 <- callback_reduce_lr_on_plateau(monitor = 'val_loss', factor = 0.2,
-  #                            patience = 2)
+  #callback_2 <- callback_reduce_lr_on_plateau(monitor = 'val_loss', factor = 0.5,
+  #                            patience = 1)
   callback_3 <- callback_learning_rate_scheduler(scheduler)
   
   #csv_logger_1 <- callback_csv_logger("model_1_logs.csv", append = T)
@@ -97,11 +97,11 @@ neural_network <- function(dt, grid, date_index, independend_variables) {
   
   model_1 %>%
         layer_batch_normalization() %>%
-        layer_dense(units = 12, activation = 'relu',
+        layer_dense(units = 10, activation = 'relu',
                     kernel_initializer = initializer_random_normal(seed = 10),
                     bias_initializer = initializer_constant(0.0)) %>%
         layer_batch_normalization() %>%
-        layer_dense(units = 6, activation = 'relu',
+        layer_dense(units = 5, activation = 'relu',
                     kernel_initializer = initializer_random_normal(seed = 20),
                     bias_initializer = initializer_constant(0.0)) %>%
         layer_batch_normalization() %>%
@@ -110,11 +110,11 @@ neural_network <- function(dt, grid, date_index, independend_variables) {
                     bias_initializer = initializer_constant(0.0))
   model_2 %>%
         layer_batch_normalization() %>%
-        layer_dense(units = 12, activation = 'relu',
+        layer_dense(units = 10, activation = 'relu',
                     kernel_initializer = initializer_random_normal(seed = 11),
                     bias_initializer = initializer_constant(0.0)) %>%
         layer_batch_normalization() %>%
-        layer_dense(units = 6, activation = 'relu',
+        layer_dense(units = 5, activation = 'relu',
                     kernel_initializer = initializer_random_normal(seed = 21),
                     bias_initializer = initializer_constant(0.0)) %>%
         layer_batch_normalization() %>%
@@ -123,11 +123,11 @@ neural_network <- function(dt, grid, date_index, independend_variables) {
                     bias_initializer = initializer_constant(0.0))
   model_3 %>%
         layer_batch_normalization() %>%
-        layer_dense(units = 12, activation = 'relu',
+        layer_dense(units = 10, activation = 'relu',
                     kernel_initializer = initializer_random_normal(seed = 12),
                     bias_initializer = initializer_constant(0.0)) %>%
         layer_batch_normalization() %>%
-        layer_dense(units = 6, activation = 'relu',
+        layer_dense(units = 5, activation = 'relu',
                     kernel_initializer = initializer_random_normal(seed = 22),
                     bias_initializer = initializer_constant(0.0)) %>%
         layer_batch_normalization() %>%
@@ -136,11 +136,11 @@ neural_network <- function(dt, grid, date_index, independend_variables) {
                     bias_initializer = initializer_constant(0.0))
   model_4 %>%
         layer_batch_normalization() %>%
-        layer_dense(units = 12, activation = 'relu',
+        layer_dense(units = 10, activation = 'relu',
                     kernel_initializer = initializer_random_normal(seed = 13),
                     bias_initializer = initializer_constant(0.0)) %>%
         layer_batch_normalization() %>%
-        layer_dense(units = 6, activation = 'relu',
+        layer_dense(units = 5, activation = 'relu',
                     kernel_initializer = initializer_random_normal(seed = 23),
                     bias_initializer = initializer_constant(0.0)) %>%
         layer_batch_normalization() %>%
@@ -149,11 +149,11 @@ neural_network <- function(dt, grid, date_index, independend_variables) {
                     bias_initializer = initializer_constant(0.0))
   model_5 %>%
         layer_batch_normalization() %>%
-        layer_dense(units = 12, activation = 'relu',
+        layer_dense(units = 10, activation = 'relu',
                     kernel_initializer = initializer_random_normal(seed = 14),
                     bias_initializer = initializer_constant(0.0)) %>%
         layer_batch_normalization() %>%
-        layer_dense(units = 6, activation = 'relu',
+        layer_dense(units = 5, activation = 'relu',
                     kernel_initializer = initializer_random_normal(seed = 24),
                     bias_initializer = initializer_constant(0.0)) %>%
         layer_batch_normalization() %>%
