@@ -48,7 +48,7 @@ factor <- function(dt, variable, name, labels, quantiles) {
   setnames(dt, "temp", name)
   return(dt)
 }
-data2 <- factor(data2[Date > as.POSIXct("1994-7-31", tz = "UTC") &
+data2 <- factor(data2[Date >= as.POSIXct("1994-7-31", tz = "UTC") &
                       Date < as.POSIXct("2022-12-30", tz = "UTC")],
                 "FM.EXP.RET", "FM.POSITION", c("FM.Low", "FM.2", "FM.3", "FM.4",
                  "FM.5", "FM.6", "FM.7", "FM.8", "FM.9", "FM.High"), quantiles)
@@ -152,7 +152,7 @@ round <- colnames(portfolio_statistics[, -c("variable", "Portfolio", "parameter"
                                         "alternative", "method", "data.name")])
 portfolio_statistics[, (round) := round(.SD, 4), .SDcols = round]
 
-portfolio_statistics[variable == "VW.RET" & substr(Portfolio, 1, 2) == "NN"]
+portfolio_statistics[variable == "VW.RET" & substr(Portfolio, 1, 2) == "FM"]
 ```
 
 ```{r}
@@ -386,29 +386,33 @@ turnover_long[, PORT.RET := weighted.mean(USD.RET, WEIGHT, na.rm = T),
               by = c("Date", "Portfolio", "TYPE")]
 turnover_long[, SCALED.RET := (USD.RET + 1)/(PORT.RET + 1)]
 turnover_long[, SCALED.WEIGHT := WEIGHT * SCALED.RET]
+
 # Create data.table with all possible date/id combinations
-combinations <- turnover_long[, CJ(Date = Date, Company = Company, unique=TRUE)]
+combinations <- turnover_long[, CJ(Date = Date, Company = Company, unique = TRUE)]
+
 turnover_long <- merge(combinations, turnover_long, all.x = T, by = c("Date", "Company"))
 turnover_long[is.na(WEIGHT), WEIGHT := 0]
 turnover_long[, BOP := shift(SCALED.WEIGHT, 1), by = c("Company", "Portfolio", "TYPE")]
 turnover_long[, BOP := ifelse(is.na(BOP), 0, BOP)]
 turnover_long[, CHANGE := WEIGHT - BOP]
-turnover_long <- turnover_long[!is.na(Portfolio), .(0.5 * sum(abs(CHANGE))),
+turnover_long <- turnover_long[!is.na(Portfolio), .(sum(abs(CHANGE))),
                                by = c("Date", "Portfolio", "TYPE")]
 turnover_long[, temp := paste("$", substr(Portfolio, 1, 2), "_{",
                               substr(Portfolio, 4, length(Portfolio)), "} \\",
                               TYPE, "$", sep = " ")]
+turnover_long[, Year := ifelse(month(Date) >= 7, year(Date), year(Date) - 1)]
+
+
+turnover_long_plot <- turnover_long[, mean(V1), by = c("Year", "temp")]
 
 tikz(file = "Latex/R_graphs/turnover.tex", width = 6, height = 5)
-plot8 <- ggplot(turnover_long, aes(x = Date, y = V1)) + geom_bar(stat="identity") +
+plot8 <- ggplot(turnover_long_plot, aes(x = Year, y = V1)) + geom_line() +
   labs(y = "Turnover") + facet_wrap(~temp, scales = "free", ncol = 2) +
   theme(axis.title = element_blank(), text = element_text(size = 9))
 print(plot8)
 dev.off()
 
-ggplot(turnover_long, aes(x = Date, y = V1)) + geom_bar(stat="identity") +
-  labs(y = "Turnover") + facet_wrap(~temp, scales = "free", ncol = 2) +
-  theme(axis.title = element_blank(), text = element_text(size = 9))
+plot8
 
 turnover <- turnover_long[, .(TO = round(mean(V1), 4)), by = c("Portfolio", "TYPE")]
 ```
@@ -418,7 +422,7 @@ data3 <- melt(data2[, .(Date, Company, EXC.USD.RET, RF.EXP.RET, FM.EXP.RET, NN.E
               id.vars = c("Date", "Company", "EXC.USD.RET"), variable.name = "Method",
               value.name = "EXP.RET")
 data3[, print(list(.BY, summary(lm(data = .SD, formula = EXC.USD.RET ~ EXP.RET))),
-              digits = 1), by = Method]
+              digits = 5), by = Method]
 
 univariate <- data3[, .(Mean = mean(EXP.RET), SD = sd(EXP.RET)),
                     by = c("Method", "Date")]
