@@ -196,6 +196,33 @@ Basu, S.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Bhandari%
+}{%
+Bhandari%
+}{%
+{\protect \APACyear {1988}}%
+}]{%
+Bhandari1988}
+\APACinsertmetastar {%
+Bhandari1988}%
+\begin{APACrefauthors}%
+Bhandari, L\BPBI C.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1988}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Debt/Equity Ratio and Expected Common Stock Returns:
+  Empirical Evidence} {Debt/equity ratio and expected common stock returns:
+  Empirical evidence}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Journal of Finance}{43}{2}{507--528}.
+\newblock
+\begin{APACrefURL} [{2024-03-12}]\url{http://www.jstor.org/stable/2328473}
+  \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Bondt%
 \ \BBA {} Thaler%
 }{%
@@ -1067,6 +1094,34 @@ Lewellen, J.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Lintner%
+}{%
+Lintner%
+}{%
+{\protect \APACyear {1965}}%
+}]{%
+Lintner1965}
+\APACinsertmetastar {%
+Lintner1965}%
+\begin{APACrefauthors}%
+Lintner, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1965}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {The Valuation of Risk Assets and the Selection of Risky
+  Investments in Stock Portfolios and Capital Budgets} {The valuation of risk
+  assets and the selection of risky investments in stock portfolios and capital
+  budgets}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Review of Economics and Statistics}{47}{1}{13--37}.
+\newblock
+\begin{APACrefURL} [{2024-03-12}]\url{http://www.jstor.org/stable/1924119}
+  \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Moskowitz%
 \ \BBA {} Grinblatt%
 }{%
@@ -1153,6 +1208,33 @@ Palazzo, B.%
 \newblock
 \begin{APACrefDOI} \doi{https://doi.org/10.1016/j.jfineco.2011.12.009}
   \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Sharpe%
+}{%
+Sharpe%
+}{%
+{\protect \APACyear {1964}}%
+}]{%
+Sharpe1964}
+\APACinsertmetastar {%
+Sharpe1964}%
+\begin{APACrefauthors}%
+Sharpe, W\BPBI F.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1964}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Capital Asset Prices: A Theory of Market Equilibrium
+  under Conditions of Risk} {Capital asset prices: A theory of market
+  equilibrium under conditions of risk}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{The Journal of Finance}{19}{3}{425--442}.
+\newblock
+\begin{APACrefURL} [{2024-03-12}]\url{http://www.jstor.org/stable/2977928}
+  \end{APACrefURL}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%

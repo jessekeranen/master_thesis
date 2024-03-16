@@ -152,7 +152,7 @@ round <- colnames(portfolio_statistics[, -c("variable", "Portfolio", "parameter"
                                         "alternative", "method", "data.name")])
 portfolio_statistics[, (round) := round(.SD, 4), .SDcols = round]
 
-portfolio_statistics[variable == "VW.RET" & substr(Portfolio, 1, 2) == "FM"]
+portfolio_statistics[variable == "VW.RET" & substr(Portfolio, 1, 2) == "RF"]
 ```
 
 ```{r}
@@ -190,6 +190,12 @@ load_exp_ret <- function(method, variable) {
 setorder(data, Date)
 data[, MEAN.RET := shift(rollapplyr(EXC.USD.RET, .SD[, .N], mean, partial = T,
                                     na.rm = T), fill = 0), by = Company]
+data[, CROSS.SECT.MEAN := 0.007, by = Date]
+
+test <- data[!is.na(RF.EXP.RET), 
+        .(R2OOS = 1 - (sum((EXC.USD.RET - CROSS.SECT.MEAN)^2) / (sum(EXC.USD.RET^2))),
+         TRAD.R2OOS = 1 - (sum((EXC.USD.RET - CROSS.SECT.MEAN)^2) / 
+                             (sum((EXC.USD.RET - MEAN.RET)^2))))]
 ```
 
 ```{r}
@@ -373,15 +379,19 @@ FF_stats <- factors_wide[, {reg <- summary(lm(RET ~ RMRF + SMB + HML + RMW +
 ```{r}
 turnover_long <- copy(data2)
 turnover_long <- melt(turnover_long[, -c("pf.size", "year", "EXC.USD.RET",
-                                    "FM.EXP.RET", "NN.EXP.RET", "RF.EXP.RET")],
+                           "FM.EXP.RET", "NN.EXP.RET", "RF.EXP.RET")],
                       id.vars = c("Date", "Company", "USD.RET", "L.USD.MV"),
                       value.name = "Portfolio", variable.name = "Method")
 
-turnover_long <- turnover_long[Portfolio %in% c("FM.High", "RF.High", "NN.High")]
+turnover_long <- turnover_long[Portfolio %in% c("FM.High", "RF.High", "NN.High",
+                                                "FM.Low", "RF.Low", "NN.Low")]
 turnover_long[, `:=` (V.WEIGHT = L.USD.MV / sum(L.USD.MV), E.WEIGHT = 1/.N),
               by = c("Date", "Portfolio")]
 turnover_long <- melt(turnover_long, measure.vars = c("V.WEIGHT", "E.WEIGHT"),
                       value.name = "WEIGHT", variable.name = "TYPE")
+turnover_long[, (c("Method", "Position")) := tstrsplit(Portfolio, ".", fixed = TRUE)]
+turnover_long[, USD.RET := ifelse(Position == "High", USD.RET, USD.RET * -1)]
+
 turnover_long[, PORT.RET := weighted.mean(USD.RET, WEIGHT, na.rm = T),
               by = c("Date", "Portfolio", "TYPE")]
 turnover_long[, SCALED.RET := (USD.RET + 1)/(PORT.RET + 1)]
@@ -395,13 +405,11 @@ turnover_long[is.na(WEIGHT), WEIGHT := 0]
 turnover_long[, BOP := shift(SCALED.WEIGHT, 1), by = c("Company", "Portfolio", "TYPE")]
 turnover_long[, BOP := ifelse(is.na(BOP), 0, BOP)]
 turnover_long[, CHANGE := WEIGHT - BOP]
-turnover_long <- turnover_long[!is.na(Portfolio), .(sum(abs(CHANGE))),
-                               by = c("Date", "Portfolio", "TYPE")]
-turnover_long[, temp := paste("$", substr(Portfolio, 1, 2), "_{",
-                              substr(Portfolio, 4, length(Portfolio)), "} \\",
-                              TYPE, "$", sep = " ")]
-turnover_long[, Year := ifelse(month(Date) >= 7, year(Date), year(Date) - 1)]
 
+turnover_long <- turnover_long[!is.na(Portfolio), .(sum(abs(CHANGE))),
+                               by = c("Date", "Method", "TYPE")]
+turnover_long[, temp := paste("$", Method, "_{", TYPE, "}", "$", sep = " ")]
+turnover_long[, Year := ifelse(month(Date) >= 7, year(Date), year(Date) - 1)]
 
 turnover_long_plot <- turnover_long[, mean(V1), by = c("Year", "temp")]
 
@@ -414,7 +422,7 @@ dev.off()
 
 plot8
 
-turnover <- turnover_long[, .(TO = round(mean(V1), 4)), by = c("Portfolio", "TYPE")]
+turnover <- turnover_long[, .(TO = round(mean(V1), 4)), by = c("Method", "TYPE")]
 ```
 
 ```{r}
