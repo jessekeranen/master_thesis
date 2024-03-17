@@ -152,7 +152,7 @@ round <- colnames(portfolio_statistics[, -c("variable", "Portfolio", "parameter"
                                         "alternative", "method", "data.name")])
 portfolio_statistics[, (round) := round(.SD, 4), .SDcols = round]
 
-portfolio_statistics[variable == "VW.RET" & substr(Portfolio, 1, 2) == "RF"]
+portfolio_statistics[variable == "VW.RET" & substr(Portfolio, 1, 2) == "NN"]
 ```
 
 ```{r}
@@ -190,12 +190,6 @@ load_exp_ret <- function(method, variable) {
 setorder(data, Date)
 data[, MEAN.RET := shift(rollapplyr(EXC.USD.RET, .SD[, .N], mean, partial = T,
                                     na.rm = T), fill = 0), by = Company]
-data[, CROSS.SECT.MEAN := 0.007, by = Date]
-
-test <- data[!is.na(RF.EXP.RET), 
-        .(R2OOS = 1 - (sum((EXC.USD.RET - CROSS.SECT.MEAN)^2) / (sum(EXC.USD.RET^2))),
-         TRAD.R2OOS = 1 - (sum((EXC.USD.RET - CROSS.SECT.MEAN)^2) / 
-                             (sum((EXC.USD.RET - MEAN.RET)^2))))]
 ```
 
 ```{r}
@@ -287,7 +281,8 @@ r2_ts[, R2.Method := ifelse(R2.Method == "R2OOS", "$R^2_{oos}$",
 r2_ts[, temp := paste(Method, R2.Method, sep = " ")]
 
 tikz(file = "Latex/R_graphs/R2_ts.tex", width = 6, height = 5)
-plot5 <- ggplot(r2_ts, aes(Date, R2)) + geom_line() + facet_wrap(~temp, ncol = 2) +
+plot5 <- ggplot(r2_ts, aes(Date, R2)) + geom_line() + 
+  facet_wrap(~temp, ncol = 2, scales = "free_x") +
   theme(axis.title = element_blank(), text = element_text(size = 9))
 print(plot5)
 dev.off()

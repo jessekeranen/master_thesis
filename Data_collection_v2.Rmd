@@ -32,11 +32,20 @@ To calculate excess returns we need a risk free interest rate. Since our returns
 RF <- as.data.table(read.csv("Data/F-F_Research_Data_Factors.csv"))
 RF[, `:=` (year = as.numeric(substr(Date, 1, 4)), 
            month = as.numeric(substr(Date, 5, 6)), RF = as.numeric(RF) / 100)]
+
+RF_plot <- copy(RF)
+RF_plot[, Date := as.Date(paste(year, month, "01", sep = "-"))]
+
+tikz(file = "Latex/R_graphs/rf_ts.tex", width = 6, height = 3.5)
+plot_rf <- ggplot(RF_plot[Date > as.Date("1989-12-31")], aes(Date, RF)) + geom_line() +
+  theme(axis.title = element_blank(), text = element_text(size = 9))
+print(plot_rf)
+dev.off()
 ```
 
 # FX rates
 
-Dataset contains companies from multiple countries with different currencies. To be able to pool the data return's and market values have to be comparable between companies from different countries. Daily fx rates are aldo obtained from Reuters Datastream.
+Dataset contains companies from multiple countries with different currencies. To be able to pool the data return's and market values have to be comparable between companies from different countries. Daily fx rates are also obtained from Reuters Datastream.
 ```{r}
 fx_rates <- data.table(read_excel("Data/w02/FX_rates.xlsx", .name_repair = "minimal"))
 colnames(fx_rates) <- as.character(fx_rates[1, ])
@@ -45,6 +54,19 @@ fx_rates[, `:=` (Code = NULL, Date = as.POSIXct(Date, tz = "UTC"))]
 
 fx_rates <- melt(fx_rates, id.vars = "Date", value.name = "FX", variable.name = "PCUR")
 fx_rates <- fx_rates[, `:=` (PCUR = as.character(PCUR), FX = as.numeric(FX))]
+
+fx_rates_plot <- copy(fx_rates)
+fx_rates_plot[, `:=` (Month = month(Date), Year = year(Date), Day = day(Date))]
+fx_rates_plot <- fx_rates_plot[fx_rates_plot[, .I[which.max(Day)],
+                                     by = c("Year", "Month", "PCUR")]$V1]
+
+
+tikz(file = "Latex/R_graphs/fx_rates.tex", width = 6, height = 3.5)
+plot_fx <- ggplot(fx_rates_plot, aes(Date, FX, color = PCUR)) + geom_line() + scale_y_log10() +
+  theme(axis.title = element_blank(), text = element_text(size = 9), 
+        legend.position = "bottom")
+print(plot_fx)
+dev.off()
 ```
 
 # Static data

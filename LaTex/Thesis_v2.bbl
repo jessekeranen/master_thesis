@@ -252,6 +252,36 @@ Bondt, W\BPBI F\BPBI M\BPBI D.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Breiman%
+}{%
+Breiman%
+}{%
+{\protect \APACyear {2001}}%
+}]{%
+Breiman20015}
+\APACinsertmetastar {%
+Breiman20015}%
+\begin{APACrefauthors}%
+Breiman, L.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2001}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Random forests} {Random forests}{\BBCQ}\ [Article].
+\newblock
+\APACjournalVolNumPages{Machine Learning}{45}{1}{5 – 32}.
+\newblock
+\begin{APACrefURL}
+  \url{https://www.scopus.com/inward/record.uri?eid=2-s2.0-0035478854&doi=10.1023\%2fA\%3a1010933404324&partnerID=40&md5=4b9f43897146098c0df3a2af232cf2f4}
+  \end{APACrefURL}
+\newblock
+\APACrefnote{Cited by: 78308}
+\newblock
+\begin{APACrefDOI} \doi{10.1023/A:1010933404324} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Carhart%
 }{%
 Carhart%
@@ -850,6 +880,33 @@ Haugen, R\BPBI A.%
 \newblock
 \begin{APACrefDOI} \doi{https://doi.org/10.1016/0304-405X(95)00868-F}
   \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Ho%
+}{%
+Ho%
+}{%
+{\protect \APACyear {1995}}%
+}]{%
+Ho1995}
+\APACinsertmetastar {%
+Ho1995}%
+\begin{APACrefauthors}%
+Ho, T\BPBI K.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1995}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Random decision forests} {Random decision
+  forests}.{\BBCQ}
+\newblock
+\BIn{} \APACrefbtitle {Proceedings of 3rd International Conference on Document
+  Analysis and Recognition} {Proceedings of 3rd international conference on
+  document analysis and recognition}\ (\BVOL~1, \BPG~278-282 vol.1).
+\newblock
+\begin{APACrefDOI} \doi{10.1109/ICDAR.1995.598994} \end{APACrefDOI}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
