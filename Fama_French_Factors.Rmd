@@ -18,10 +18,14 @@ library(forecast)
 library(gridExtra)
 ```
 
-In this file I will construct Fama French five factor model factors augmented with momentum factor. Later these factors will be used to test is machine learning portfolios provide alpha that can not be explained by established Fama French factors. factors will be calculated from exactly the same data set as is used in other parts of the study. Therefore, we start by loading the dataset constructed in Data_collection.Rmd file.
+# Benchmark factors
+
+In this file I will construct Fama French five factor model factors augmented with momentum factor. Later these factors will be used to test if machine learning portfolios provide alpha that can not be explained by established Fama French factors. Factors will be calculated from exactly the same dataset as is used in other parts of the study. Therefore, we start by loading the dataset constructed in Data_collection.Rmd file. 
 ```{r}
 load(file = "Data/data_w_microcap.Rdata")
 ```
+
+# Firm characteristics
 
 Company characteristics calculation. We need to perform some calculations with raw variables we have downloaded from Datastream. Investment variable will be defined as annual change in total assets (WC02999). Book equity is common equity (WC03501) plus deferred taxes (WC03263). Book-to-market value will be then calculated by dividing book value by market value from last December. Profitability is defined as net income before extra items/preferred dividends (WC01551) divided by book equity. Momentum is defined as cumulated return from t-12 to t-2.
 ```{r}
@@ -33,10 +37,12 @@ data[, BE := WC03501 + WC03263, by = Company] # Book equity
 data[, BEME := BE / (DEC.MV * 1000) , by = Company] # Book to Market equity
 data[, OP := WC01551 / BE, by = Company] # Profitability
 data[, MOM12 := shift(USD.RI, 2, type = "lag")/shift(USD.RI, 12, type = "lag") - 1,
-   by = Company] # Momentum
+     by = Company] # Momentum
 ```
 
-Next we want to allocate the stocks in our dataset to portfolios based on their size. We follow Fama and French (1993) and use two size portfolios. Since on average market value of Nordic stocks is much smaller than in the dataset of inital Fama French (1993) study, we follow Fama and French (2008 confirm) and consider following logic for size allocation. First for each day stocks will be sorted based on their market value in decreasing order. Then we will start assigning stocks to "Big" portfolio until combined market value of stocks in "Big portfolio reaches 90% of the whole market capitalization of the dataset in that given date. Rest of the companies are considered to be small.
+# Size allocation
+
+Next we want to allocate the stocks in our dataset to portfolios based on their size. We follow Fama and French (1993) and use two size portfolios. Since on average market value of Nordic stocks is much smaller than in the dataset of inital Fama French (1993) study, we follow Fama and French (2008) and consider following logic for size allocation. First for each month stocks will be sorted based on their market value in decreasing order. Then we will start assigning stocks to "Big" portfolio until combined market value of stocks in "Big portfolio reaches 90% of the whole market capitalization of the dataset in that given date. Rest of the companies are considered to be small.
 ```{r}
 quantiles <- c(0, 0.9, 1)
 labels <- c("Big", "Small")
@@ -45,42 +51,58 @@ setorder(data, Date, -L.USD.MV) # Order dataset first by date and then by market
 data[, hcol := ifelse(month >= 7, year, year-1)]
 helpdt <- data[month == 7 & !is.na(L.USD.MV)]
 
+# Cumulative market value
 helpdt[, aggregated_weight := cumsum(L.USD.MV)/sum(L.USD.MV), by = year]
+# Allocate stocks to size portfolios
 helpdt[, temp := cut(aggregated_weight, breaks = quantiles, labels = labels)]
 helpdt <- helpdt[, .(year, Company, temp, aggregated_weight)]
-  
 setnames(helpdt, "temp", "pf.size")
+
+# Merge July allocations to rest of the months
 data <- merge(data, helpdt, by.x = c("Company", "hcol"), by.y = c("Company", "year"), all.x = T)
 
+# Box plot of the sizes of companies in different size portfolios
 ggplot(na.omit(data[Date %in% c("1996-07-31", "2004-07-30", "2013-07-31", "2022-07-29")]),
        aes(as.factor(pf.size), L.USD.MV)) + geom_boxplot() + 
         facet_wrap(~lubridate::year(Date), scales = "free") + scale_y_log10()
 
-ggplot(data[pf.size == "Small" & month == 7, .SD[which.max(L.USD.MV), .(L.USD.MV, pf.size)], by = Date], aes(Date, L.USD.MV)) + geom_line()
+# Time series of highest market value in small portfolio
+ggplot(data[pf.size == "Small" & month == 7, .SD[which.max(L.USD.MV), 
+            .(L.USD.MV, pf.size)], by = Date], aes(Date, L.USD.MV)) + geom_line()
 ```
+# Momentum allocation
 
-Next we want to allocate stock again to portfolio based on other variables and independently of the size allocation. Slightly different names will be used for portfolio formed based on different variables, but the breakpoints will be the same for each of the variables. We follow Fama and French (1993, 2015) and assign stock to "low" portfolio is its value in corresponding variable is below 30th percentile breakpoint and to "high" portfolio if the value is above 70th percentile breakpoint. All stocks between are considered neutral.
+Next we want to allocate stocks again to portfolios based on other variables and independently of the size allocation. Slightly different names will be used for portfolio formed based on different variables, but the breakpoints will be the same for each of the variables. We follow Fama and French (1993, 2015) and assign stock to "low" portfolio is its value in corresponding variable is below 30th percentile breakpoint and to "high" portfolio if the value is above 70th percentile breakpoint. All stocks between are considered neutral.
 
-For momentum we follow slightly different process than for the other factors. First, momentum portfolio will be re-allocated monthly. Second difference is that when we calculate the long-short returns for the momentum factor we use equal weighted returns of the underlying stocks. Momentum factor is updated monthlty.
+For momentum we follow slightly different process than for the other factors. The difference is that, momentum portfolio will be re-allocated monthly. 
 ```{r}
+# Momentum portfolio names
 labels <- c("Loser", "Neutral_mom", "Winner")
 quantiles <- c(0.3, 0.7)
-data[year > 1991, pf.mom := cut(MOM12, breaks = c(-Inf, quantile(.SD[pf.size == "Big", MOM12], quantiles, 
-                                                      na.rm = T), Inf), labels = labels, na.rm = T), by = Date]
+data[year > 1991, pf.mom := cut(MOM12, breaks = c(-Inf, quantile(.SD[pf.size == "Big", MOM12], 
+                            quantiles, na.rm = T), Inf), labels = labels, na.rm = T), by = Date]
 ```
 
 Let's try to plot the data to see if the distribution worked.
 ```{r}
 ggplot(na.omit(data[Date %in% c("1996-07-31", "2004-07-30", "2013-07-31", "2021-07-30")]),
-       aes(as.factor(pf.mom), MOM12)) + geom_boxplot() + facet_wrap(~lubridate::year(Date), scales = "free") + scale_y_log10()
+       aes(as.factor(pf.mom), MOM12)) + geom_boxplot() + 
+  facet_wrap(~lubridate::year(Date), scales = "free") + scale_y_log10()
 ```
+# Value, investment and profitability allocation
 
-
-Next we will repeat the process for the rest of the variables, but re-allocating only annually. Re-allocation is done each July. For each of the variables total six portfolio are formed via two fold allocation. For all variables breakpoints when defining breakpoints for certain variable for certain date only "Big" companies are considered. Then these breakpoints calculated from "Big" company data will be used to allocate all stocks to portfolios. 
+Next we will repeat the process for the rest of the variables, but re-allocating is done only annually. Re-allocation is done each July. For each of the variables total six portfolio are formed via two fold allocation. For all variables breakpoints when defining breakpoints for certain variable for certain month only "Big" companies are considered. Then these breakpoints calculated from "Big" company data will be used to allocate all stocks to portfolios. Allocation is done using "factor" function which takes five arguments:
+*dt = dataset
+*variable = variable based on which allocation is done
+*name = column name for where allocation is indicated
+*labels = portfolio names
+*quantiles = quantiles for breakpoints
+Function return dataset given in "dt" attribute, where additional column is added indicating the portfolio allocation for variable given in "variable" attribute. Finally 2x3 portfolios allocations are formed by merging previously described allocations with size allocation.
 ```{r}
 factor <- function(dt, variable, name, labels, quantiles) {
   helpdt <- dt[month==7 & year > 1991, .(temp = cut(.SD[, get(variable)], breaks = 
-                  c(-Inf, quantile(.SD[pf.size =="Big", get(variable)], quantiles, na.rm = T), Inf), labels = labels), Company), by = year]
+                  c(-Inf, quantile(.SD[pf.size =="Big", get(variable)],
+                quantiles, na.rm = T), Inf), labels = labels), Company), by = year]
   
   setnames(helpdt, "temp", name)
   # Merge the variable allocation back from July Y to June Y+1
@@ -88,29 +110,31 @@ factor <- function(dt, variable, name, labels, quantiles) {
   
   return(dt)
 }
-
 data <- factor(data, "BEME", "pf.bm", c("Low", "Neutral", "High"), quantiles)
 data <- factor(data, "OP", "pf.op", c("Weak", "Neutral_op", "Robust"), quantiles)
 data <- factor(data, "INV", "pf.inv", c("Conservative", "Neutral_inv", "Agressive"), quantiles)
 
 # Form the 2x3 portfolios combining size with one additional variable
-data[, Portfolio1 := paste0(pf.size,".",pf.bm)]
-data[, Portfolio2 := paste0(pf.size,".",pf.op)]
-data[, Portfolio3 := paste0(pf.size,".",pf.inv)]
-data[, Portfolio4 := paste0(pf.size,".",pf.mom)]
+data[, Portfolio1 := paste0(pf.size, ".", pf.bm)]
+data[, Portfolio2 := paste0(pf.size, ".", pf.op)]
+data[, Portfolio3 := paste0(pf.size, ".", pf.inv)]
+data[, Portfolio4 := paste0(pf.size, ".", pf.mom)]
 
-
-#data[, L.USD.MV := ifelse(L.USD.MV > quantile(L.USD.MV, 0.999, na.rm = T), 
-#                     quantile(L.USD.MV, 0.999, na.rm = T), L.MV), by = Date]
-
+# Time series of average INV values in differend INV portfolios
 ggplot(na.omit(data[lubridate::month(Date) == 7, .(INV = mean(INV)), by = c("Date", "pf.inv")]), 
        aes(Date, INV, color = pf.inv)) + geom_line()
 
+# Scatter plot of size/value values in 2016 July
 ggplot(na.omit(data[Date == as.POSIXct("2016-07-29", tz="UTC")]), 
        aes(L.USD.MV, BEME, color = Portfolio1)) + geom_point() + scale_y_log10() + scale_x_log10()
 ```
 
-Once stocks are allocated to the portfolios we can calculate portfolio returns for each portfolio. Except for momentum, portfolio returns are value weighted returns. 
+# Portfolio returns
+
+Once stocks are allocated to the portfolios we can calculate portfolio returns for each portfolio. For all portfolios portfolio returns are value weighted returns. Portfolio returns are calculated by calling "portfolioreturns" function which takes two arguments:
+*dt = dataset
+*portfolio = name of 2x3 portfolio allocation
+Function returns datatable with timeseries value weighted returns for all portfolios.
 ```{r}
 # Function for calculating portfolio returns
 portfolioreturns <- function(dt, portfolio){
@@ -123,11 +147,6 @@ portfolio_returns1 <- portfolioreturns(data, "Portfolio1")
 portfolio_returns2 <- portfolioreturns(data, "Portfolio2")
 portfolio_returns3 <- portfolioreturns(data, "Portfolio3")
 portfolio_returns4 <- portfolioreturns(data, "Portfolio4")
-
-# Equal weighted returns for momentum factor
-#portfolio_returns4 <- data[, .(USD.RET = mean(USD.RET, na.rm = T)),
-#                                    by = c("Date", "Portfolio4")]
-#portfolio_returns4 <- dcast(portfolio_returns4, ... ~ Portfolio4, value.var = "USD.RET")
 ```
 
 To have data in neat format all portfolio return data.tables are merged in to one big data.table.
@@ -136,34 +155,41 @@ portfolio_returns <- merge(portfolio_returns1, portfolio_returns2, by = "Date")
 portfolio_returns <- merge(portfolio_returns, portfolio_returns3, by = "Date")
 portfolio_returns <- merge(portfolio_returns, portfolio_returns4, by = "Date")
 
+# Replace NA with zero
 portfolio_returns[is.na(portfolio_returns)] <- 0
 ```
 
+# Factor returns
+
 Once portfolio return for each portfolio is calculated we can calculate actual long-short factor returns. Factors returns will be calculated by going short on "Low" portfolios and long on "High" portfolios. Since for each variable (excl. size) we have two "Low" and two "High" portfolio, the final "Low" return will be calculated as an average of the two "Low" portfolios and the "High" return as an average of the two "High" portfolios. For size there is total 24 portfolios. First size factor return will be calculated separately for each variable and then average of four size factor returns is calculated to obtain final size return.
 ```{r}
+# Risk free rate
 RF <- as.data.table(read_csv("Data/F-F_Research_Data_Factors.csv"))
-RF[, `:=` (year = as.numeric(substr(Date, 1, 4)), month = as.numeric(substr(Date, 5, 6)), RF = RF / 100)]
+RF[, `:=` (year = as.numeric(substr(Date, 1, 4)),
+           month = as.numeric(substr(Date, 5, 6)), RF = RF / 100)]
 
 # Market risk factor
-market_return <- data[!is.na(USD.RET) & !is.na(L.USD.MV), .(MKT.RET = weighted.mean(USD.RET, L.USD.MV)), by = "Date"]
+market_return <- data[!is.na(USD.RET) & !is.na(L.USD.MV),
+                      .(MKT.RET = weighted.mean(USD.RET, L.USD.MV)), by = "Date"]
 market_return[, `:=` (year = lubridate::year(Date), month = lubridate::month(Date))]
 market_return <- merge(market_return, RF[, .(year, month, RF)], by = c("year", "month"))
 RMRF_factor <- market_return[, .(Date, RMRF = MKT.RET-RF)]
 
 # Calculate factors from portfolios
 factors <- portfolio_returns[, .(Date, 
-          SMBbm = (Small.High + Small.Neutral + Small.Low)/3 - (Big.High + Big.Neutral + Big.Low)/3,
-          SMBop = (Small.Robust + Small.Neutral_op + Small.Weak)/3 - (Big.Robust + Big.Neutral_op +
-                                                                        Big.Weak)/3,
-          SMBinv = (Small.Conservative + Small.Neutral_inv + Small.Agressive)/3 - (Big.Conservative +
-                                                                    Big.Neutral_inv + Big.Agressive)/3,
-          SMBmom = (Small.Winner + Small.Neutral_mom + Small.Loser)/3 - (Big.Winner +
-                                                                    Big.Neutral_mom + Big.Loser)/3,
+          SMBbm = (Small.High + Small.Neutral + Small.Low)/3 - 
+            (Big.High + Big.Neutral + Big.Low)/3,
+          SMBop = (Small.Robust + Small.Neutral_op + Small.Weak)/3 -
+            (Big.Robust + Big.Neutral_op + Big.Weak)/3,
+          SMBinv = (Small.Conservative + Small.Neutral_inv + Small.Agressive)/3 - 
+            (Big.Conservative + Big.Neutral_inv + Big.Agressive)/3,
+          SMBmom = (Small.Winner + Small.Neutral_mom + Small.Loser)/3 - 
+            (Big.Winner + Big.Neutral_mom + Big.Loser)/3,
           HML = (Small.High + Big.High)/2 - (Small.Low + Big.Low)/2,
           RMW = (Small.Robust + Big.Robust)/2 - (Small.Weak + Big.Weak)/2,
-          CMA = (Small.Conservative + Big.Conservative)/2 - (Small.Agressive + Big.Agressive)/2,
-          MOM = (Small.Winner + Big.Winner)/2 - (Small.Loser + Big.Loser)/2)
-          ]
+          CMA = (Small.Conservative + Big.Conservative)/2 - 
+            (Small.Agressive + Big.Agressive)/2,
+          MOM = (Small.Winner + Big.Winner)/2 - (Small.Loser + Big.Loser)/2)]
 
 factors[, SMB := (SMBbm + SMBop + SMBinv + SMBmom)/4]
 
@@ -182,10 +208,14 @@ factors <- melt(factors_wide, id.vars = "Date", variable.name = "Factor", value.
 # Check the factor statistics
 min_max <- factors[, .(Min = min(USD.RET), Max = max(USD.RET)), by = Factor]
 factor_statistics <- factors[, t.test(USD.RET, ), by = Factor]
-factor_statistics[, Count := seq(.N), by = Factor][, Count := ifelse(Count == 1, "Lower Bound", "Upper Bound")]
+factor_statistics[, Count := seq(.N), by = Factor][, Count := ifelse(Count == 1,
+                                                  "Lower Bound", "Upper Bound")]
 factor_statistics <- dcast(factor_statistics, ... ~ Count, value.var = "conf.int")
 factor_statistics <- merge(factor_statistics, min_max, by = "Factor")
-round <- colnames(factor_statistics[, -c("Factor", "Parameter", "alternative", "method", "data.name")])
+
+# Round the statistics
+round <- colnames(factor_statistics[, -c("Factor", "Parameter", "alternative",
+                                         "method", "data.name")])
 factor_statistics[, (round) := round(.SD, 4), .SDcols = round]
 
 # Factor correlations
@@ -204,6 +234,7 @@ dev.off()
 plot
 ```
 
+Next the autocorrelation of the factor returns are plotted using ggAfc function.
 ```{r}
 tikz(file = "Latex/R_graphs/tes.tex", width = 6, height = 5)
 plot2 <- grid.arrange(factors_wide[, ggAcf(HML)] + 
@@ -228,31 +259,5 @@ dev.off()
 Final factor returns are again stored for later usage.
 ```{r}
 save(factors, file = "Data/factors.Rdata")
-```
-
-
-```{r}
-var <- "MOM"
-
-factors3 <- copy(factors)
-colnames(factors3)[3] <- "RET"
-hanauer <- as.data.table(read_csv("global_factor_premia_data.csv", show_col_types = F))
-hanauer <- hanauer[variable == var & market == "SWE"]
-factors3[, `:=` (Date = as.Date(Date), Factor = as.character(Factor))]
-factors3 <-factors3[Date >= "1992-07-01" & Factor == var]
-hanauer[, `:=` (Date = as.Date(Date), Factor = as.character(variable))]
-hanauer <- hanauer[Date >= "1992-07-01"]
-hanauer[, return := return / 100]
-
-hanauer <- merge(factors3, hanauer, by = c("Date", "Factor"))
-
-
-hanauer[, cor(return, RET)]
-
-
-hanauer <- melt(hanauer[, -c("market", "Factor", "variable")], id.vars = "Date")
-hanauer[, temp := cumprod(value + 1), by = variable]
-
-ggplot(hanauer, aes(Date, temp, color = variable)) + geom_line()
 ```
 

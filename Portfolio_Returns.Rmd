@@ -551,13 +551,19 @@ plot8
 turnover <- turnover_long[, .(TO = round(mean(V1), 4)), by = c("Method", "TYPE")]
 ```
 
+# Expected return regressions
+
+Next the relationship between expected and realized returns is evaluated by regressing realized excess returns by the stock level out-of-sample return predictions. Regression is run separetely for each method. In addition to regressions univariate properties of the expected returns are also saved to "univariate" datatable. Final univariate properties are timeseries averages of cross-sectional mean and standard deviations of expected returns for all models.
 ```{r}
+# Subset only data that is needed
 data3 <- melt(data2[, .(Date, Company, EXC.USD.RET, RF.EXP.RET, FM.EXP.RET, NN.EXP.RET)],
               id.vars = c("Date", "Company", "EXC.USD.RET"), variable.name = "Method",
               value.name = "EXP.RET")
+# Run the regressions
 data3[, print(list(.BY, summary(lm(data = .SD, formula = EXC.USD.RET ~ EXP.RET))),
               digits = 5), by = Method]
 
+# Univariate properties
 univariate <- data3[, .(Mean = mean(EXP.RET), SD = sd(EXP.RET)),
                     by = c("Method", "Date")]
 univariate <- univariate[, .(Mean = round(mean(Mean), 4),
@@ -566,23 +572,25 @@ univariate <- univariate[, .(Mean = round(mean(Mean), 4),
 
 # Diebold Mariano test
 
+Pair wise model comparisons are done using Diebold Mariano tests. First for all models prediction residuals are calculated. Then for each pair of residuals Diebold Mariano statistics are calculated by calling NeweyWest function. Product of "NeweyWest" is first converted to standard errors and then Diebold Mariano statistics. Additionally corresponding p-values are returned.
 ```{r}
-# TEST!!!
+# Subset only data that is needed
 diebold_mariano <- copy(data[, .(Date, Company, EXC.USD.RET,
                               FM.EXP.RET, RF.EXP.RET, NN.EXP.RET, hcol)])
 diebold_mariano[, hcol := hcol + 1]
+# Calculate the residuals
 diebold_mariano <- diebold_mariano[, .(FM = mean((EXC.USD.RET - FM.EXP.RET)^2),
                             RF = mean((EXC.USD.RET - RF.EXP.RET)^2),
                             NN = mean((EXC.USD.RET - NN.EXP.RET)^2)), by = hcol]
 setorder(diebold_mariano, hcol)
 
-
+# Diebold Mariano test
 diebold_mariano <- combn(diebold_mariano[!is.na(NN), 2:4], 2, function(x) {
   # browser()
   d <- as.matrix(x[, 1] - x[, 2])
   se <- sqrt(NeweyWest(lm(d ~ 1), lag = 4, prewhite = FALSE)) / sqrt(length(d))
   dm <- mean(d) / se
-  return(list(dm, colnames(x), pt(-abs(dm), df = length(d) - 1)))
+  return(list(dm, colnames(x), pt(-abs(dm), length(d) - 1)))
 })
 ```
 
@@ -642,7 +650,7 @@ means <- melt(means, id.vars = "Date", value.name = "MEAN.Nordic")
 sds <- data[, (lapply(.SD, sd, na.rm = T)),.SDcols = var, by = Date]
 sds <- melt(sds, id.vars = "Date", value.name = "SD.Nordic")
 
-temp <- merge(means, sds, by = c("Date", "variable"))
+mean_sd <- merge(means, sds, by = c("Date", "variable"))
 
 means <- data[, (lapply(.SD, mean, na.rm = T)), .SDcols = var, 
               by = c("Date", "Country")]
@@ -656,26 +664,27 @@ sds[, Country := paste("SD.", Country, sep = "")]
 sds <- melt(sds, id.vars = c("Date", "Country"), value.name = "SD")
 sds <- dcast(sds, Date + variable ~ Country, value.var = "SD")
 
-temp2 <- merge(means, sds, by = c("Date", "variable"))
-temp3 <- merge(temp, temp2, by = c("Date", "variable"))
+mean_sd_country <- merge(means, sds, by = c("Date", "variable"))
+mean_sd <- merge(mean_sd, mean_sd_country, by = c("Date", "variable"))
 
-sddd <- temp3[, lapply(.SD, mean, na.rm = T), 
-              .SDcols = colnames(temp3[, -c("Date", "variable")]), by = variable]
+mean_sd <- mean_sd[, lapply(.SD, mean, na.rm = T), 
+              .SDcols = colnames(mean_sd[, -c("Date", "variable")]), by = variable]
 
-round <- colnames(sddd[, -c("variable")])
-sddd[, (round) := round(.SD, 3), .SDcols = round]
+round <- colnames(mean_sd[, -c("variable")])
+mean_sd[, (round) := round(.SD, 3), .SDcols = round]
 ```
 
-
+As a final step development of the firm characteristics are plotted. This done simply by plotting the time series of cross-sectional means of each variable.
 ```{r, fig.height = 24}
 variables <- c("Date", "USD.RET", "Company", independend_variables)
-test <- data[, ..variables]
-test <- melt(test, id.vars = c("Date", "Company"))
-test <- test[, .(mean = mean(value)), by = c("Date", "variable")]
+charc_ts <- data[, ..variables]
+charc_ts <- melt(charc_ts, id.vars = c("Date", "Company"))
+# Calculate cross-sectional means
+charc_ts <- charc_ts[, .(mean = mean(value)), by = c("Date", "variable")]
 
 
 tikz(file = "Latex/R_graphs/variable_ts.tex", width = 6, height = 8)
-plot9 <- ggplot(test[Date > as.POSIXct("1994-01-01", tz = "UTC")], aes(Date, mean)) +
+plot9 <- ggplot(charc_ts[Date > as.POSIXct("1994-01-01", tz = "UTC")], aes(Date, mean)) +
   geom_line() + facet_wrap(~variable, scales = "free", ncol = 3) +
   theme(axis.title = element_blank(), text = element_text(size = 9))
 print(plot9)
