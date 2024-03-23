@@ -36,7 +36,7 @@ RF[, `:=` (year = as.numeric(substr(Date, 1, 4)),
 RF_plot <- copy(RF)
 RF_plot[, Date := as.Date(paste(year, month, "01", sep = "-"))]
 
-tikz(file = "Latex/R_graphs/rf_ts.tex", width = 6, height = 3.5)
+tikz(file = "Latex/R_graphs/rf_ts.tex", width = 5.5, height = 3.5)
 plot_rf <- ggplot(RF_plot[Date > as.Date("1989-12-31")], aes(Date, RF)) + geom_line() +
   theme(axis.title = element_blank(), text = element_text(size = 9))
 print(plot_rf)
@@ -61,7 +61,7 @@ fx_rates_plot <- fx_rates_plot[fx_rates_plot[, .I[which.max(Day)],
                                      by = c("Year", "Month", "PCUR")]$V1]
 
 
-tikz(file = "Latex/R_graphs/fx_rates.tex", width = 6, height = 3.5)
+tikz(file = "Latex/R_graphs/fx_rates.tex", width = 5.5, height = 3.5)
 plot_fx <- ggplot(fx_rates_plot, aes(Date, FX, color = PCUR)) + geom_line() + scale_y_log10() +
   theme(axis.title = element_blank(), text = element_text(size = 9), 
         legend.position = "bottom")
@@ -351,7 +351,7 @@ After applying dynamic screens to the monthly data we know how many companies we
 number_of_companies <- monthly_data[, .(Count = uniqueN(Company)), 
                                     by=c("Date", "Country")]
 
-tikz(file = "Latex/R_graphs/number_of_companies.tex", width = 6, height = 4)
+tikz(file = "Latex/R_graphs/number_of_companies.tex", width = 5.5, height = 4)
 plot <- ggplot(number_of_companies, aes(Date, Count, color = Country)) + 
   geom_line() + theme(axis.title.y = element_blank(),
                     axis.title.x = element_blank(), legend.position = "bottom")
@@ -546,7 +546,7 @@ Plotting the number of companies after removing the micro-cap stocks.
 number_of_companies_wo_micro <- data[, .(Count = uniqueN(Company)), 
                                     by=c("Date", "Country")]
 
-tikz(file = "Latex/R_graphs/number_of_companies_wo_micro.tex", width = 6, height = 4)
+tikz(file = "Latex/R_graphs/number_of_companies_wo_micro.tex", width = 5.5, height = 4)
 plot2 <- ggplot(number_of_companies_wo_micro, aes(Date, Count, color = Country)) + 
   geom_line() + theme(axis.title.y = element_blank(),
                     axis.title.x = element_blank(), legend.position = "bottom")

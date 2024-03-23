@@ -1,0 +1,196 @@
+\glsdefs@newdocentry{ahrs}%
+{%
+name={\acronymfont {\glsentryshort {ahrs}}},%
+sort={AHRS},%
+type={acronym},%
+first={AHRS},%
+firstplural={AHRSs},%
+text={AHRS},%
+plural={AHRSs},%
+description={\textbf {A}ttitude and \textbf {H}eading \textbf {R}eference \textbf {S}ystem},%
+descriptionplural={\textbf {A}ttitude and \textbf {H}eading \textbf {R}eference \textbf {S}ystem},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={\protect \textbf  {A}ttitude and \protect \textbf  {H}eading \protect \textbf  {R}eference \protect \textbf  {S}ystem},%
+longplural={\protect \textbf  {A}ttitude and \protect \textbf  {H}eading \protect \textbf  {R}eference \protect \textbf  {S}ystems},%
+short={AHRS},%
+shortplural={AHRSs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{api}%
+{%
+name={\acronymfont {\glsentryshort {api}}},%
+sort={\textbf {API}},%
+type={acronym},%
+first={\protect \textbf  {API}},%
+firstplural={\protect \textbf  {API}s},%
+text={\protect \textbf  {API}},%
+plural={\protect \textbf  {API}s},%
+description={\textbf {A}pplication \textbf {P}rogramming \textbf {I}nterface},%
+descriptionplural={\textbf {A}pplication \textbf {P}rogramming \textbf {I}nterface},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={\protect \textbf  {A}pplication \protect \textbf  {P}rogramming \protect \textbf  {I}nterface},%
+longplural={\protect \textbf  {A}pplication \protect \textbf  {P}rogramming \protect \textbf  {I}nterfaces},%
+short={\protect \textbf  {API}},%
+shortplural={\protect \textbf  {API}s},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{imu}%
+{%
+name={\acronymfont {\glsentryshort {imu}}},%
+sort={IMU},%
+type={acronym},%
+first={IMU},%
+firstplural={IMUs},%
+text={IMU},%
+plural={IMUs},%
+description={\textbf {I}nertial \textbf {M}easurements \textbf {U}nit},%
+descriptionplural={\textbf {I}nertial \textbf {M}easurements \textbf {U}nit},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={\protect \textbf  {I}nertial \protect \textbf  {M}easurements \protect \textbf  {U}nit},%
+longplural={\protect \textbf  {I}nertial \protect \textbf  {M}easurements \protect \textbf  {U}nits},%
+short={IMU},%
+shortplural={IMUs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{json}%
+{%
+name={\acronymfont {\glsentryshort {json}}},%
+sort={JSON},%
+type={acronym},%
+first={JSON},%
+firstplural={JSONs},%
+text={JSON},%
+plural={JSONs},%
+description={\textbf {J}ava\textbf {S}cript \textbf {O}bject \textbf {N}otation},%
+descriptionplural={\textbf {J}ava\textbf {S}cript \textbf {O}bject \textbf {N}otation},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={\protect \textbf  {J}ava\protect \textbf  {S}cript \protect \textbf  {O}bject \protect \textbf  {N}otation},%
+longplural={\protect \textbf  {J}ava\protect \textbf  {S}cript \protect \textbf  {O}bject \protect \textbf  {N}otations},%
+short={JSON},%
+shortplural={JSONs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{vga}%
+{%
+name={\acronymfont {\glsentryshort {vga}}},%
+sort={VGA},%
+type={acronym},%
+first={VGA},%
+firstplural={VGAs},%
+text={VGA},%
+plural={VGAs},%
+description={\textbf {V}ideo \textbf {G}raphics \textbf {A}rray ($640\times 480$ px)},%
+descriptionplural={\textbf {V}ideo \textbf {G}raphics \textbf {A}rray ($640\times 480$ px)},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={\protect \textbf  {V}ideo \protect \textbf  {G}raphics \protect \textbf  {A}rray ($640\times 480$ px)},%
+longplural={\protect \textbf  {V}ideo \protect \textbf  {G}raphics \protect \textbf  {A}rray ($640\times 480$ px)s},%
+short={VGA},%
+shortplural={VGAs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{wpf}%
+{%
+name={\acronymfont {\glsentryshort {wpf}}},%
+sort={WPF},%
+type={acronym},%
+first={WPF},%
+firstplural={WPFs},%
+text={WPF},%
+plural={WPFs},%
+description={\textbf {W}indows \textbf {P}resentation \textbf {F}oundation},%
+descriptionplural={\textbf {W}indows \textbf {P}resentation \textbf {F}oundation},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={\protect \textbf  {W}indows \protect \textbf  {P}resentation \protect \textbf  {F}oundation},%
+longplural={\protect \textbf  {W}indows \protect \textbf  {P}resentation \protect \textbf  {F}oundations},%
+short={WPF},%
+shortplural={WPFs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{xaml}%
+{%
+name={\acronymfont {\glsentryshort {xaml}}},%
+sort={XAML},%
+type={acronym},%
+first={XAML},%
+firstplural={XAMLs},%
+text={XAML},%
+plural={XAMLs},%
+description={E\textbf {x}tended \textbf {A}pplication \textbf {M}arkup \textbf {L}anguage},%
+descriptionplural={E\textbf {x}tended \textbf {A}pplication \textbf {M}arkup \textbf {L}anguage},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={E\protect \textbf  {x}tended \protect \textbf  {A}pplication \protect \textbf  {M}arkup \protect \textbf  {L}anguage},%
+longplural={E\protect \textbf  {x}tended \protect \textbf  {A}pplication \protect \textbf  {M}arkup \protect \textbf  {L}anguages},%
+short={XAML},%
+shortplural={XAMLs},%
+counter={page},%
+parent={},%
+%
+}%
+

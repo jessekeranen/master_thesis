@@ -47,14 +47,14 @@ trainings <- sort(trainings)
 ```
 
 ```{r, fig.dim = c(8, 8), message=FALSE, echo=FALSE, include=FALSE}
-'model <- neuralnet(EXC.USD.RET ~ MOM12 + L.IDVOL + L.LOG.USD.MV + CA,
+model <- neuralnet(EXC.USD.RET ~ MOM12 + L.IDVOL + L.LOG.USD.MV + CA,
                   data = data[Date == as.POSIXct("2010-09-30", tz = "UTC")],
                   hidden = c(4,2),
                   linear.output = T)
 
-tikz(file = "Latex/R_graphs/NN.tex", width = 6, height = 4)
+tikz(file = "Latex/R_graphs/NN.tex", width = 5.5, height = 4)
 invisible(plot(model, rep = "best", information = F, cex=.7))
-dev.off()'
+dev.off()
 ```
 
 ```{r}

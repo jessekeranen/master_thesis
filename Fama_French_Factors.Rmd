@@ -224,7 +224,7 @@ factor_correlations <- round(cor(factors_wide[, -c("Date")]), 4)
 # Just for plotting
 factors2 <- factors[lubridate::year(Date) > 1991, .(Date, cum_prod = cumprod(USD.RET + 1)), by = Factor]
 
-tikz(file = "Latex/R_graphs/factor_performance.tex", width = 6, height = 4)
+tikz(file = "Latex/R_graphs/factor_performance.tex", width = 5.5, height = 4)
 plot <- ggplot(factors2, aes(Date, cum_prod)) + geom_line(aes(color = Factor)) +
   labs(y = "Cumulative return", title = "") + scale_y_log10() +
   theme(axis.title = element_blank(), legend.position = "bottom")
@@ -236,7 +236,7 @@ plot
 
 Next the autocorrelation of the factor returns are plotted using ggAfc function.
 ```{r}
-tikz(file = "Latex/R_graphs/tes.tex", width = 6, height = 5)
+tikz(file = "Latex/R_graphs/tes.tex", width = 5.5, height = 5)
 plot2 <- grid.arrange(factors_wide[, ggAcf(HML)] + 
                         facet_wrap(facets = as.factor("HML")) + ggtitle(NULL) + 
                         theme(axis.title = element_blank()),

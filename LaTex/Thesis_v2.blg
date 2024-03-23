@@ -1,56 +1,48 @@
-This is BibTeX, Version 0.99d (TeX Live 2023)
+This is BibTeX, Version 0.99d (TeX Live 2024)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: Thesis_v2.aux
-The style file: apacite.bst
-Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
-Reallocated global_strs (elt_size=200001) to 20 items from 10.
-Reallocated glb_str_end (elt_size=4) to 20 items from 10.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
+The style file: TUM2.bst
 Database file #1: References.bib
-apacite.bst [2013/07/21 v6.03 APA bibliography style]
-You've used 44 entries,
-            6951 wiz_defined-function locations,
-            1642 strings with 20080 characters,
-and the built_in function-call counts, 80635 in all, are:
-= -- 9920
-> -- 650
-< -- 3667
-+ -- 3744
-- -- 88
-* -- 5401
-:= -- 14320
-add.period$ -- 178
-call.type$ -- 44
-change.case$ -- 753
-chr.to.int$ -- 0
-cite$ -- 88
-duplicate$ -- 2211
-empty$ -- 3416
-format.name$ -- 1050
-if$ -- 15562
-int.to.chr$ -- 0
-int.to.str$ -- 132
-missing$ -- 0
-newline$ -- 1217
-num.names$ -- 352
-pop$ -- 1124
+Warning--empty booktitle in Davydov2017MagicFV
+You've used 46 entries,
+            2769 wiz_defined-function locations,
+            997 strings with 14690 characters,
+and the built_in function-call counts, 19457 in all, are:
+= -- 1877
+> -- 960
+< -- 36
++ -- 328
+- -- 282
+* -- 1750
+:= -- 3095
+add.period$ -- 141
+call.type$ -- 46
+change.case$ -- 232
+chr.to.int$ -- 46
+cite$ -- 93
+duplicate$ -- 725
+empty$ -- 1464
+format.name$ -- 372
+if$ -- 3945
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 46
+newline$ -- 241
+num.names$ -- 184
+pop$ -- 262
 preamble$ -- 1
-purify$ -- 180
+purify$ -- 186
 quote$ -- 0
-skip$ -- 5413
+skip$ -- 617
 stack$ -- 0
-substring$ -- 4142
-swap$ -- 1400
-text.length$ -- 107
+substring$ -- 1145
+swap$ -- 57
+text.length$ -- 2
 text.prefix$ -- 0
-top$ -- 1
-type$ -- 3648
-warning$ -- 0
-while$ -- 354
+top$ -- 0
+type$ -- 506
+warning$ -- 1
+while$ -- 206
 width$ -- 0
-write$ -- 1472
+write$ -- 609
+(There was 1 warning)
