@@ -7,7 +7,7 @@
 \contentsline {section}{\numberline {4}Methodology}{9}{section.4}%
 \contentsline {subsection}{\numberline {4.1}Linear regression}{10}{subsection.4.1}%
 \contentsline {subsection}{\numberline {4.2}Random forest}{10}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Neural networks}{12}{subsection.4.3}%
-\contentsline {section}{\numberline {A}Data}{12}{appendix.A}%
-\contentsline {section}{\numberline {B}Benchmark factors}{15}{appendix.B}%
-\contentsline {section}{References}{19}{section*.13}%
+\contentsline {subsection}{\numberline {4.3}Neural networks}{11}{subsection.4.3}%
+\contentsline {section}{\numberline {A}Data}{11}{appendix.A}%
+\contentsline {section}{\numberline {B}Benchmark factors}{14}{appendix.B}%
+\contentsline {section}{References}{17}{section*.13}%

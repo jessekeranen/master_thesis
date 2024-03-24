@@ -123,6 +123,10 @@ FUNCTION {output.check}
   if$
 }
 
+FUNCTION {add.in}
+{  ", in:  " * before.all 'output.state :=
+}
+
 %                                       TUM2 needs this function because
 %                                       the year has special punctuation;
 %                                       TUM2 ignores the month
@@ -718,7 +722,8 @@ FUNCTION {article}
   format.title "title" output.check
   new.block
   crossref missing$
-    { journal emphasize "journal" output.check
+    {add.in 
+    journal emphasize "journal" output.check
       format.vol.num.pages output
     }
     { format.article.crossref output.nonnull
