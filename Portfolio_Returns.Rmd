@@ -36,14 +36,14 @@ setorder(data, Date, Company)
 
 # Portfolio returns
 
-This chunk forms expected return portfolios. Based on return predictions from each models all stocks are divide to ten expected return portfolios each month. Breakpoints for the allocation are calculated from expected returns of large market value stocks. Large market capitalization stocks are the biggest stocks that count for 97% if the aggregated market value in each month. Even though the breakpoints are defined only by the big stocks, all stocks are allocated to the portfolios. First companies are allocated to portfolios and then equal and market value weighted portfolios returns are calculated. Additionally long-short portfolio returns are calculated for each method as difference between highest and lowest expected return portfolio.
+This chunk forms expected return portfolios. Based on return predictions from each models all stocks are divide to ten expected return portfolios each month. Breakpoints for the allocation are calculated from expected returns of large market value stocks. Large market capitalization stocks are the biggest stocks that count for 90% if the aggregated market value in each month. Even though the breakpoints are defined only by the big stocks, all stocks are allocated to the portfolios. First companies are allocated to portfolios and then equal and market value weighted portfolios returns are calculated. Additionally long-short portfolio returns are calculated for each method as difference between highest and lowest expected return portfolio.
 
 Code contains two functions. Function "factor" does the allocation as described above. It takes five arguments:
 *dt = dataset
 *variable = name of the expected return column for corresponding model
 *name = name that will be used for created portfolio allocation column
 *labels = array of expected return portfolio names
-*quantiles = quatiles used to calculate expected return breakpoints monthly
+*quantiles = quantiles used to calculate expected return breakpoints monthly
 This function is called separately for all models. Function uses variable pf.size to define which companies are considered big in order to calculate breakpoint expected returns each month. This variable was calculated in Data_collection_v2.Rmd file.
 
 Second function is "portfolioreturns". It is used to calculate equal and weighted realized and predicted returns for portfolios formed in function "factor". Function takes three arguments:
@@ -166,7 +166,7 @@ exp_portfolio_returns_long <- exp_portfolio_returns_long[, .(EXP.RET = mean(Retu
 exp_portfolio_returns_long[, variable := gsub(".EXP", "", variable)]
 ```
 
-Next Sharpe ratio, standard deviation, minumum and maximum return for all portfolios are calculated. Values are calculated separately for each portfolio and equal and value weighted portfolios. Also this datatable will be later merged to the portfolio statistics datatable.
+Next Sharpe ratio, standard deviation, minumum and maximum return for all portfolios are calculated. Values are calculated separately for each portfolio and equal and value-weighted portfolios. Also this datatable will be later merged to the portfolio statistics datatable.
 ```{r}
 portfolio_returns_long2 <- portfolio_returns_long[variable %in% c("EW.RET", "VW.RET")]
 sharpe <- portfolio_returns_long2[, .(SR = mean(Return) / sd(Return),
@@ -202,12 +202,12 @@ portfolio_statistics[variable == "VW.RET" & substr(Portfolio, 1, 2) == "NN"]
 Three functions are used to calculate characteristics importance for different models. Same functions are called separately for all models. First function is called "load_exp_ret". This function takes two arguments:
 *method = corresponding method
 *variable = variable for which characteristic importance will be calculated
-Together "method" and "variable" arguments will used to generate path where presaved datatable will be obtained. This datatable contains expected returns from model (defined by "method") "variable" is excluded from explanatory variable set.
+Together "method" and "variable" arguments will used to generate path from where presaved datatable will be obtained. This datatable contains expected returns from model (defined by "method") "variable" is excluded from explanatory variable set.
 
 Second function is called "oos_r2". This function takes also two arguments:
 *dt = dataset
 *variable = variable for which characteristic importance will be calculated
-Function calculates the out-of-sample r squared values for expected returns that are obtained from model where variable indicated by "variable" argument is excluded from explanatory variable set. Out-of-sample r squared values are calculated for each retraining period. Function calculates two out-of-sample r squared values. One where benchmark model is static prediction od zero and one where benchmark model is the historical mean return of the company. Function will return time series of out-of-sample r squared values.
+Function calculates the out-of-sample r squared values for expected returns that are obtained from model where variable indicated by "variable" argument is excluded from explanatory variable set. Out-of-sample r squared values are calculated for each retraining period. Function calculates two out-of-sample r squared values. One where benchmark model is static prediction of zero and one where benchmark model is the historical mean return of the company. Function will return time series of out-of-sample r squared values.
 
 Third function is called "scale_oosr2". This function is used to calculate reductions in out-of-sample r squared values compared to the full model. Function takes two arguments:
 *dt = dataset
@@ -252,7 +252,7 @@ data[, MEAN.RET := shift(rollapplyr(EXC.USD.RET, .SD[, .N], mean, partial = T,
                                     na.rm = T), fill = 0), by = Company]
 ```
 
-Variable importance for random forest model. First the reduced model expected returns are loaded for all variables using function "load_exp_ret". Then time series of out-of-sample r squared values are caclulated for all reduced models and full model using function "oos_r2". Then r squared values are scaled using function "scale_oosr2". Additionally r squared values are calculated for whole dataset and for first half of the dataset.
+Variable importance for random forest model. First the reduced model expected returns are loaded for all variables using function "load_exp_ret". Then time series of out-of-sample r squared values are calculated for all reduced models and full model using function "oos_r2". Then r squared values are scaled using function "scale_oosr2". Additionally r squared values are calculated for whole dataset and for first half of the dataset.
 ```{r}
 # Load the reduced model expected returns
 rf_exp_rets <- rbindlist(lapply(independend_variables, function(x) {
@@ -367,7 +367,7 @@ NN_r2_2008 <- data[!is.na(NN.EXP.RET) & Date < as.POSIXct("2008-12-31", tz = "UT
 options(scipen = 999999)
 ```
 
-Plotting the variable importance ond the prediction accuracy. First time series development of the r squared values are plotted by merging the time series from three models.
+Plotting the variable importance and the prediction accuracy. First time series development of the r squared values are plotted by merging the time series from three models.
 
 Next FM_r2_plot, trad_FM_r2_plot, RF_r2_plot, trad_RF_r2_plot, NN_r2_plot, trad_NN_r2_plot are generated to plot the relative variable importance. These plots are arranged to one plot using grid.arrange. 
 
@@ -447,7 +447,7 @@ plot7
 
 # Long-short portfolio performance metrics
 
-Next part will focus on calculating different kind of performance metrics for long-short portfolios. This is started by creating new datatable called "high_low" which only contains long-short portfolios. First metric that is calculated is th maximum drawdown that is calculated using function "drawdown". "drawdown" takes one argument:
+Next part will focus on calculating different kind of performance metrics for long-short portfolios. This is started by creating new datatable called "high_low" which only contains long-short portfolios. First metric that is calculated is the maximum drawdown that is calculated using function "drawdown". "drawdown" takes one argument:
 *dt = dataset
 It returns maximum drawdown rounded to four decimals for all methods and for equal and value weighting. Additionally, one month maximum loss and Sharpe ratio is calculated for all methods and for equal and value weighting as well.
 ```{r}
@@ -489,9 +489,9 @@ FF_stats <- factors_wide[, {reg <- summary(lm(RET ~ RMRF + SMB + HML + RMW +
   R.SQUARED = round(reg$r.squared, 4))}, by = c("variable", "Method")]
 ```
 
-This part calculated turnover for long-short portfolios. Calculation of turnover is started by getting rid of unnecessary columns and melting data to long format. Next value weighted weight of each company in their portfolio in each month is defined as their relative market value compared to total market value of corresponding portfolio. Equal weight is defined as one divided by number of companies in the portfolio. These are the weights immediately after portfolio formation.
+This part calculates the turnover for long-short portfolios. Calculation of turnover is started by getting rid of unnecessary columns and melting data to long format. Next value weighted weight of each company in their portfolio in each month is defined as their relative market value compared to total market value of corresponding portfolio. Equal weight is defined as one divided by number of companies in the portfolio. These are the weights immediately after portfolio formation.
 
-Weights right before re-allocation are calculated by multiplying the start weight of a company by its scaled return. Scaled return is calculated by dividing companys return by portfolios return. In order to account for situations where company is included or excluded to the portfolio "combinations" datatable is created, which is then merged to "turnover_long" datatable. Now we have datatable with all date company combinations for all portfolios. If weight is NA , this means that company was not part of respective portfolio in corresponding month and therefore NAs in weight column can be replaced by zero.
+Weights right before re-allocation are calculated by multiplying the start weight of a company by its scaled return. Scaled return is calculated by dividing company's return by portfolio's return. In order to account for situations where company is included or excluded to the portfolio "combinations" datatable is created, which is then merged to "turnover_long" datatable. Now we have datatable with all date company combinations for all portfolios. If weight is NA , this means that company was not part of respective portfolio in corresponding month and therefore NAs in weight column can be replaced by zero.
 
 In order to have weight right before re-allocation and right after re-allocation in the same row, we shift scaled weights by one. Now we can calculate change in weight in given asset simply by calculating the difference between weight and shifted scaled weight. This process also accounts for situations where company is included or excluded completely from the portfolio. Monthly turnover is sum of absolute changes in the weights.  
 ```{r}
@@ -554,7 +554,7 @@ turnover <- turnover_long[, .(TO = round(mean(V1), 4)), by = c("Method", "TYPE")
 
 # Expected return regressions
 
-Next the relationship between expected and realized returns is evaluated by regressing realized excess returns by the stock level out-of-sample return predictions. Regression is run separetely for each method. In addition to regressions univariate properties of the expected returns are also saved to "univariate" datatable. Final univariate properties are timeseries averages of cross-sectional mean and standard deviations of expected returns for all models.
+Next the relationship between expected and realized returns is evaluated by regressing realized excess returns by the stock level out-of-sample return predictions. Regression is run separetely for each method. In addition to regressions univariate properties of the expected returns are also saved to "univariate" datatable. Final univariate properties are timeseries averages of cross-sectional means and standard deviations of expected returns for all models.
 ```{r}
 # Subset only data that is needed
 data3 <- melt(data2[, .(Date, Company, EXC.USD.RET, RF.EXP.RET, FM.EXP.RET, NN.EXP.RET)],
@@ -573,7 +573,7 @@ univariate <- univariate[, .(Mean = round(mean(Mean), 4),
 
 # Diebold Mariano test
 
-Pair wise model comparisons are done using Diebold Mariano tests. First for all models prediction residuals are calculated. Then for each pair of residuals Diebold Mariano statistics are calculated by calling NeweyWest function. Product of "NeweyWest" is first converted to standard errors and then Diebold Mariano statistics. Additionally corresponding p-values are returned.
+Pairwise model comparisons are done using Diebold-Mariano tests. First for all models prediction residuals are calculated. Then for each pair of residuals Diebold-Mariano statistics are calculated by calling "NeweyWest" function. Product of "NeweyWest" is first converted to standard errors and then Diebold Mariano statistics. Additionally corresponding p-values are returned.
 ```{r}
 # Subset only data that is needed
 diebold_mariano <- copy(data[, .(Date, Company, EXC.USD.RET,
@@ -597,7 +597,7 @@ diebold_mariano <- combn(diebold_mariano[!is.na(NN), 2:4], 2, function(x) {
 
 # Descriptive statistics
 
-Calculation of descriptive statistics. First I calcualte number of unique companies in whole dataset for each country and for the dataset as whole. Then number of companies in each country in each month is calculated. From this timeseries minimum, mamixum and mean number of companies is calculated again for each country and the pooled dataset. After company counts we repeat the same process for market values. First I calculate time series mean, median and aggregated market values for each country and pooled market for each month. Then the final values are just time series averages of respective variables.
+Calculation of descriptive statistics. First I calculate number of unique companies in whole dataset for each country and for the dataset as whole. Then number of companies in each country in each month is calculated. From this time series minimum, mamixum and mean number of companies is calculated again for each country and the pooled dataset. After company counts we repeat the same process for market values. First I calculate time series mean, median and aggregated market values for each country and pooled market for each month. Then the final values are just time series averages of respective variables.
 ```{r}
 # Total number of unique companies
 data[year >= 1991, uniqueN(Company), by = Country]
@@ -642,7 +642,7 @@ country_chacteristics <- merge(company_count, market_value, by = "Country")
 setorder(country_chacteristics, Country)
 ```
 
-After country level statistics descriptive statistics are calculated for all dependent and independent variables used in the study. Like with country statistics, we also calculate variable statistics both for separate markets and pooled market. For each variable we calculate mean standard deviation for each month. For both mean and standard deviation the final figure is the time series average of meand and standard deviations of respective variables.
+After country level statistics descriptive statistics are calculated for all dependent and independent variables used in the study. Like with country statistics, I also calculate variable statistics both for separate markets and pooled market. For each variable I calculate mean and standard deviation for each month. For both mean and standard deviation the final figure is the time series average of means and standard deviations of respective variables.
 ```{r}
 var <- c("EXC.USD.RET", independend_variables)
 means <- data[, (lapply(.SD, mean, na.rm = T)), .SDcols = var, by = Date]

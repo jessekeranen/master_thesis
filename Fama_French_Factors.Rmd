@@ -72,7 +72,7 @@ ggplot(data[pf.size == "Small" & month == 7, .SD[which.max(L.USD.MV),
 ```
 # Momentum allocation
 
-Next we want to allocate stocks again to portfolios based on other variables and independently of the size allocation. Slightly different names will be used for portfolio formed based on different variables, but the breakpoints will be the same for each of the variables. We follow Fama and French (1993, 2015) and assign stock to "low" portfolio is its value in corresponding variable is below 30th percentile breakpoint and to "high" portfolio if the value is above 70th percentile breakpoint. All stocks between are considered neutral.
+Next we want to allocate stocks again to portfolios based on other variables and independently of the size allocation. Slightly different names will be used for portfolios formed based on different variables, but the breakpoints will be the same for each of the variables. We follow Fama and French (1993, 2015) and assign stock to "low" portfolio is its value in corresponding variable is below 30th percentile breakpoint and to "high" portfolio if the value is above 70th percentile breakpoint. All stocks between are considered neutral.
 
 For momentum we follow slightly different process than for the other factors. The difference is that, momentum portfolio will be re-allocated monthly. 
 ```{r}
@@ -91,7 +91,7 @@ ggplot(na.omit(data[Date %in% c("1996-07-31", "2004-07-30", "2013-07-31", "2021-
 ```
 # Value, investment and profitability allocation
 
-Next we will repeat the process for the rest of the variables, but re-allocating is done only annually. Re-allocation is done each July. For each of the variables total six portfolio are formed via two fold allocation. For all variables breakpoints when defining breakpoints for certain variable for certain month only "Big" companies are considered. Then these breakpoints calculated from "Big" company data will be used to allocate all stocks to portfolios. Allocation is done using "factor" function which takes five arguments:
+Next we will repeat the process for the rest of the variables, but re-allocating is done only annually. Re-allocation is done each July. For each of the variables total six portfolio are formed via two-fold allocation. For all variables breakpoints when defining breakpoints for certain variable for certain month only "Big" companies are considered. Then these breakpoints calculated from "Big" company data will be used to allocate all stocks to portfolios. Allocation is done using "factor" function which takes five arguments:
 *dt = dataset
 *variable = variable based on which allocation is done
 *name = column name for where allocation is indicated

@@ -209,7 +209,7 @@ dynamic_screens <- function(dt) {
 
 ## Weekly data
 
-Weekly data is the highest frequency data used in this study. Data from Datastream is downloaded using Excel sheets. To keep size of these files reasonable, data is downloaded in smaller portions. Above introduced function is used to load data from Excel files to R. Only variable used in weekly frequency is the unadjusted price UP. Weekly data is merged with fx rates so that price can be converted to US dollars. Then returns are calculated both in local currency and US dollars.
+Weekly data is the highest frequency data used in this study. Data from Datastream is downloaded using Excel sheets. To keep size of these files reasonable, data is downloaded in smaller portions. Above introduced function is used to load data from Excel files to R. Only variables used in weekly frequency are the unadjusted price UP and trading volume VO. Weekly data is merged with fx rates so that price can be converted to US dollars. Then returns are calculated both in local currency and US dollars.
 ```{r, warning=FALSE}
 UP <- rbindlist(lapply(1:30, function(x) {
   return(get_ts_data(paste("Data/w03/UP/UP", x, ".xlsx", sep = ""), "UP"))
@@ -234,7 +234,7 @@ weekly_data <- merge(weekly_data, static[, c("Type", "PCUR")], by.y = "Type",
                      by.x = "Company")
 weekly_data <- merge(weekly_data, fx_rates, by = c("PCUR", "Date"))
 weekly_data[, USD.UP := UP / FX]
-
+# Calculate returns
 weekly_data[, RET := UP / shift(UP) - 1, by = Company]
 weekly_data[, USD.RET := USD.UP / shift(USD.UP) - 1, by = Company]
 ```
@@ -318,7 +318,7 @@ monthly_data[, (paste("USD", c("RI", "MV"), sep = ".")) :=
 monthly_data[, `:=` (L.MV = shift(MV), L.USD.MV = shift(USD.MV)), by = Company]
 ```
 
-Derive first variables from monthly data. Also dynamic screens are applied to monthly data similar as to weekly data. To avoid forward looking information we only consider accounting figures from year $n$ to be available for the investor in July $n + 1$. For this we create help column "hcol" that is used to merge annual data to correct period in monthly dataset. Lot of explanatory variables are calculated, by dividing certain company characteristics by the market capitalization from last December. To make calculates easier in later point we merge December market value for each of the other months of the year using helpt data.table. Weekly data calculated earlier is also merged to the monthly dataset.
+Derive first variables from monthly data. Also dynamic screens are applied to monthly data similar as to weekly data. To avoid forward looking information we only consider accounting figures from year $n$ to be available for the investor in July $n + 1$. For this we create help column "hcol" that is used to merge annual data to correct period in monthly dataset. Lot of explanatory variables are calculated, by dividing certain company characteristics by the market capitalization from last December. To make calculations easier in later point we merge December market value for each of the other months of the year using help data.table. Weekly data calculated earlier is also merged to the monthly dataset.
 ```{r}
 # Monthly return local currency
 monthly_data[, RET := (RI / shift(RI)) - 1, by = Company] 
@@ -362,7 +362,7 @@ plot
 
 # Annual data
 
-Following function is used to prepare the annual data. Function works quite similar to timeseries data collection function. Main difference is that we don't require for each variable a value. E.g. it could be the case that information for deferred taxes (WC03263) is not available. Instead of treating the variable as missing, we set the deferred taxes to 0 for that company for that period. Later we set all missing values to zero, but at this point we only change missing values to zero for certain variables to avoid getting NAs e.g. for additions. I don't replace all NAs with zero at this point, because it gives us flexibilyt decide in later point how to deal with missing values.
+Following function is used to prepare the annual data. Function works quite similar to timeseries data collection function. Main difference is that we don't require for each variable a value. E.g. it could be the case that information for deferred taxes (WC03263) is not available. Instead of treating the variable as missing, we set the deferred taxes to 0 for that company for that period. Later we set all missing values to zero, but at this point we only change missing values to zero for certain variables to avoid getting NAs e.g. for additions. I don't replace all NAs with zero at this point, because it gives us flexibilty decide in later point how to deal with missing values.
 ```{r}
 replace_zero <- c("WC03263", "WC03501", "NOSH")
 
@@ -394,7 +394,7 @@ annual_data <- merge(annual_data, static[, .(Type, PCUR)], by.x = "Company",
 setorder(annual_data, Company, -Date)
 ```
 
-Similar to monthly and weekly data I also calculate US dollar values for each of the characteristics used in this study. Nevertheless, if characteristic is used to calculate certain ratio, then the local currency values are alwasy used.
+Similar to monthly and weekly data I also calculate US dollar values for each of the characteristics used in this study. Nevertheless, if characteristic is used to calculate certain ratio, then the local currency values are always used.
 ```{r}
 fx_rates[, `:=` (Year = year(Date), Month = month(Date))]
 july_fx_rates <- fx_rates[, .SD[which.max(Date), ], 
@@ -438,7 +438,7 @@ data <- merge(data, RF[, .(year, month, RF)], by = c("year", "month"))
 
 ## Variable calculations
 
-Instead of using raw accounting data, usually some kind of ratios are used in anomaly literature. In the next chunck stock characteristics used in this study are calculated. Variables include Cash-to-Assets ratio (CA), Capital turnover (CTO), monthly and annual Book-to-market value (BEME.M and BEME), Investment factor (INV), Cash flow-to-Price ratio (CFP), Leverage (DEBT), Sales-to-Price ratio (SP), Earnings-to-Price ratio (EP), Return-on-Assets (ROA), Return-on-Equity (ROE), Tobin's Q (Q), two month momentum (MOM2), seven to twelve month momentum (MOM7), twelve month momemtum (MOM12), twelve to thirtysix month momentum (MOM36) and logarithm of the market value of the company. Infinite values will be replaced by NA.
+Instead of using raw accounting data, usually some kind of ratios are used in anomaly literature. In the next chunck stock characteristics used in this study are calculated. Variables include e.g. Cash-to-Assets ratio (CA), Capital turnover (CTO), monthly and annual Book-to-market value (BEME.M and BEME), Investment factor (INV), Cash flow-to-Price ratio (CFP), Leverage (DEBT), Sales-to-Price ratio (SP), Earnings-to-Price ratio (EP), Return-on-Assets (ROA), Return-on-Equity (ROE), Tobin's Q (Q), two month momentum (MOM2), seven to twelve month momentum (MOM7), twelve month momemtum (MOM12), twelve to thirtysix month momentum (MOM36) and logarithm of the market value of the company.
 ```{r}
 setorder(data, Date)
 data[, EXC.USD.RET := USD.RET - RF]
@@ -483,7 +483,7 @@ data[, LOG.USD.MV := log(USD.MV), by = Company]
 data[, TO := VO / NOSH, by = Company]
 ```
 
-In addition to traditional momentum variables I will include also industry momentum to the set of explanatory variables. Industry of the company is defined by Datastream attribute INDG. First I calculate equal weighted mean return for each INDG/month combination. Then I calculate on rolling basis 12 month cumulative return for the industry and finally merge them back to the monthly dataset.
+In addition to traditional momentum variables I will include also industry momentum to the set of explanatory variables. Industry of the company is defined by Datastream attribute INDG. First I calculate equal weighted mean return for each INDG/month combination. Then I calculate on rolling basis 12-month cumulative return for the industry and finally merge them back to the monthly dataset. Infinite values will be first replaced by NA.
 ```{r}
 industry_data <- setorder(data[, .(MEAN.IND = 1 + mean(USD.RET)),
                                by = c("Date", "INDG")], Date)
@@ -520,7 +520,7 @@ Before removing micro cap stocks from the dataset, data is saved for later usage
 save(data, file = "Data/data_w_microcap.Rdata")
 ```
 
-To avoid results to be driven by the small companies, microcap stocks will be removed from the dataset. Microcap stocks are defined as smallest stocks that account for three percent of month's total capitalization. Additionally market capitalization of stocks is winsorized between 1% and 99%. In case companys market capitalization in specific month is bigger than 99% (or smaller than 1%) of the companies then the market capitalization is replaced by the 99% threshold (1% threshold).
+To avoid results to be driven by the small companies, microcap stocks will be removed from the dataset. Microcap stocks are defined as smallest stocks that account for three percent of month's total market capitalization. Additionally market capitalization of stocks is winsorized between 1% and 99%. In case company's market capitalization in specific month is bigger than 99% of the companies then the market capitalization is replaced by the 99% threshold.
 ```{r}
 data[, L.USD.MV := ifelse(L.USD.MV > quantile(L.USD.MV, 0.99, na.rm=T), 
                      quantile(L.USD.MV, 0.99, na.rm=T), L.USD.MV), by = Date]

@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.3.23)  27 MAR 2024 20:23
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.3.23)  27 MAR 2024 20:51
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1898,11 +1898,11 @@ Underfull \hbox (badness 1259) in paragraph at lines 1042--1042
 [62] [63] [64] (./R_graphs/tes.tex) [65
 
 ] [66]
-(./R_graphs/number_of_companies.tex) (./R_graphs/fx_rates.tex)
-(./R_graphs/rf_ts.tex) [67
+(./R_graphs/number_of_companies.tex) (./R_graphs/fx_rates.tex) [67
 
-] (./R_graphs/variable_ts.tex) [68]
-(./R_graphs/R2_ts.tex) [69] (./R_graphs/cumul_vw_portf_return.tex) [70]
+]
+(./R_graphs/rf_ts.tex) (./R_graphs/variable_ts.tex) [68] (./R_graphs/R2_ts.tex)
+[69] (./R_graphs/cumul_vw_portf_return.tex) [70]
 (./R_graphs/cumul_ew_LS_return.tex) [71] (./R_graphs/cumul_vw_LS_return.tex)
 [72] (./R_graphs/turnover.tex) [73] (./R_graphs/hyper_param_rf.tex)
 (./R_graphs/relative_VI.tex) [74] [75] (./Thesis_v2.bbl [76
@@ -1915,17 +1915,13 @@ Underfull \hbox (badness 1259) in paragraph at lines 1042--1042
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-03-14>
  ***********
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
 Package rerunfilecheck Info: File `Thesis_v2.out' has not changed.
 (rerunfilecheck)             Checksum: 17D448F25CE3F4169DDA8009E673670B;5437.
  ) 
 Here is how much of TeX's memory you used:
  27177 strings out of 474761
  557426 string characters out of 5757509
- 2150145 words of memory out of 5000000
+ 2139145 words of memory out of 5000000
  48794 multiletter control sequences out of 15000+600000
  568317 words of font info for 93 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191

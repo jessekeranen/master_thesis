@@ -16,7 +16,7 @@ library(tikzDevice)
 
 # Preliminary steps
 
-Process is started by loading the data file generated in Data_collection file. In case data file consists old expected returns, they will be removed. Set of explanatory variables is defined and regresion formula is formed from then. Additionally, data is sorted to chronological order.
+Process is started by loading the data file generated in Data_collection.Rmd file. In case data file consists old expected returns, they will be removed. Set of explanatory variables is defined and regresion formula is formed from then. Additionally, data is sorted to chronological order.
 ```{r}
 load(file = "Data/data.Rdata")
 data[, FM.EXP.RET := NULL]
@@ -79,7 +79,7 @@ ggplot(FM_regressions[variable %in% c("MOM12", "Q", "L.IDVOL", ".LBETA")],
        aes(Date, rolling_mean, color=variable)) + geom_line()
 ```
 
-Once the rolling means are calculated we can derive the expected returns by multiplying the mean regression coefficients by the most recent available stock characteristics. To make the linear approach better comparable with the non-linear models weights of the variables are only updated once a year in July. Expected returns are calculated using "exp_returns" function, which takes three arguments: 
+Once the rolling means are calculated we can derive the expected returns by multiplying the lagged mean regression coefficients by the most recent available stock characteristics. To make the linear approach better comparable with the non-linear models weights of the variables are only updated once a year in July. Expected returns are calculated using "exp_returns" function, which takes three arguments: 
 *data = dataset
 *FM_regressions = datatable containing rolling mean loadings
 *variables = list of required variables

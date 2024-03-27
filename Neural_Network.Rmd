@@ -23,7 +23,7 @@ library(zoo)
 
 # Preliminary steps
 
-Process is started by loading the data file generated in Data_collection file. In case data file consists old expected returns, they will be removed. Seed is also set to ensure reproducibility of the results. Funciton set_random_seed from tensorflo library should set all necesary seeds including the seeds for python, in order to make the result reproducable. Then set of explanatory variables is defined. Additionally, data is sorted to chronological order and finally array of dates when the model will be retrained is formed. Model will be retrained each July. First training consists data from 50 first months. 
+Process is started by loading the data file generated in Data_collection.Rmd file. In case data file consists old expected returns, they will be removed. Seed is also set to ensure reproducibility of the results. Function "set_random_seed" from tensorflow library should set all necessary seeds including the seeds for python, in order to make the result reproducable. Then set of explanatory variables is defined. Additionally, data is sorted to chronological order and finally array of dates when the model will be retrained is formed. Model will be retrained each July. First training consists data from 50 first months. 
 ```{r}
 load(file = "Data/data.Rdata")
 data[, NN.EXP.RET := NULL]
@@ -43,7 +43,7 @@ trainings <- c(trainings, max(data$Date)) # Add last date
 trainings <- sort(trainings)
 ```
 
-Neural network for illustration purposes.
+Neural network for illustration purposes. This part uses "neuralnet" function because it offers better visualization options than the one that is used for the actual return predictions. 
 ```{r, fig.dim = c(8, 8), message=FALSE, echo=FALSE, include=FALSE}
 model <- neuralnet(EXC.USD.RET ~ MOM12 + L.IDVOL + L.LOG.USD.MV + CA,
                   data = data[Date == as.POSIXct("2010-09-30", tz = "UTC")],
@@ -69,7 +69,7 @@ scheduler <- function(epoch, lr) {
 
 # Expected returns
 
-For each of the retraining date neural_network function is called. Inside the neural_network function data is limited to dates earlier to responding retraining date. Then the data is split to training and testing data using random 0.8/0.2 split. Total 5 neural network models are trained and the final prediction is the average of the models.
+For each of the retraining date "neural_network" function is called. Inside the "neural_network" function data is limited to dates earlier to responding retraining date. Then the data is split to training and testing data using random 0.8/0.2 split. Total 5 neural network models are trained and the final prediction is the average of the models.
 ```{r}
 # Grid to keep track of MSE
 NN_grid <- expand.grid(dates = trainings, MSE = 0)

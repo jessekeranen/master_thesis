@@ -3,9 +3,10 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: Thesis_v2.aux
 The style file: TUM2.bst
 Database file #1: References.bib
+Warning--I didn't find a database entry for "FrenchDatabase"
 You've used 45 entries,
             2777 wiz_defined-function locations,
-            996 strings with 14569 characters,
+            998 strings with 14597 characters,
 and the built_in function-call counts, 18863 in all, are:
 = -- 1864
 > -- 950
@@ -44,3 +45,4 @@ warning$ -- 0
 while$ -- 203
 width$ -- 0
 write$ -- 548
+(There was 1 warning)
