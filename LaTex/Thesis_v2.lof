@@ -3,17 +3,17 @@
 \contentsline {figure}{\numberline {3}{\ignorespaces Illustrative neural network}}{25}{figure.caption.11}%
 \contentsline {figure}{\numberline {4}{\ignorespaces Sample splitting scheme}}{33}{figure.caption.12}%
 \contentsline {figure}{\numberline {5}{\ignorespaces Benchmark factor performance}}{39}{figure.caption.15}%
-\contentsline {figure}{\numberline {6}{\ignorespaces Cumulative return of equal-weighted machine learning portfolios}}{49}{figure.caption.18}%
-\contentsline {figure}{\numberline {7}{\ignorespaces Cumulative return of value-weighted machine learning portfolios}}{50}{figure.caption.19}%
-\contentsline {figure}{\numberline {8}{\ignorespaces Variable importance}}{58}{figure.caption.21}%
-\contentsline {figure}{\numberline {B.1}{\ignorespaces Factor autocorrelation}}{66}{figure.caption.27}%
-\contentsline {figure}{\numberline {C.1}{\ignorespaces Number of companies}}{67}{figure.caption.28}%
-\contentsline {figure}{\numberline {C.2}{\ignorespaces Exchange rates}}{68}{figure.caption.29}%
-\contentsline {figure}{\numberline {C.3}{\ignorespaces US dollar one-month Treasury bill rate}}{68}{figure.caption.30}%
-\contentsline {figure}{\numberline {C.4}{\ignorespaces Time series of the mean cross-sectional properties}}{69}{figure.caption.31}%
-\contentsline {figure}{\numberline {C.5}{\ignorespaces Time series of out-of-sample $R^2$}}{70}{figure.caption.32}%
-\contentsline {figure}{\numberline {C.6}{\ignorespaces Cumulative return of equal-weighted long-short portfolios}}{71}{figure.caption.33}%
-\contentsline {figure}{\numberline {C.7}{\ignorespaces Cumulative return of value-weighted long-short portfolios}}{72}{figure.caption.34}%
-\contentsline {figure}{\numberline {C.8}{\ignorespaces Turnover of long-short machine learning portfolios}}{73}{figure.caption.35}%
-\contentsline {figure}{\numberline {C.9}{\ignorespaces Optimized random forest hyperparameters}}{73}{figure.caption.36}%
-\contentsline {figure}{\numberline {10}{\ignorespaces Relative variable importance}}{74}{figure.caption.37}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Cumulative return of equal-weighted machine learning portfolios}}{51}{figure.caption.18}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Variable importance}}{57}{figure.caption.20}%
+\contentsline {figure}{\numberline {B.1}{\ignorespaces Factor autocorrelation}}{66}{figure.caption.26}%
+\contentsline {figure}{\numberline {C.1}{\ignorespaces Number of companies}}{67}{figure.caption.27}%
+\contentsline {figure}{\numberline {C.2}{\ignorespaces Exchange rates}}{67}{figure.caption.28}%
+\contentsline {figure}{\numberline {C.3}{\ignorespaces US dollar one-month Treasury bill rate}}{68}{figure.caption.29}%
+\contentsline {figure}{\numberline {C.4}{\ignorespaces Time series of the mean cross-sectional properties}}{69}{figure.caption.30}%
+\contentsline {figure}{\numberline {C.5}{\ignorespaces Time series of out-of-sample $R^2$}}{70}{figure.caption.31}%
+\contentsline {figure}{\numberline {C.6}{\ignorespaces Cumulative return of value-weighted machine learning portfolios}}{71}{figure.caption.32}%
+\contentsline {figure}{\numberline {C.7}{\ignorespaces Cumulative return of equal-weighted long-short portfolios}}{72}{figure.caption.33}%
+\contentsline {figure}{\numberline {C.8}{\ignorespaces Cumulative return of value-weighted long-short portfolios}}{73}{figure.caption.34}%
+\contentsline {figure}{\numberline {C.9}{\ignorespaces Turnover of long-short machine learning portfolios}}{74}{figure.caption.35}%
+\contentsline {figure}{\numberline {C.10}{\ignorespaces Optimized random forest hyperparameters}}{74}{figure.caption.36}%
+\contentsline {figure}{\numberline {C.11}{\ignorespaces Relative variable importance}}{75}{figure.caption.37}%

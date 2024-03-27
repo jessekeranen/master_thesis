@@ -241,7 +241,7 @@ FUNCTION {format.names}
         { namesleft #1 >
             { " / " * t * }
             { numnames #2 >
-                { "," * }
+                { " " * }
                 'skip$
               if$
               t "others" =
@@ -535,8 +535,8 @@ FUNCTION {format.pages}
 { pages empty$
     { "" }
     { pages multi.page.check
-        { ", .pp" pages n.dashify tie.or.space.connect }
-        { ", .p" pages tie.or.space.connect }
+        { ", pp." pages n.dashify tie.or.space.connect }
+        { ", p." pages tie.or.space.connect }
       if$
     }
   if$
@@ -564,7 +564,7 @@ FUNCTION {format.vol.num.pages}
     'skip$
     { duplicate$ empty$
         { pop$ format.pages }
-        { ", .pp " * pages n.dashify * }
+        { ", pp. " * pages n.dashify * }
       if$
     }
   if$

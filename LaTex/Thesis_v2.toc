@@ -23,10 +23,10 @@
 \contentsline {section}{\numberline {6}Empirical results on Nordic equities}{40}{section.6}%
 \contentsline {subsection}{\numberline {6.1}Prediction accuracy}{40}{subsection.6.1}%
 \contentsline {subsection}{\numberline {6.2}Portfolio performance}{46}{subsection.6.2}%
-\contentsline {subsection}{\numberline {6.3}Predictive characteristic importance}{56}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.3}Predictive characteristic importance}{55}{subsection.6.3}%
 \contentsline {section}{\numberline {7}Conclusion}{59}{section.7}%
 \contentsline {section}{Appendix \numberline {A}Data collection and variable definitions}{60}{appendix.1.A}%
 \contentsline {section}{Appendix \numberline {B}Benchmark factor properties}{65}{appendix.1.B}%
 \contentsline {section}{Appendix \numberline {C}Additional information}{67}{appendix.1.C}%
-\contentsline {section}{References}{75}{figure.caption.37}%
-\contentsline {section}{Declaration of Academic Integrity}{79}{section*.38}%
+\contentsline {section}{References}{76}{figure.caption.37}%
+\contentsline {section}{Declaration of Academic Integrity}{80}{section*.38}%

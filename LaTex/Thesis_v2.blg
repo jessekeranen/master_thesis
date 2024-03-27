@@ -3,46 +3,44 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: Thesis_v2.aux
 The style file: TUM2.bst
 Database file #1: References.bib
-Warning--empty booktitle in Davydov2017MagicFV
-You've used 46 entries,
+You've used 45 entries,
             2777 wiz_defined-function locations,
-            999 strings with 14703 characters,
-and the built_in function-call counts, 19501 in all, are:
-= -- 1921
-> -- 960
-< -- 36
-+ -- 328
-- -- 282
-* -- 1794
-:= -- 3139
-add.period$ -- 97
-call.type$ -- 46
-change.case$ -- 232
-chr.to.int$ -- 46
-cite$ -- 93
-duplicate$ -- 725
-empty$ -- 1464
-format.name$ -- 372
-if$ -- 3989
+            996 strings with 14569 characters,
+and the built_in function-call counts, 18863 in all, are:
+= -- 1864
+> -- 950
+< -- 33
++ -- 324
+- -- 279
+* -- 1761
+:= -- 3063
+add.period$ -- 91
+call.type$ -- 45
+change.case$ -- 228
+chr.to.int$ -- 45
+cite$ -- 90
+duplicate$ -- 686
+empty$ -- 1388
+format.name$ -- 368
+if$ -- 3834
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 46
-newline$ -- 197
-num.names$ -- 184
-pop$ -- 262
+missing$ -- 45
+newline$ -- 189
+num.names$ -- 180
+pop$ -- 243
 preamble$ -- 1
-purify$ -- 186
+purify$ -- 183
 quote$ -- 0
-skip$ -- 617
+skip$ -- 588
 stack$ -- 0
-substring$ -- 1145
-swap$ -- 57
-text.length$ -- 2
+substring$ -- 1092
+swap$ -- 45
+text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 506
-warning$ -- 1
-while$ -- 206
+type$ -- 495
+warning$ -- 0
+while$ -- 203
 width$ -- 0
-write$ -- 565
-(There was 1 warning)
+write$ -- 548

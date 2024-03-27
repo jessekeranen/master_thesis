@@ -1,0 +1,30 @@
+Reguired R libraries:
+
+library(readxl)
+library(data.table)
+library(ggplot2)
+library(stringr)
+library(openxlsx)
+library(tikzDevice)
+library(zoo)
+library(writexl)
+library(lubridate)
+library(tidyverse)
+library(lubridate)
+library(forecast)
+library(gridExtra)
+library(ranger)
+library(keras)
+library(tensorflow)
+library(neuralnet)
+library(zoo)
+
+Additionally, tensorflow requires python to be installed.
+
+Raw data is provided inside "Data" folder. "w02" and "w03" contain several several excel files containing the raw Datastream data. Additionally "w03" contains the request table. "FM", "NN" and "RF" folders contain the expected returns for different reduced models. "Data" contains also "F-F_Research_Data_Factors.CSV" file which is obtained from Kenneth French's website. "data_w_microcap.Rdata" contains output from "Data_collection_v2.Rmd" file including microcap stocks. "data.Rdata" contains final datatable including all expected returns.
+
+All cited papers are in "Papers" folder. "Papers" folder contains also subfolder called "Internet appendix". This subfolder contains papers that had relevant internet appendix.
+
+"Latex" file contains relevant Latex files used in writing the thesis.
+
+Finally, "Thesis" folder contains following Rmd files: "Data_collection_v2.Rmd", "Fama_French_Factors.Rmd", "Fama_MacBeth.Rmd", "Random_Forest.Rmd", "Neural_Network.Rmd" and "Portfolio_Returns.Rmd". Please run these files in above order. "Data_collection_v2.Rmd" file loads the data from "Data" folder, depending on the folder structure after download paths might need to be updated. Rest of the file modify datatable called "data" and store it for the next script. Therefore, running files in above order is important. Also the paths in other files might require updating as well.
