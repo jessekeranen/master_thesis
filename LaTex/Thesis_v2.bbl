@@ -1,0 +1,253 @@
+\begin{thebibliography}{46}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Ali et~al.(2003)Ali, Hwang, and Trombley]{ali2003}
+Ali, A. / Hwang, L.-S., / Trombley, M.~A. (2003): \removeperiod.
+\newblock Arbitrage risk and the book-to-market anomaly, in:  \emph{Journal of
+  Financial Economics}, 69 (2), .pp 355--373.
+
+\bibitem[Ang et~al.(2006)Ang, Hodrick, Xing, and Zhang]{Ang2006}
+Ang, A. / Hodrick, R.~J. / Xing, Y., / Zhang, X. (2006): \removeperiod.
+\newblock The cross-section of volatility and expected returns, in:  \emph{The
+  Journal of Finance}, 61 (1), .pp 259--299.
+
+\bibitem[Balakrishnan et~al.(2010)Balakrishnan, Bartov, and
+  Faurel]{BALAKRISHNAN2010}
+Balakrishnan, K. / Bartov, E., / Faurel, L. (2010): \removeperiod.
+\newblock Post loss/profit announcement drift, in:  \emph{Journal of Accounting
+  and Economics}, 50 (1), .pp 20--41.
+
+\bibitem[Banz(1981)]{BANZ1981}
+Banz, R.~W. (1981): \removeperiod.
+\newblock The relationship between return and market value of common stocks,
+  in:  \emph{Journal of Financial Economics}, 9 (1), .pp 3--18.
+
+\bibitem[Basu(1977)]{Basu1977}
+Basu, S. (1977): \removeperiod.
+\newblock Investment performance of common stocks in relation to their
+  price-earnings ratios: A test of the efficient market hypothesis, in:
+  \emph{The Journal of Finance}, 32 (3), .pp 663--682.
+
+\bibitem[Bhandari(1988)]{Bhandari1988}
+Bhandari, L.~C. (1988): \removeperiod.
+\newblock Debt/equity ratio and expected common stock returns: Empirical
+  evidence, in:  \emph{The Journal of Finance}, 43 (2), .pp 507--528.
+
+\bibitem[Bondt and Thaler(1985)]{DeBondt1985}
+Bondt, W. F. M.~D. / Thaler, R. (1985): \removeperiod.
+\newblock Does the stock market overreact?, in:  \emph{The Journal of Finance},
+  40 (3), .pp 793--805.
+
+\bibitem[Breiman(2001)]{Breiman20015}
+Breiman, L. (2001): \removeperiod.
+\newblock Random forests, in:  \emph{Machine Learning}, 45 (1), .pp 5 – 32.
+\newblock Cited by: 78308.
+
+\bibitem[Butt and H{\"o}gholm(2018)]{Butt2018}
+Butt, H.~A. / H{\"o}gholm, K. (2018): \removeperiod.
+\newblock The impact of illiquidity risk for the nordic markets, in:
+  \emph{Forthcoming in Spanish Journal of Finance and Accounting}.
+
+\bibitem[Carhart(1997)]{Carhart1997}
+Carhart, M.~M. (1997): \removeperiod.
+\newblock On persistence in mutual fund performance, in:  \emph{The Journal of
+  Finance}, 52 (1), .pp 57--82.
+
+\bibitem[Cooper et~al.(2008)Cooper, Gulen, and Schill]{cooper2008}
+Cooper, M.~J. / Gulen, H., / Schill, M.~J. (2008): \removeperiod.
+\newblock Asset growth and the cross-section of stock returns, in:  \emph{The
+  Journal of Finance}, 63 (4), .pp 1609--1651.
+
+\bibitem[Datar et~al.(1998)Datar, {Y. Naik}, and Radcliffe]{datar1998}
+Datar, V.~T. / {Y. Naik}, N., / Radcliffe, R. (1998): \removeperiod.
+\newblock Liquidity and stock returns: An alternative test, in:  \emph{Journal
+  of Financial Markets}, 1 (2), .pp 203--219.
+
+\bibitem[Davis et~al.(2000)Davis, Fama, and French]{Davis2000}
+Davis, J.~L. / Fama, E.~F., / French, K.~R. (2000): \removeperiod.
+\newblock Characteristics, covariances, and average returns: 1929 to 1997, in:
+  \emph{The Journal of Finance}, 55 (1), .pp 389--406.
+
+\bibitem[Davydov et~al.(2017)Davydov, Tikkanen, and
+  {\"A}ij{\"o}]{Davydov2017MagicFV}
+Davydov, D. / Tikkanen, J., / {\"A}ij{\"o}, J.
+\newblock Magic formula vs. traditional value investment strategies in the
+  finnish stock market.
+\newblock 2017.
+\newblock URL \url{https://api.semanticscholar.org/CorpusID:220593553}.
+
+\bibitem[Diebold and Mariano(1995)]{Diebold1995}
+Diebold, F.~X. / Mariano, R.~S. (1995): \removeperiod.
+\newblock Comparing predictive accuracy, in:  \emph{Journal of Business \&
+  Economic Statistics}, 13 (3), .pp 253--263.
+
+\bibitem[Drobetz and Otto(2021)]{Drobetz}
+Drobetz, W. / Otto, T. (2021): \removeperiod.
+\newblock Empirical asset pricing via machine learning: evidence from the
+  european stock market, in:  \emph{Journal of Asset Management}, 22 (7), .pp
+  507--538.
+
+\bibitem[Fama and French(1993)]{FAMA19933}
+Fama, E.~F. / French, K.~R. (1993): \removeperiod.
+\newblock Common risk factors in the returns on stocks and bonds, in:
+  \emph{Journal of Financial Economics}, 33 (1), .pp 3--56.
+
+\bibitem[Fama and French(2012)]{FAMA2012457}
+Fama, E.~F. / French, K.~R. (2012): \removeperiod.
+\newblock Size, value, and momentum in international stock returns, in:
+  \emph{Journal of Financial Economics}, 105 (3), .pp 457--472.
+
+\bibitem[Fama and French(2015)]{FAMA20151}
+Fama, E.~F. / French, K.~R. (2015): \removeperiod.
+\newblock A five-factor asset pricing model, in:  \emph{Journal of Financial
+  Economics}, 116 (1), .pp 1--22.
+
+\bibitem[Fama and MacBeth(1973)]{FamaMacBeth1973}
+Fama, E.~F. / MacBeth, J.~D. (1973): \removeperiod.
+\newblock Risk, return, and equilibrium: Empirical tests, in:  \emph{Journal of
+  Political Economy}, 81 (3), .pp 607--636.
+
+\bibitem[Fieberg et~al.(2023)Fieberg, Metko, Poddig, and Loy]{Fieberg}
+Fieberg, C. / Metko, D. / Poddig, T., / Loy, T. (2023): \removeperiod.
+\newblock Machine learning techniques for cross-sectional equity
+  returns'prediction, in:  \emph{OR Spectrum}, 45 (1), .pp 289--323.
+
+\bibitem[Freyberger et~al.(2020)Freyberger, Neuhierl, and
+  Weber]{Freyberger2020}
+Freyberger, J. / Neuhierl, A., / Weber, M. (2020): \removeperiod.
+\newblock Dissecting characteristics nonparametrically, in:  \emph{The Review
+  of Financial Studies}, 33 (5), .pp pp. 2326--2377.
+
+\bibitem[George and Hwang(2004)]{george2004}
+George, T.~J. / Hwang, C.-Y. (2004): \removeperiod.
+\newblock The 52-week high and momentum investing, in:  \emph{The Journal of
+  Finance}, 59 (5), .pp 2145--2176.
+
+\bibitem[Green et~al.(2017)Green, Hand, and Zhang]{Green2017}
+Green, J. / Hand, J. R.~M., / Zhang, X.~F. (2017): \removeperiod.
+\newblock {The Characteristics that Provide Independent Information about
+  Average U.S. Monthly Stock Returns}, in:  \emph{The Review of Financial
+  Studies}, 30 (12), .pp 4389--4436.
+
+\bibitem[Grobys and Huhta-Halkola(2019)]{grobys}
+Grobys, K. / Huhta-Halkola, T. (2019): \removeperiod.
+\newblock Combining value and momentum: evidence from the nordic equity market,
+  in:  \emph{Applied Economics}, 51 (26), .pp 2872--2884.
+
+\bibitem[Gu et~al.(2020)Gu, Kelly, and Xiu]{guetal}
+Gu, S. / Kelly, B., / Xiu, D. (2020): \removeperiod.
+\newblock Empirical asset pricing via machine learning, in:  \emph{The Review
+  of Financial Studies}, 33 (5), .pp pp. 2223--2273.
+
+\bibitem[Hanauer and Kalsbach(2023)]{HANAUER2023}
+Hanauer, M.~X. / Kalsbach, T. (2023): \removeperiod.
+\newblock Machine learning and the cross-section of emerging market stock
+  returns, in:  \emph{Emerging Markets Review}, 55, .pp 101022.
+
+\bibitem[Hanauer and Windmüller(2023)]{HANAUER2023106712}
+Hanauer, M.~X. / Windmüller, S. (2023): \removeperiod.
+\newblock Enhanced momentum strategies, in:  \emph{Journal of Banking \&
+  Finance}, 148, .pp 106712.
+
+\bibitem[Haugen and Baker(1996)]{HAUGEN1996}
+Haugen, R.~A. / Baker, N.~L. (1996): \removeperiod.
+\newblock Commonality in the determinants of expected stock returns, in:
+  \emph{Journal of Financial Economics}, 41 (3), .pp 401--439.
+
+\bibitem[Ho(1995)]{Ho1995}
+Ho, T.~K.
+\newblock Random decision forests.
+\newblock In \emph{Proceedings of 3rd International Conference on Document
+  Analysis and Recognition}, volume~1, , .pp 278--282 vol.1, 1995.
+\newblock \doi{10.1109/ICDAR.1995.598994}.
+
+\bibitem[Ince and Porter(2006)]{Ince2006}
+Ince, O.~S. / Porter, R.~B. (2006): \removeperiod.
+\newblock Individual equity return data from thomson datastream: Handle with
+  care!, in:  \emph{Journal of Financial Research}, 29 (4), .pp 463--479.
+
+\bibitem[Jacobs and M{\"u}ller(2020)]{JACOBS2020213}
+Jacobs, H. / M{\"u}ller, S. (2020): \removeperiod.
+\newblock Anomalies across the globe: Once public, no longer existent?, in:
+  \emph{Journal of Financial Economics}, 135 (1), .pp 213--230.
+
+\bibitem[Jegadeesh(1990)]{Jegadeesh1990}
+Jegadeesh, N. (1990): \removeperiod.
+\newblock Evidence of predictable behavior of security returns, in:  \emph{The
+  Journal of Finance}, 45 (3), .pp 881--898.
+
+\bibitem[Jegadeesh and Titman(1993)]{Jegadeesh1993}
+Jegadeesh, N. / Titman, S. (1993): \removeperiod.
+\newblock Returns to buying winners and selling losers: Implications for stock
+  market efficiency, in:  \emph{The Journal of Finance}, 48 (1), .pp 65--91.
+
+\bibitem[Jokipii and V{\"a}h{\"a}maa(2006)]{jokipii2006free}
+Jokipii, A. / V{\"a}h{\"a}maa, S. (2006): \removeperiod.
+\newblock The free cash flow anomaly revisited: Finnish evidence, in:
+  \emph{Journal of Business Finance \& Accounting}, 33 (7-8), .pp 961--978.
+
+\bibitem[Lakonishok et~al.(1994)Lakonishok, Shleifer, and
+  Vishny]{Lakonishok1994}
+Lakonishok, J. / Shleifer, A., / Vishny, R.~W. (1994): \removeperiod.
+\newblock Contrarian investment, extrapolation, and risk, in:  \emph{The
+  Journal of Finance}, 49 (5), .pp 1541--1578.
+
+\bibitem[Leivo and P{\"a}t{\"a}ri(2011)]{leivo2011}
+Leivo, T.~H. / P{\"a}t{\"a}ri, E.~J. (2011): \removeperiod.
+\newblock Enhancement of value portfolio performance using momentum and the
+  long-short strategy: The finnish evidence, in:  \emph{Journal of Asset
+  Management}, 11 (6), .pp 401--416.
+
+\bibitem[Lewellen(2015)]{Lewellen2015}
+Lewellen, J. (2015): \removeperiod.
+\newblock The cross-section of expected stock returns, in:  \emph{Critical
+  Finance Review}, 4 (1), .pp 1--44.
+
+\bibitem[Lintner(1965)]{Lintner1965}
+Lintner, J. (1965): \removeperiod.
+\newblock The valuation of risk assets and the selection of risky investments
+  in stock portfolios and capital budgets, in:  \emph{The Review of Economics
+  and Statistics}, 47 (1), .pp 13--37.
+
+\bibitem[Moskowitz and Grinblatt(1999)]{Moskowitz1999}
+Moskowitz, T.~J. / Grinblatt, M. (1999): \removeperiod.
+\newblock Do industries explain momentum?, in:  \emph{The Journal of Finance},
+  54 (4), .pp 1249--1290.
+
+\bibitem[Newey and West(1987)]{Newey1987}
+Newey, W.~K. / West, K.~D. (1987): \removeperiod.
+\newblock A simple, positive semi-definite, heteroskedasticity and
+  autocorrelation consistent covariance matrix, in:  \emph{Econometrica}, 55
+  (3), .pp 703--708.
+
+\bibitem[Novy-Marx(2012)]{NOVYMARX2012}
+Novy-Marx, R. (2012): \removeperiod.
+\newblock Is momentum really momentum?, in:  \emph{Journal of Financial
+  Economics}, 103 (3), .pp 429--453.
+
+\bibitem[Palazzo(2012)]{PALAZZO2012162}
+Palazzo, B. (2012): \removeperiod.
+\newblock Cash holdings, risk, and expected returns, in:  \emph{Journal of
+  Financial Economics}, 104 (1), .pp 162--185.
+
+\bibitem[Sharpe(1964)]{Sharpe1964}
+Sharpe, W.~F. (1964): \removeperiod.
+\newblock Capital asset prices: A theory of market equilibrium under conditions
+  of risk, in:  \emph{The Journal of Finance}, 19 (3), .pp 425--442.
+
+\bibitem[Tobek and Hronec(2021)]{TOBEK2021100588}
+Tobek, O. / Hronec, M. (2021): \removeperiod.
+\newblock Does it pay to follow anomalies research? machine learning approach
+  with international evidence, in:  \emph{Journal of Financial Markets}, 56,
+  .pp 100588.
+
+\bibitem[Tsang and Chong(2009)]{tsang2009}
+Tsang, W. W.~H. / Chong, T. T.~L. (2009): \removeperiod.
+\newblock Profitability of the on-balance volume indicator, in:
+  \emph{Economics Bulletin}, 29, .pp 2424--2431.
+
+\end{thebibliography}

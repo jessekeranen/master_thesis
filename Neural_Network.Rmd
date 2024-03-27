@@ -21,6 +21,9 @@ library(tikzDevice)
 library(zoo)
 ```
 
+# Preliminary steps
+
+Process is started by loading the data file generated in Data_collection file. In case data file consists old expected returns, they will be removed. Seed is also set to ensure reproducibility of the results. Funciton set_random_seed from tensorflo library should set all necesary seeds including the seeds for python, in order to make the result reproducable. Then set of explanatory variables is defined. Additionally, data is sorted to chronological order and finally array of dates when the model will be retrained is formed. Model will be retrained each July. First training consists data from 50 first months. 
 ```{r}
 load(file = "Data/data.Rdata")
 data[, NN.EXP.RET := NULL]
@@ -33,12 +36,6 @@ independend_variables <- c("CA", "CTO", "INV", "BEME", "CFP", "DEBT", "SP", "EP"
                            "MOM.IND", "L.SD", "L.HIGH52.RATIO", "L.BETA",
                            "L.IDVOL", "L.LOG.USD.MV", "L.TO", "L.OBV")
 
-#independend_variables <- c("CA", "CTO", "BEME", "DEBT", "SP", "EP",
-#                           "ROE", "Q", "MOM2", "MOM7", "MOM12", "MOM36",
-#                           "MOM.IND", "L.SD", "L.HIGH52.RATIO", "L.BETA",
-#                           "L.IDVOL", "L.LOG.USD.MV", "L.OBV", "L.TO")
-
-
 dates <- sort(data[, unique(Date)])
 
 trainings <- data[Date > dates[50] & lubridate::month(Date) == 7, unique(Date)]
@@ -46,6 +43,7 @@ trainings <- c(trainings, max(data$Date)) # Add last date
 trainings <- sort(trainings)
 ```
 
+Neural network for illustration purposes.
 ```{r, fig.dim = c(8, 8), message=FALSE, echo=FALSE, include=FALSE}
 model <- neuralnet(EXC.USD.RET ~ MOM12 + L.IDVOL + L.LOG.USD.MV + CA,
                   data = data[Date == as.POSIXct("2010-09-30", tz = "UTC")],
@@ -57,6 +55,7 @@ invisible(plot(model, rep = "best", information = F, cex=.7))
 dev.off()
 ```
 
+Function for learning rate scheduler. After each epoch scheduler function is called. After ten epoch function multiplies the learning rate of the model by 0.9.
 ```{r}
 scheduler <- function(epoch, lr) {
   if (epoch < 10) {
@@ -68,9 +67,12 @@ scheduler <- function(epoch, lr) {
 }
 ```
 
-```{r}
-NN_grid <- expand.grid(dates = trainings, MSE = 0)
+# Expected returns
 
+For each of the retraining date neural_network function is called. Inside the neural_network function data is limited to dates earlier to responding retraining date. Then the data is split to training and testing data using random 0.8/0.2 split. Total 5 neural network models are trained and the final prediction is the average of the models.
+```{r}
+# Grid to keep track of MSE
+NN_grid <- expand.grid(dates = trainings, MSE = 0)
 NN_grid <- setorder(as.data.table(NN_grid), dates)
 NN_grid_size <- length(NN_grid$dates) / uniqueN(NN_grid$dates)
 
@@ -78,17 +80,13 @@ data[, `:=` (NN.EXP.RET = NULL, NN1.EXP.RET = NULL, NN2.EXP.RET = NULL,
              NN3.EXP.RET = NULL, NN4.EXP.RET = NULL, NN5.EXP.RET = NULL)]
 
 neural_network <- function(dt, grid, date_index, independend_variables) {
+  # Define callbacks for early stopping and learning rate scheduler
   callback_1 <- callback_early_stopping(monitor = 'val_loss', patience = 5)
   #callback_2 <- callback_reduce_lr_on_plateau(monitor = 'val_loss', factor = 0.5,
   #                            patience = 1)
   callback_3 <- callback_learning_rate_scheduler(scheduler)
   
-  #csv_logger_1 <- callback_csv_logger("model_1_logs.csv", append = T)
-  #csv_logger_2 <- callback_csv_logger("model_2_logs.csv", append = T)
-  #csv_logger_3 <- callback_csv_logger("model_3_logs.csv", append = T)
-  #csv_logger_4 <- callback_csv_logger("model_4_logs.csv", append = T)
-  #csv_logger_5 <- callback_csv_logger("model_5_logs.csv", append = T)
-  
+  # Initialize the models
   model_1 <- keras_model_sequential()
   model_2 <- keras_model_sequential()
   model_3 <- keras_model_sequential()
@@ -161,6 +159,7 @@ neural_network <- function(dt, grid, date_index, independend_variables) {
                     kernel_initializer = initializer_random_normal(seed = 5),
                     bias_initializer = initializer_constant(0.0))
   
+  # Compile the models
   model_1 %>% compile(loss = 'mse', optimizer = optimizer_adam(learning_rate = 1e-3),
                       metrics = 'mae') 
   model_2 %>% compile(loss = 'mse', optimizer = optimizer_adam(learning_rate = 1e-3),
@@ -173,17 +172,18 @@ neural_network <- function(dt, grid, date_index, independend_variables) {
                       metrics = 'mae')
   
   # browser()
+  # Split the data
   data <- dt[Date < trainings[date_index]]
   sample <- sample(c(TRUE, FALSE), nrow(data), replace = TRUE, prob = c(0.8, 0.2))
   
   x_train <- as.matrix(data[sample, ..independend_variables])
   y_train <- as.matrix(data[sample, EXC.USD.RET])
-  
   x_validation <- as.matrix(data[!sample, ..independend_variables])
   y_validation <- as.matrix(data[!sample, EXC.USD.RET])
   
 
     index <- (date_index - 1) * NN_grid_size
+    # Fit the models
     model_1 %>% fit(x_train, y_train, epochs = 100, batch_size = 502, 
                   callbacks = list(callback_1, callback_3), 
                   validation_data = list(x_validation, y_validation), 
@@ -204,7 +204,8 @@ neural_network <- function(dt, grid, date_index, independend_variables) {
                   callbacks = list(callback_1, callback_3), 
                   validation_data = list(x_validation, y_validation), 
                   verbose = 0)
-
+    
+    # Evaluate the models
     mse_1 <- model_1 %>% evaluate(x_validation, y_validation, verbose = 0)
     mse_2 <- model_2 %>% evaluate(x_validation, y_validation, verbose = 0)
     mse_3 <- model_3 %>% evaluate(x_validation, y_validation, verbose = 0)
@@ -223,13 +224,13 @@ neural_network <- function(dt, grid, date_index, independend_variables) {
   return(list(dt, grid))
 }
 
-
+# Call neural network model for all retraining dates
 for (i in 1:(length(trainings) - 1)) {
   lista <- neural_network(data, NN_grid, i, independend_variables)
   data <- lista[[1]]
   NN_grid <- lista[[2]]
 }
-
+# Final expected return
 data[, NN.EXP.RET := (NN1.EXP.RET + NN2.EXP.RET +  NN3.EXP.RET + NN4.EXP.RET + 
                         NN5.EXP.RET) / 5, by = c("Date", "Company")]
 
@@ -242,15 +243,18 @@ NN_optimal_grid <- melt(NN_grid, id.vars = "dates")
 
 data[!is.na(NN.EXP.RET), cor(NN.EXP.RET, EXC.USD.RET)]
 
+# Plot the MSE
 ggplot(NN_optimal_grid, aes(dates, value)) + geom_line() + 
   scale_y_log10()
 ```
-
+Finally the data will be saved for later usage.
 ```{r}
 save(data, file = "Data/data.Rdata")
 ```
 
+# Variable importance
 
+Variable importance for neural network approach is calculated replacing one variable at a time by 0 and then repeating above steps. Once the predicted returns are obtained for the reduced model, they are saved one by one to the RData files in Data folder for later usage.
 ```{r}
 NN_grid2 <- expand.grid(dates = trainings, MSE = 0)
 NN_grid2 <- setorder(as.data.table(NN_grid2), dates)

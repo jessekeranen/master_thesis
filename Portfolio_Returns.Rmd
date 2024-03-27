@@ -240,7 +240,7 @@ scale_oosr2 <- function(dt, exp_ret) {
   # browser()
   dt <- dt[, mean(value), by = c("method", "R2.Method")]
   dt <- dt[, V1 := .SD[method == exp_ret, V1] - V1, R2.Method][method != exp_ret]
-  dt[, V1 := V1 / sum(V1), by = R2.Method]
+  dt[, V1 := V1 / abs(sum(V1)), by = R2.Method]
   return(dt)
 }
 ```
@@ -335,6 +335,7 @@ nn_exp_rets <- rbindlist(lapply(independend_variables, function(x) {
 }))
 nn_exp_rets <- dcast(nn_exp_rets, Date + Company + EXC.USD.RET ~ Variable,
                      value.var = "NN.EXP.RET")
+# write_xlsx(nn_exp_rets, "test.xlsx")
 # Merge the mean returns to reduced expected returns
 nn_exp_rets <- merge(nn_exp_rets, data[, .(Date, Company, MEAN.RET)],
                      by = c("Date", "Company"))

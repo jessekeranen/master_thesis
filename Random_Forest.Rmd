@@ -45,7 +45,7 @@ trainings <- sort(trainings) # Sort the training days
 
 For visualization purposes one decisision tree is trained using rpart library. Tree is purely for visualization and is not any way related to actual model. Rpart libary is used because it offers nice visualization functionality for the decision trees which is also compatible with tikz library that is used to generate Latex file from the plot.
 ```{r, fig.dim = c(8, 8), message=FALSE, echo=FALSE, include=FALSE, results='hide'}
-'library(rpart)
+library(rpart)
 
 # Example Random Forest tree, only for illustration purposes
 example_tree <- rpart(formula, method = "anova", data = na.omit(data[Date == as.POSIXct("2004-07-30", tz="UTC")]))
@@ -55,7 +55,7 @@ example_tree <- prune.rpart(example_tree, cp = 0.02)
 tikz(file = "Latex/R_graphs/regr_tree.tex", width = 4, height = 4)
 plot(example_tree, uniform = T)
 text(example_tree, use.n = TRUE, cex = .7, xpd=T)
-dev.off()'
+dev.off()
 ```
 
 # Expected returns
@@ -69,7 +69,7 @@ rf_grid <- setorder(as.data.table(rf_grid), dates)
 
 # data[, RF.EXP.RET := runif(length(FM.EXP.RET))]
 
-random_forest <- function(dt, grid, date_index, formula, independend_variables) {
+random_forest <- function(dt, grid, date_index, formula, independend_variables, op) {
   # browser()
   print(trainings[date_index])
   mse_lowest <- .Machine$integer.max
@@ -83,36 +83,39 @@ random_forest <- function(dt, grid, date_index, formula, independend_variables) 
   
   grid_size <- length(grid$dates) / uniqueN(grid$dates)
   
-  # Loop through the hyperparameter combinations
-  for (j in 1:grid_size) {
-    # browser()
-    index <- (date_index - 1) * grid_size + j # Update the index
+  if(op == T){
+    # Loop through the hyperparameter combinations
+    for (j in 1:grid_size) {
+      # browser()
+      index <- (date_index - 1) * grid_size + j # Update the index
     
-    # Train the random forest model with training data
-    rf <- ranger(formula, data = train,
+      # Train the random forest model with training data
+      rf <- ranger(formula, data = train,
                  num.tree = grid$ntree[index], mtry = grid$mtry[index],
                  max.depth = grid$max.depth[index], 
                  sample.fraction = grid$sample.fraction[index])
     
-    # Calculate the MSE for test data
-    grid$MSE[index] <- test[, mean((EXC.USD.RET - predict(rf,
+      # Calculate the MSE for test data
+      grid$MSE[index] <- test[, mean((EXC.USD.RET - predict(rf,
                                 .SD[, ..independend_variables])$predictions)^2, na.rm = T)]
-    
-    # Check if the new hyperparameter initialization improved the model   
-    if (grid$MSE[index] < mse_lowest) {
-      mse_lowest <- grid$MSE[index] # Update the lowes MSE
-      
-      # Predict the returns for next 12 months
-      dt[Date >= trainings[date_index] & Date < trainings[date_index + 1],
-         RF.EXP.RET := predict(rf, .SD[, ..independend_variables])$predictions]
+      print(index) 
     }
-    print(index) 
   }
+  opt_hyp <- grid[dates == trainings[date_index],
+                        .SD[which.min(MSE), .(ntree, mtry, max.depth, MSE,
+                                                sample.fraction)], by = dates]
+
+  # Predict with all data model
+  rf <- ranger(formula, data = data, num.tree = opt_hyp$ntree, mtry = opt_hyp$mtry,
+                 max.depth = opt_hyp$max.depth, sample.fraction = opt_hyp$sample.fraction)
+  
+  dt[Date >= trainings[date_index] & Date < trainings[date_index + 1],
+         RF.EXP.RET := predict(rf, .SD[, ..independend_variables])$predictions]
   return(list(dt, grid))
 }
 
 for (i in 1:(length(trainings) - 1)) {
-  lista <- random_forest(data, rf_grid, i, formula, independend_variables)
+  lista <- random_forest(data, rf_grid, i, formula, independend_variables, T)
   data <- lista[[1]]
   rf_grid <- lista[[2]]
 }
@@ -125,7 +128,7 @@ optimal_grid <- rf_grid[dates < as.POSIXct("2022-12-30", tz = "UTC"),
 optimal_grid_long <- melt(optimal_grid[, -c("ntree", "sample.fraction", "MSE")],
                           id.vars = "dates")
 
-tikz(file = "Latex/R_graphs/hyper_param_rf.tex", width = 6, height = 2)
+tikz(file = "Latex/R_graphs/hyper_param_rf.tex", width = 5.5, height = 2)
 plot <- ggplot(optimal_grid_long, aes(dates, value)) + geom_line() + 
   facet_wrap(~variable, scales = "free") + 
   scale_y_continuous(expand = c(0, 0), limits = c(0, NA)) +
@@ -151,7 +154,7 @@ invisible(lapply(independend_variables, function(x) {
   r2[, (x) := 0]
   
   for (i in 1:(length(trainings) - 1)) {
-    lista <- random_forest(r2, optimal_grid, i, formula, independend_variables)
+    lista <- random_forest(r2, optimal_grid, i, formula, independend_variables, F)
     r2 <- lista[[1]]
   }
   print(x)
