@@ -18,10 +18,12 @@ library(keras)
 library(tensorflow)
 library(neuralnet)
 library(zoo)
+library(sandwich)
+library(rpart)
 
 Additionally, tensorflow requires python to be installed.
 
-Raw data is provided inside "Data" folder. "w02" and "w03" contain several several excel files containing the raw Datastream data. Additionally "w03" contains the request table. "FM", "NN" and "RF" folders contain the expected returns for different reduced models. "Data" contains also "F-F_Research_Data_Factors.CSV" file which is obtained from Kenneth French's website. "data_w_microcap.Rdata" contains output from "Data_collection_v2.Rmd" file including microcap stocks. "data.Rdata" contains final datatable including all expected returns.
+Raw data is provided inside "Data" folder. "w02" and "w03" contain several excel files containing the raw Datastream data. Additionally "w03" contains the request table. "FM", "NN" and "RF" folders contain the expected returns for different reduced models. "Data" contains also "F-F_Research_Data_Factors.CSV" file which is obtained from Kenneth French's website. "data_w_microcap.Rdata" contains output from "Data_collection_v2.Rmd" file including microcap stocks. "data.Rdata" contains final datatable including all expected returns.
 
 All cited papers are in "Papers" folder. "Papers" folder contains also subfolder called "Internet appendix". This subfolder contains papers that had relevant internet appendix.
 
